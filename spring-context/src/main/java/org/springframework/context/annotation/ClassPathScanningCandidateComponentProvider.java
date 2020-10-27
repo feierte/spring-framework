@@ -86,6 +86,10 @@ import org.springframework.util.ClassUtils;
  */
 public class ClassPathScanningCandidateComponentProvider implements EnvironmentCapable, ResourceLoaderAware {
 
+	/**
+	 * 前两个**表示当前包及其子包，而 *.class 表示所有以.class结尾的文件
+	 * 合在一起则为当前包及其子包 下面的 所有class文件
+	 */
 	static final String DEFAULT_RESOURCE_PATTERN = "**/*.class";
 
 
