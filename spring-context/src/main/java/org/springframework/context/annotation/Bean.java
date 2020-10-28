@@ -259,6 +259,10 @@ public @interface Bean {
 	 * <p>Default is {@code true}; set this to {@code false} for internal delegates
 	 * that are not meant to get in the way of beans of the same type in other places.
 	 * @since 5.1
+	 *
+	 * 该属性设置为false时，容器在查找自动装配对象时，将不考虑该bean，
+	 * 即该bean不会被作为其它bean自动装配的候选者（即@Autowired、@Qualifier、@Primary等注解失效，但@Resource和@Inject注解仍然起作用），
+	 * 但该bean本身还是可以使用自动装配来注入其它bean的。
 	 */
 	boolean autowireCandidate() default true;
 
