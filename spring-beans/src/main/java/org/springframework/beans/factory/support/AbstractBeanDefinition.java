@@ -394,6 +394,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	public String getBeanClassName() {
 		Object beanClassObject = this.beanClass;
 		if (beanClassObject instanceof Class) {
+			// 返回类的完全限定名
 			return ((Class<?>) beanClassObject).getName();
 		}
 		else {

@@ -60,6 +60,8 @@ import org.springframework.util.StringUtils;
  * @see org.springframework.stereotype.Controller#value()
  * @see javax.inject.Named#value()
  * @see FullyQualifiedAnnotationBeanNameGenerator
+ *
+ * 该类是为 那些基于注解方式配置的bean 生成名称的
  */
 public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 
@@ -78,6 +80,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	@Override
 	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
 		if (definition instanceof AnnotatedBeanDefinition) {
+			// 查看该类上的注解是否已经指定了bean name
 			String beanName = determineBeanNameFromAnnotation((AnnotatedBeanDefinition) definition);
 			if (StringUtils.hasText(beanName)) {
 				// Explicit bean name found.
@@ -85,6 +88,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 			}
 		}
 		// Fallback: generate a unique default bean name.
+		// 产生一个将类名（不是全限定类名）首字母小写的bean name
 		return buildDefaultBeanName(definition, registry);
 	}
 
@@ -96,6 +100,8 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	@Nullable
 	protected String determineBeanNameFromAnnotation(AnnotatedBeanDefinition annotatedDef) {
 		AnnotationMetadata amd = annotatedDef.getMetadata();
+		// 获取该类上的注解类型
+		// 返回的是Set集合，该保存的是注解的全限定名，例如：org.springframework.context.annotation.Configuration
 		Set<String> types = amd.getAnnotationTypes();
 		String beanName = null;
 		for (String type : types) {
@@ -167,6 +173,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 		String beanClassName = definition.getBeanClassName();
 		Assert.state(beanClassName != null, "No bean class name set");
 		String shortClassName = ClassUtils.getShortName(beanClassName);
+		// 将字符串的首个字母转换成小写
 		return Introspector.decapitalize(shortClassName);
 	}
 

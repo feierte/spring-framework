@@ -83,7 +83,7 @@ public @interface ComponentScan {
 	 * <p>Consider creating a special no-op marker class or interface in each package
 	 * that serves no purpose other than being referenced by this attribute.
 	 * <p>
-	 * 扫描指定类所在的包及其子包
+	 * 扫描指定类 所在的包及其子包
 	 */
 	Class<?>[] basePackageClasses() default {};
 
