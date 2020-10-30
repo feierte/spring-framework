@@ -57,7 +57,7 @@ public class MyImportSelector implements ImportSelector {
 		}
 
 		/*
-		 * 如果没有@ComponentScan注解，就扫描@Import注解的类 所在的包
+		 * 如果没有@ComponentScan注解，就扫描被@Import注解的类 所在的包
 		 */
 		if (basePackages == null || basePackages.length == 0) {
 			String basePackage = null;
