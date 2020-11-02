@@ -10,6 +10,10 @@ repositories {
 }
 
 dependencies {
+
+    // yaml文件解析工具类
+    compile group: 'org.yaml', name: 'snakeyaml', version: '1.27'
+
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.21'
     compile(project(":spring-core"))
     compile(project(":spring-beans"))

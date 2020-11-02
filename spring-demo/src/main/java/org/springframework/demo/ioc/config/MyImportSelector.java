@@ -9,10 +9,7 @@ import org.springframework.core.type.filter.AspectJTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.util.MultiValueMap;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Jie Zhao
@@ -49,11 +46,10 @@ public class MyImportSelector implements ImportSelector {
 		 */
 		if (importingClassMetadata.hasAnnotation(ComponentScan.class.getName())) {
 			// 取出ComponentScan中的所有属性及属性值
-			MultiValueMap<String, Object> allAnnotationAttributes =
-					importingClassMetadata.getAllAnnotationAttributes(ComponentScan.class.getName());
+			Map<String, Object> annotationAttributes =
+					importingClassMetadata.getAnnotationAttributes(ComponentScan.class.getName());
 			// 取出basePackages属性中的值
-			basePackages = allAnnotationAttributes.get("basePackages")
-					.toArray(new String[allAnnotationAttributes.size()]);
+			basePackages = (String[]) annotationAttributes.get("basePackages");
 		}
 
 		/*

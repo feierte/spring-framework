@@ -38,4 +38,13 @@ public class SpringConfigurationTest {
 		DataSource dataSource = applicationContext.getBean("dataSource", DataSource.class);
 		System.out.println(dataSource);
 	}
+
+	@Test
+	public void testImportSelector() {
+		ApplicationContext applicationContext =
+				new AnnotationConfigApplicationContext("org.springframework.demo.ioc");
+		UserService userService =
+				applicationContext.getBean("org.springframework.demo.ioc.service.impl.UserServiceImpl", UserService.class);
+		userService.saveUser();
+	}
 }

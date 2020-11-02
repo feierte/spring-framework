@@ -3,7 +3,7 @@ package org.springframework.demo.ioc.service.impl;
 import org.springframework.demo.ioc.service.UserService;
 import org.springframework.stereotype.Service;
 
-@Service("userService")
+//@Service("userService")
 public class UserServiceImpl implements UserService {
 
 
