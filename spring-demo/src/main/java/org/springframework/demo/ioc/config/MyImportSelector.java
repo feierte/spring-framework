@@ -1,4 +1,4 @@
-package org.springframework.demo.config;
+package org.springframework.demo.ioc.config;
 
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.ComponentScan;
@@ -52,7 +52,7 @@ public class MyImportSelector implements ImportSelector {
 			MultiValueMap<String, Object> allAnnotationAttributes =
 					importingClassMetadata.getAllAnnotationAttributes(ComponentScan.class.getName());
 			// 取出basePackages属性中的值
-			basePackages = (String[]) allAnnotationAttributes.get("basePackages")
+			basePackages = allAnnotationAttributes.get("basePackages")
 					.toArray(new String[allAnnotationAttributes.size()]);
 		}
 

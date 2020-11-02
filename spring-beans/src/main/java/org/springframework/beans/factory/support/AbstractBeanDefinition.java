@@ -141,25 +141,55 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	@Nullable
 	private volatile Object beanClass;
 
+	/**
+	 * bean的作用范围，对应bean属性scope
+	 */
 	@Nullable
 	private String scope = SCOPE_DEFAULT;
 
+	/**
+	 * 是否是抽象，对应bean属性abstract
+	 */
 	private boolean abstractFlag = false;
 
+
+	/**
+	 * 是否延迟加载，对应bean属性lazy-init
+	 */
 	@Nullable
 	private Boolean lazyInit;
 
+
+	/**
+	 * 自动注入模式，对应bean属性autowire
+	 */
 	private int autowireMode = AUTOWIRE_NO;
 
+	/**
+	 * 依赖检查，Spring 3.0后弃用这个属性
+	 */
 	private int dependencyCheck = DEPENDENCY_CHECK_NONE;
 
 	@Nullable
 	private String[] dependsOn;
 
+	/**
+	 * autowire-candidate属性设置为false，这样容器在查找自动装配对象时，
+	 * 将不考虑该bean，即它不会被考虑作为其他bean自动装配的候选者，
+	 * 但是该bean本身还是可以使用自动装配来注入其他bean的
+	 */
 	private boolean autowireCandidate = true;
 
+	/**
+	 * 自动装配时当出现多个bean候选者时，将作为首选者。
+	 * 对应XML配置中bean标签属性的primary。<bean id="xxx" class="xxx" primary="true">
+	 * 对应注解：@org.springframework.context.annotation.Primary
+	 */
 	private boolean primary = false;
 
+	/**
+	 * 用于记录Qualifier，对应子元素qualifier
+	 */
 	private final Map<String, AutowireCandidateQualifier> qualifiers = new LinkedHashMap<>();
 
 	@Nullable
@@ -167,6 +197,17 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 	private boolean nonPublicAccessAllowed = true;
 
+	/**
+	 * 是否以一种宽松的模式解析构造函数，默认为true，
+	 * 如果为false，则在以下情况
+	 * interface ITest{}
+	 * class ITestImpl implements ITest{};
+	 * class Main {
+	 *     Main(ITest i) {}
+	 *     Main(ITestImpl i) {}
+	 * }
+	 * 抛出异常，因为Spring无法准确定位哪个构造函数程序设置
+	 */
 	private boolean lenientConstructorResolution = true;
 
 	@Nullable
@@ -183,9 +224,19 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 	private MethodOverrides methodOverrides = new MethodOverrides();
 
+	/**
+	 * 初始化方法。
+	 * 对应XML配置中bean标签属性的init-method。<bean id="xxx" class="xxx" init-method="xxx">
+	 * 对应注解：@javax.annotation.PostConstruct
+	 */
 	@Nullable
 	private String initMethodName;
 
+	/**
+	 * 销毁方法。
+	 * 对应XML配置中bean标签属性的destory-method。<bean id="xxx" class="xxx" destroy-method="xxx">
+	 * 对应注解：@javax.annotation.PreDestroy
+	 */
 	@Nullable
 	private String destroyMethodName;
 
@@ -193,6 +244,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 	private boolean enforceDestroyMethod = true;
 
+	/**
+	 * 是否是合成类（是不是应用自定义的，例如生成AOP代理时，会用到某些辅助类，这些辅助类不是应用自定义的，这个就是合成类）
+	 */
 	private boolean synthetic = false;
 
 	private int role = BeanDefinition.ROLE_APPLICATION;

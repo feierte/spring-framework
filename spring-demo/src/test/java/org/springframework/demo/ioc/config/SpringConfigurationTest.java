@@ -1,9 +1,9 @@
-package org.springframework.demo.config;
+package org.springframework.demo.ioc.config;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.demo.service.UserService;
+import org.springframework.demo.ioc.service.UserService;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
