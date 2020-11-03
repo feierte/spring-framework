@@ -26,22 +26,32 @@ import org.springframework.core.type.ClassMetadata;
  *
  * @author Juergen Hoeller
  * @since 2.5
+ *
+ * <p>
+ * 为何Spring要为ClassMetadata和AnnotatedTypeMetadata提供一个标准实现和一个ASM的实现呢？这里就能给你答案。
+ * 此接口是一个访问ClassMetadata等的简单门面，实现是委托给org.springframework.asm.ClassReader、ClassVisitor来处理的，
+ * 它不用把Class加载进JVM就可以拿到元数据，因为它读取的是资源：Resource，这是它最大的优势所在。
  */
 public interface MetadataReader {
 
 	/**
 	 * Return the resource reference for the class file.
+	 * 返回此Class文件的来源（资源）
 	 */
 	Resource getResource();
 
 	/**
 	 * Read basic class metadata for the underlying class.
+	 * <p>
+	 * 返回此Class的元数据信息
 	 */
 	ClassMetadata getClassMetadata();
 
 	/**
 	 * Read full annotation metadata for the underlying class,
 	 * including metadata for annotated methods.
+	 * <p>
+	 * 返回此类的注解元信息（包括方法的）
 	 */
 	AnnotationMetadata getAnnotationMetadata();
 

@@ -1,9 +1,9 @@
-package org.springframework.demo.ioc.config;
+package org.springframework.demo.ioc.annotation.config;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.demo.ioc.service.UserService;
+import org.springframework.demo.ioc.annotation.service.UserService;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
@@ -44,7 +44,7 @@ public class SpringConfigurationTest {
 		ApplicationContext applicationContext =
 				new AnnotationConfigApplicationContext("org.springframework.demo.ioc");
 		UserService userService =
-				applicationContext.getBean("org.springframework.demo.ioc.service.impl.UserServiceImpl", UserService.class);
+				applicationContext.getBean("org.springframework.demo.ioc.annotation.service.impl.UserServiceImpl", UserService.class);
 		userService.saveUser();
 	}
 }

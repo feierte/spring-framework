@@ -29,9 +29,13 @@ import org.springframework.util.StringUtils;
  *
  * @author Juergen Hoeller
  * @since 2.5
+ *
+ * <p>
+ * 基于Java标准的（Standard）反射实现元数据的获取。
  */
 public class StandardClassMetadata implements ClassMetadata {
 
+	// 用于内省的Class类
 	private final Class<?> introspectedClass;
 
 

@@ -1,11 +1,8 @@
-package org.springframework.demo.ioc.config;
+package org.springframework.demo.ioc.annotation.config;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
 
 /**
  * @author Jie Zhao

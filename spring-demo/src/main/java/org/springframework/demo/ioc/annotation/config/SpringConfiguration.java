@@ -1,4 +1,4 @@
-package org.springframework.demo.ioc.config;
+package org.springframework.demo.ioc.annotation.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
  * @date 2020/10/27 20:10
  */
 @Configuration
-@ComponentScan("org.springframework.demo.ioc.service")
+@ComponentScan("org.springframework.demo.ioc.annotation.service")
 @Import(JdbcConfig.class)
 public class SpringConfiguration {
 

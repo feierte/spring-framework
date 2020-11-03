@@ -1,4 +1,4 @@
-package org.springframework.demo.ioc.config;
+package org.springframework.demo.ioc.annotation.config;
 
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.ComponentScan;
@@ -7,7 +7,6 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AspectJTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
-import org.springframework.util.MultiValueMap;
 
 import java.util.*;
 

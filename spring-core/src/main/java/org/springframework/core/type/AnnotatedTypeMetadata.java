@@ -75,6 +75,8 @@ public interface AnnotatedTypeMetadata {
 	 * @return a Map of attributes, with the attribute name as key (e.g. "value")
 	 * and the defined attribute value as Map value. This return value will be
 	 * {@code null} if no matching annotation is defined.
+	 * <p>
+	 * 取得指定类型注解的所有的属性和对应的值，并以键值对（属性->对应的值）形式返回。
 	 */
 	@Nullable
 	default Map<String, Object> getAnnotationAttributes(String annotationName) {

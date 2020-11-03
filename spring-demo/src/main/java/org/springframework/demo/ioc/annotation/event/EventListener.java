@@ -1,4 +1,4 @@
-package org.springframework.demo.ioc.event;
+package org.springframework.demo.ioc.annotation.event;
 
 import org.springframework.stereotype.Component;
 

@@ -34,6 +34,10 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @author Costin Leau
  * @since 2.5
+ *
+ * <p>
+ * 继承自SimpleMetadataReaderFactory，没有其它特殊的，就是提供了缓存能力(metadataReaderCache),提高访问效率
+ * 所以优先使用此类
  */
 public class CachingMetadataReaderFactory extends SimpleMetadataReaderFactory {
 

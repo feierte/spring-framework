@@ -1,4 +1,4 @@
-package org.springframework.demo.ioc.config;
+package org.springframework.demo.ioc.annotation.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

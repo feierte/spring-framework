@@ -1,7 +1,6 @@
-package org.springframework.demo.ioc.event;
+package org.springframework.demo.ioc.annotation.event;
 
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 /**
