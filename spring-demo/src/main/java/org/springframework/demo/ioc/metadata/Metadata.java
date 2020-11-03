@@ -1,4 +1,4 @@
-package org.springframework.demo.ioc.annotation.metadata;
+package org.springframework.demo.ioc.metadata;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableAsync;
