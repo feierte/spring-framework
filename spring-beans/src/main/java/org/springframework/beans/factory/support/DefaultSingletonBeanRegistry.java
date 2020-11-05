@@ -74,13 +74,22 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	private static final int SUPPRESSED_EXCEPTIONS_LIMIT = 100;
 
 
+	/*
+	 * singletonObjects、singletonFactories、earlySingletonObjects构成了Spring的“三个级别缓存”。
+	 * singletonObjects指单例对象的cache，singletonFactories指单例对象工厂的cache，
+	 * earlySingletonObjects指提前曝光的单例对象的cache。以上三个cache构成了三级缓存，
+	 * Spring就用这三级缓存巧妙的解决了循环依赖问题。
+	 */
 	/** Cache of singleton objects: bean name to bean instance. */
+	// “一级缓存”
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 
 	/** Cache of singleton factories: bean name to ObjectFactory. */
+	// “三级缓存”
 	private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(16);
 
 	/** Cache of early singleton objects: bean name to bean instance. */
+	// “二级缓存”
 	private final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>(16);
 
 	/** Set of registered singletons, containing the bean names in registration order. */
@@ -175,13 +184,22 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * @param beanName the name of the bean to look for
 	 * @param allowEarlyReference whether early references should be created or not
 	 * @return the registered singleton object, or {@code null} if none found
+	 * <p>
+	 * 分析getSingleton的整个过程，Spring首先从singletonObjects（一级缓存）中尝试获取，
+	 * 如果获取不到并且对象在创建中，则尝试从earlySingletonObjects(二级缓存)中获取，
+	 * 如果还是获取不到并且允许从singletonFactories通过getObject获取，则通过singletonFactory.getObject()(三级缓存)获取。
+	 * 如果获取到了则则移除对应的singletonFactory,将singletonObject放入到earlySingletonObjects，其实就是将三级缓存提升到二级缓存中！
+	 *
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 		// Quick check for existing instance without full singleton lock
 		Object singletonObject = this.singletonObjects.get(beanName);
+		// isSingletonCurrentlyInCreation 判断对应的单例对象是否在创建中，当单例对象没有被初始化完全(例如A定义的构造函数依赖了B对象，
+		// 得先去创建B对象，或者在populatebean过程中依赖了B对象，得先去创建B对象，此时A处于创建中)
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			singletonObject = this.earlySingletonObjects.get(beanName);
+			// allowEarlyReference 是否允许从singletonFactories中通过getObject拿到对象
 			if (singletonObject == null && allowEarlyReference) {
 				synchronized (this.singletonObjects) {
 					// Consistent creation of early reference within full singleton lock

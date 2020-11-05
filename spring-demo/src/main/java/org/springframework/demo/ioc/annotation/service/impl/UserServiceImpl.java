@@ -1,8 +1,9 @@
 package org.springframework.demo.ioc.annotation.service.impl;
 
 import org.springframework.demo.ioc.annotation.service.UserService;
+import org.springframework.stereotype.Service;
 
-//@Service("userService")
+@Service("userService")
 public class UserServiceImpl implements UserService {
 
 

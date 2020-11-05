@@ -54,6 +54,9 @@ import org.springframework.lang.Nullable;
  * @since 16 April 2001
  * @see HierarchicalBeanFactory
  * @see BeanFactoryUtils
+ * <p>
+ * ListableBeanFactory是beanFactory接口的扩展接口，它可以枚举所有的bean实例，而不是客户端通过名称一个一个的查询得出所有的实例。
+ * 要预加载所有的bean定义的beanfactory可以实现这个接口来。
  */
 public interface ListableBeanFactory extends BeanFactory {
 

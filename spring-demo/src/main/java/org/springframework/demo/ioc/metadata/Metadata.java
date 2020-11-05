@@ -13,6 +13,9 @@ import java.util.HashMap;
 @EnableAsync
 public class Metadata extends HashMap<String, String> implements Serializable {
 
+
+	private static final long serialVersionUID = -2805058363835019969L;
+
 	private static class InnerClass {
 
 	}

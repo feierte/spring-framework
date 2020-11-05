@@ -18,7 +18,8 @@ public class SpringConfigurationTest {
 	public void testComponentScan() {
 
 		ApplicationContext applicationContext =
-				new AnnotationConfigApplicationContext("org.springframework.demo");
+				new AnnotationConfigApplicationContext(SpringConfiguration.class);
+		// ApplicationContext applicationContext = new AnnotationConfigApplicationContext("org.springframework.demo");
 		UserService userService = applicationContext.getBean("userService", UserService.class);
 		userService.saveUser();
 	}

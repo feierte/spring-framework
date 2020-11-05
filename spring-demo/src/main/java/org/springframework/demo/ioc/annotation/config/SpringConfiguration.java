@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @ComponentScan("org.springframework.demo.ioc.annotation.service")
-@Import(JdbcConfig.class)
+//@Import(JdbcConfig.class)
 public class SpringConfiguration {
 
 	/*@Resource
