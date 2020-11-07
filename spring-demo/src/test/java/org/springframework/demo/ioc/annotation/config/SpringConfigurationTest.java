@@ -17,6 +17,8 @@ public class SpringConfigurationTest {
 	@Test
 	public void testComponentScan() {
 
+		//ApplicationContext applicationContext =
+		//		new AnnotationConfigApplicationContext("org.springframework.demo.ioc.annotation.service");
 		ApplicationContext applicationContext =
 				new AnnotationConfigApplicationContext(SpringConfiguration.class);
 		// ApplicationContext applicationContext = new AnnotationConfigApplicationContext("org.springframework.demo");
@@ -27,7 +29,7 @@ public class SpringConfigurationTest {
 	@Test
 	public void testBean() {
 		ApplicationContext applicationContext =
-				new AnnotationConfigApplicationContext("org.springframework.demo");
+				new AnnotationConfigApplicationContext(SpringConfiguration.class);
 		JdbcTemplate jdbcTemplate = applicationContext.getBean("jdbcTemplate", JdbcTemplate.class);
 		System.out.println(jdbcTemplate.getDataSource());
 	}
