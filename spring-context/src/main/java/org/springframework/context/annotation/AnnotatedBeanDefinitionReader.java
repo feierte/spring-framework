@@ -85,7 +85,7 @@ public class AnnotatedBeanDefinitionReader {
 		Assert.notNull(environment, "Environment must not be null");
 		this.registry = registry;
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
-		//
+		// registerAnnotationConfigProcessors顾名思义，就是注册用于处理注解的后置处理器
 		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 	}
 
@@ -259,9 +259,10 @@ public class AnnotatedBeanDefinitionReader {
 		abd.setInstanceSupplier(supplier);
 		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
 		abd.setScope(scopeMetadata.getScopeName());
+		// 这里是为bean创建名称，如果指定了名称就是用指定的名称，否则生成类名小写的默认名称
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
 
-		// 处理通用注解@Lazy @Primary @DependsOn @Role @Description
+		// 处理通用注解 @Lazy @Primary @DependsOn @Role @Description
 		// 如果该类有以上注解，那么就将这些注解信息 添加到该BeanDefinition中
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
 		if (qualifiers != null) {

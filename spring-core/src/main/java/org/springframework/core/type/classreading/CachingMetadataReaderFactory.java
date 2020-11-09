@@ -120,6 +120,7 @@ public class CachingMetadataReaderFactory extends SimpleMetadataReaderFactory {
 
 	@Override
 	public MetadataReader getMetadataReader(Resource resource) throws IOException {
+		// 如果MetadataReader缓存使用的是并发Map，就不需要使用同步
 		if (this.metadataReaderCache instanceof ConcurrentMap) {
 			// No synchronization necessary...
 			MetadataReader metadataReader = this.metadataReaderCache.get(resource);
@@ -128,7 +129,7 @@ public class CachingMetadataReaderFactory extends SimpleMetadataReaderFactory {
 				this.metadataReaderCache.put(resource, metadataReader);
 			}
 			return metadataReader;
-		}
+		} // 否则则需要同步机制，来保证线程安全
 		else if (this.metadataReaderCache != null) {
 			synchronized (this.metadataReaderCache) {
 				MetadataReader metadataReader = this.metadataReaderCache.get(resource);
