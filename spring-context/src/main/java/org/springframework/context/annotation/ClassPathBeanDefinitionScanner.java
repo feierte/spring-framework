@@ -268,27 +268,39 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * but rather leaves this up to the caller.
 	 * @param basePackages the packages to check for annotated classes
 	 * @return set of beans registered if any for tooling registration purposes (never {@code null})
+	 * <p>
+	 * 类路径Bean定义扫描器扫描给定包及其子包
 	 */
 	protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
 		for (String basePackage : basePackages) {
+			// 调用父类ClassPathScanningCandidateComponentProvider的方法
+			// 扫描给定类路径，获取符合条件的Bean定义（即符合@ComponentScan注解定义的）
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
 			for (BeanDefinition candidate : candidates) {
+				// 获取@Scope注解的值，即获取Bean的作用域
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
 				candidate.setScope(scopeMetadata.getScopeName());
+				// 在这里为bean生成名称
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
+				// 如果扫描到的Bean不是Spring通过注解配置的Bean，则为Bean设置默认值，
+				// 设置Bean的自动依赖注入装配属性等
 				if (candidate instanceof AbstractBeanDefinition) {
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
 				}
+				// 如果扫描到的Bean是Spring通过注解配置的Bean，则处理其通用的Spring注解
 				if (candidate instanceof AnnotatedBeanDefinition) {
 					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
 				}
+				// 根据Bean名称检查指定的Bean是否需要在容器中注册，或者在容器中冲突
 				if (checkCandidate(beanName, candidate)) {
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
+					// 根据注解中配置的作用域，为Bean应用相应的代理模式
 					definitionHolder =
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 					beanDefinitions.add(definitionHolder);
+					// 向容器注册扫描到的Bean
 					registerBeanDefinition(definitionHolder, this.registry);
 				}
 			}

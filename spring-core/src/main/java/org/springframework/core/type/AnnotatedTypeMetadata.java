@@ -135,6 +135,8 @@ public interface AnnotatedTypeMetadata {
 	 * and a list of the defined attribute values as Map value. This return value will
 	 * be {@code null} if no matching annotation is defined.
 	 * @see #getAllAnnotationAttributes(String)
+	 * <p>
+	 * 获取给定类型（类、字段、方法等）上 所有的注解 及 每个注解的所有的属性
 	 */
 	@Nullable
 	default MultiValueMap<String, Object> getAllAnnotationAttributes(

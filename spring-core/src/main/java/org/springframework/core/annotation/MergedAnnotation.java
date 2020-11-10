@@ -58,6 +58,9 @@ import org.springframework.lang.Nullable;
  * @param <A> the annotation type
  * @see MergedAnnotations
  * @see MergedAnnotationPredicates
+ *
+ * <p>
+ * MergedAnnotation接口用于封装来源于多个不同注解的属性。
  */
 public interface MergedAnnotation<A extends Annotation> {
 

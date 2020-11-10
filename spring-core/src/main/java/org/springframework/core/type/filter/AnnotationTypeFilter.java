@@ -96,8 +96,19 @@ public class AnnotationTypeFilter extends AbstractTypeHierarchyTraversingFilter 
 
 	@Override
 	protected boolean matchSelf(MetadataReader metadataReader) {
+		// 获取注解元数据
 		AnnotationMetadata metadata = metadataReader.getAnnotationMetadata();
+
+		/*
+		 * 检查 注解及其派生注解中是否包含@Component
+		 * Spring是怎么发现@Configuration、@Controller、@Service这些注解修饰的类的？
+		 * 这里的代码可以解决这个问题。@Configuration、@Controller、@Service这些注解其实都是@Component的派生注解，
+		 * 我们看这些注解的代码会发现，都有@Component注解修饰。而spring通过metadata.hasMetaAnnotation()方法获取到这些注解包含@Component，
+		 * 所以都可以扫描到。
+		 */
+		// 获取当前类的注解 metadata.hasAnnotation    @Controller
 		return metadata.hasAnnotation(this.annotationType.getName()) ||
+				// 获取当前类的注解及其派生注解 metadata.hasAnnotation   @Controller包含的@Component\@Documented等等
 				(this.considerMetaAnnotations && metadata.hasMetaAnnotation(this.annotationType.getName()));
 	}
 
