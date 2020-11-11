@@ -28,6 +28,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 /**
+ *
+ *
+ * 
  * Provide access to the candidates that are defined in {@code META-INF/spring.components}.
  *
  * <p>An arbitrary number of stereotypes can be registered (and queried) on the index: a

@@ -77,6 +77,15 @@ public interface ConfigurableListableBeanFactory
 	 * @param autowiredValue the corresponding autowired value. This may also be an
 	 * implementation of the {@link org.springframework.beans.factory.ObjectFactory}
 	 * interface, which allows for lazy resolution of the actual target value.
+	 * <p>
+	 * 在Spring自动装配的时候如果一个接口有多个实现类，并且都已经放到IOC中去了，
+	 * 那么自动装配的时候就会出异常，因为spring不知道把哪个实现类注入进去，该方法就是为了解决这个问题的。
+	 * 如果我们要自动注入这个类型的指定值，就调用这个方法。
+	 * dependencyType:为要自动注入的 依赖的类型
+	 * autowiredValue:为这个类型的具体对象
+	 *
+	 * 使用方式：如果我们自定义一个类，然后实现BeanFactoryPostProcessor接口
+	 * 在该阶段调用这个方法，如果哪个地方要自动注入这个类型的对象的话，那么就注入进去我们指定的对象
 	 */
 	void registerResolvableDependency(Class<?> dependencyType, @Nullable Object autowiredValue);
 
