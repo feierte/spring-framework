@@ -67,6 +67,20 @@ final class PostProcessorRegistrationDelegate {
 
 	/**
 	 * 调用BeanFactoryPostProcessor
+	 *
+	 * 背景介绍 :
+	 *
+	 * 1.ApplicationContext对象在构造函数执行时会创建一些BeanFactoryPostProcessor,比如
+	 * AnnotationConfigEmbeddedWebApplicationContext构造函数中最终会通过
+	 * AnnotationConfigUtils注册进来一些BeanFactoryPostProcessor/BeanPostProcessor
+	 *
+	 * 2.ApplicationContext的ApplicationContextInitializer被执行时会创建特定功能的
+	 * BeanFactoryPostProcessor记录在ApplicationContext中(注意：这里不是注册到容器中，
+	 * 而是记录为ApplicationContext的属性);
+	 *
+	 * 3.ApplicationContext.refresh()中,BeanFactory prepare 和 post process 之后，会
+	 * 调用 invokeBeanFactoryPostProcessors() 执行这些BeanFactoryPostProcessor
+	 * 完成指定的功能。
 	 */
 	public static void invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
