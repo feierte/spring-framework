@@ -59,6 +59,10 @@ public interface ConfigurableListableBeanFactory
 	 * @param ifc the dependency interface to ignore
 	 * @see org.springframework.beans.factory.BeanFactoryAware
 	 * @see org.springframework.context.ApplicationContextAware
+	 * <p>
+	 * 忽略给定接口的自动装配功能
+	 * 在Spring中我们经常使用的是面向接口的编程，也就是在自动注入中，如果发现接口或者类被ignoreDependency了，就不会自动注入了。
+	 * 比如说你不能自动注入BeanFactory和ApplicationContext，它们必须通过BeanFactoryAware和ApplicationContextAware来注入。
 	 */
 	void ignoreDependencyInterface(Class<?> ifc);
 
