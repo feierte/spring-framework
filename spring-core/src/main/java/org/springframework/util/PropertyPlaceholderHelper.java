@@ -36,6 +36,9 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @author Rob Harrop
  * @since 3.0
+ * <p></>
+ * 将字符串里的占位符内容，用我们配置的properties里的替换。
+ * 这个是一个单纯的类，没有继承没有实现，而且也没简单，没有依赖Spring框架其他的任何类。可以在自己项目中直接拿来用。
  */
 public class PropertyPlaceholderHelper {
 

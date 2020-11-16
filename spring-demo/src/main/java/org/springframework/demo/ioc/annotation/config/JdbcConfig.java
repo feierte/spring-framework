@@ -3,9 +3,12 @@ package org.springframework.demo.ioc.annotation.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 
 /**
  * @author Jie Zhao
@@ -44,4 +47,13 @@ public class JdbcConfig {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		return dataSource;
 	}*/
+
+	@Bean("connection")
+	public Connection getConnection(DataSource dataSource) {
+		// 1、初始化事务同步管理器
+		TransactionSynchronizationManager.initSynchronization();
+		// 2、使用Spring的数据源工具类获取当前线程的连接
+		Connection connection = DataSourceUtils.getConnection(dataSource);
+		return connection;
+	}
 }
