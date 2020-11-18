@@ -149,6 +149,7 @@ public class PropertyPlaceholderHelper {
 							"Circular placeholder reference '" + originalPlaceholder + "' in property definitions");
 				}
 				// Recursive invocation, parsing placeholders contained in the placeholder key.
+				// 递归解析占位符，防止占位符中还包含占位符，例如 ${${foo}lish}
 				placeholder = parseStringValue(placeholder, placeholderResolver, visitedPlaceholders);
 				// Now obtain the value for the fully resolved key...
 				String propVal = placeholderResolver.resolvePlaceholder(placeholder);
@@ -190,6 +191,11 @@ public class PropertyPlaceholderHelper {
 		return result.toString();
 	}
 
+	/**
+	 * 查找字符串中占位符的最后一个 placeholderSuffix，因为有可能占位符中还嵌套着占位符，例如 ${${foo}lish}
+	 * 例如 foo=${foo}，占位符的前缀placeholderPrefix 为 "${" ；  占位符的后缀 placeholderSuffix为 "}"
+	 * 这个方法的作用就是找到字符串中"}"的index
+	 */
 	private int findPlaceholderEndIndex(CharSequence buf, int startIndex) {
 		int index = startIndex + this.placeholderPrefix.length();
 		int withinNestedPlaceholder = 0;
@@ -225,6 +231,8 @@ public class PropertyPlaceholderHelper {
 		 * Resolve the supplied placeholder name to the replacement value.
 		 * @param placeholderName the name of the placeholder to resolve
 		 * @return the replacement value, or {@code null} if no replacement is to be made
+		 * <p></>
+		 * 将占位符中的key，解析成配置文件中对应的value
 		 */
 		@Nullable
 		String resolvePlaceholder(String placeholderName);

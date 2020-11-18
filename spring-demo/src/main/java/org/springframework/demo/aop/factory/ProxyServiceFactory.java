@@ -25,8 +25,9 @@ public class ProxyServiceFactory {
 
 	@Bean("proxyAccountService")
 	public AccountService getProxyAccountService() {
-		AccountService proxyAccountService = (AccountService) Proxy.newProxyInstance(accountService.getClass().getClassLoader(),
-				accountService.getClass().getInterfaces(),
+		AccountService proxyAccountService = (AccountService) Proxy.newProxyInstance(
+				accountService.getClass().getClassLoader(), // 使用被代理类的 类加载器
+				accountService.getClass().getInterfaces(), // 被代理类实现的接口
 				new InvocationHandler() {
 					@Override
 					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -34,6 +35,7 @@ public class ProxyServiceFactory {
 						try {
 							// 开启事务
 							transactionManager.begin();
+							// 调用 被代理对象的 方法
 							returnValue = method.invoke(accountService, args);
 							// 提交事务
 							transactionManager.commit();

@@ -351,7 +351,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 				// Create bean instance.
 				// 完成加载依赖的bean后，实例化mbd自身
-				if (mbd.isSingleton()) {
+				if (mbd.isSingleton()) { // 如果Bean定义是单例
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
 							return createBean(beanName, mbd, args);
@@ -368,23 +368,23 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
 				}
 
-				else if (mbd.isPrototype()) {
+				else if (mbd.isPrototype()) { // 如果Bean定义是原型
 					// It's a prototype -> create a new instance.
 					Object prototypeInstance = null;
 					try {
 						// 设置正在创建的状态
-						beforePrototypeCreation(beanName);
+						beforePrototypeCreation(beanName); // 原型创建前，与当前线程绑定
 						// 创建bean
 						prototypeInstance = createBean(beanName, mbd, args);
 					}
 					finally {
-						afterPrototypeCreation(beanName);
+						afterPrototypeCreation(beanName); // 原型创建后，与当前线程解除绑定
 					}
 					// 返回对应的bean实例
 					bean = getObjectForBeanInstance(prototypeInstance, name, beanName, mbd);
 				}
 
-				else {
+				else { // 既不是单例又不是原型的情况
 					String scopeName = mbd.getScope();
 					if (!StringUtils.hasLength(scopeName)) {
 						throw new IllegalStateException("No scope name defined for bean ´" + beanName + "'");
@@ -1844,7 +1844,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * 	2.进行了子类父类的合并，并把存储xml配置的GernericBeanDefinition转换为RootBeanDefinition；
 	 * 	3.真正核心是调用了getObjectFromFactoryBean这个方法。
 	 */
-	protected Object getObjectForBeanInstance(
+	protected Object  getObjectForBeanInstance(
 			Object beanInstance, String name, String beanName, @Nullable RootBeanDefinition mbd) {
 
 		// Don't let calling code try to dereference the factory if the bean isn't a factory.
@@ -1898,6 +1898,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 			// 判断mdb是否为空，以及检测是不是系统创建的
 			boolean synthetic = (mbd != null && mbd.isSynthetic());
+			// 调用FactoryBeanRegistrySupport类的getObjectFromFactoryBean方法，实现FactoryBean生产Bean对象实例的过程
 			// 把核心功能托付给getObjectFromFactoryBean
 			object = getObjectFromFactoryBean(factory, beanName, !synthetic);
 		}
