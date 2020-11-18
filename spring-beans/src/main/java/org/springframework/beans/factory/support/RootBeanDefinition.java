@@ -90,6 +90,8 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	final Object constructorArgumentLock = new Object();
 
 	/** Package-visible field for caching the resolved constructor or factory method. */
+	// 一个类有多个构造方法，带有不同的参数，所以调用前，需要根据参数解析出需要调用的构造方法或工厂方法
+	// 该变量就是存储 根据参数解析出来的 构造函数或工厂方法
 	@Nullable
 	Executable resolvedConstructorOrFactoryMethod;
 

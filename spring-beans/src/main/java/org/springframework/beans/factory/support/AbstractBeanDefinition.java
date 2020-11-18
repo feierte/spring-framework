@@ -1212,6 +1212,11 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		}
 		else if (count == 1) {
 			// Mark override as not overloaded, to avoid the overhead of arg type checking.
+			/*
+			 * 在处理 prepareMethodOverride(MethodOverride mo) 方法为什么只处理方法个数为 1 的情况呢？
+			 * 如果一个类中有多个重载的方法，则调用或增强的时候，还需要进行参数类型的解析才能确定调用的是哪个方法，Spring 把部分功能放在这里提前进行预处理，
+			 * 如果方法只有一个，即没有重载的方法，在后面调用的时候，直接找到该方法调用，不用再去解析参数来确定方法了，这样就可以避免的一些参数类型检查的开销。
+			 */
 			mo.setOverloaded(false);
 		}
 	}
