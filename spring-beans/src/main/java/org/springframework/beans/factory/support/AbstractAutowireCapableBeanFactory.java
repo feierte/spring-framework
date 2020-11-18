@@ -495,6 +495,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Prepare method overrides.
 		try {
 			// 2.验证及准备覆盖的方法（对override属性进行标记及验证）
+			/*
+			 * 很多读者可能会不知道这个方法的作用，因为在Spring的配置里面根本就没有诸如 override-method之类的配置，那么这个方法到底是干什么用的呢？
+			 *
+			 * 其实在Spring中确实没有override-method这样的配置，但是如果读过前面的部分，可能会有所发现，
+			 * 在Spring配置中是存在lookup-method和replace-method的，而这两个配置的加载其实就是将配置统一存放在BeanDefinition中的methodOverrides属性里，
+			 * 而这个方法的操作其实也就是针对于这两个配置的。
+			 */
 			mbdToUse.prepareMethodOverrides();
 		}
 		catch (BeanDefinitionValidationException ex) {
