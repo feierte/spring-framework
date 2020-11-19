@@ -625,9 +625,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// 初始化bean实例
 		Object exposedObject = bean;
 		try {
-			// 为bean实例 填充属性
+			// 为bean实例填充属性:依赖注入处理，属性设置
 			populateBean(beanName, mbd, instanceWrapper);
-			// 执行初始化方法，例如：init-method等
+			// 初始化 bean : 调用设置的初始化方法，接口定义的初始化方法，
+			// 以及相应的 pre-/post-init 生命周期回调函数
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {

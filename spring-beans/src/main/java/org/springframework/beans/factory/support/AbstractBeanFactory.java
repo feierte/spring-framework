@@ -281,7 +281,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			if (isPrototypeCurrentlyInCreation(beanName)) {
 				/*
 				 * 只有在单例模式下才会尝试解决循环依赖问题，
-				 * 对于原型模式，如果存在循环依赖，也就是满足isPrototypeCurrentlyInCreation(beanName)，则抛出异常
+				 * 对于原型模式，如果存在循环依赖，也就是满足isPrototypeCurrentlyInCreation(beanName)条件，则抛出异常
 				 */
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
@@ -1389,7 +1389,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 				else {
 					// Child bean definition: needs to be merged with parent.
-					// 说明有父类，需要合并属性
+					/**
+					 * bd是一个ChildBeanDefinition的情况,
+					 * 这种情况下，需要将bd和其parent bean definition 合并到一起，形成最终的 mbd
+					 * 下面是获取bd的 parent bean definition 的过程，最终结果记录到 pbd，并且可以看到该过程中递归使用了getMergedBeanDefinition(), 为什么呢?
+					 * 因为 bd 的 parent bd 可能也是个ChildBeanDefinition，所以该过程需要递归处理
+					 */
 					// pbd就是父类的bd,parentBeanDefinition
 					BeanDefinition pbd;
 					try {
@@ -1414,6 +1419,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 								"Could not resolve parent bean definition '" + bd.getParentName() + "'", ex);
 					}
 					// Deep copy with overridden values.
+					/*
+					 * 现在已经获取 bd 的parent bd到pbd，从上面的过程可以看出，这个pbd也是已经"合并"过的。
+					 * 这里根据pbd创建最终的mbd，然后再使用bd覆盖一次，
+					 * 这样就相当于mbd来自两个BeanDefinition:
+					 * 	当前 BeanDefinition 及其合并的("Merged")双亲 BeanDefinition,
+					 * 	然后mbd就是针对当前bd的一个MergedBeanDefinition(合并的BeanDefinition)了。
+					 */
 					mbd = new RootBeanDefinition(pbd);
 					mbd.overrideFrom(bd);
 				}
