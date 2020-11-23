@@ -139,7 +139,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 
 	/**
-	 *
+	 * 当前bean定义的beanClass属性，注意并不一定是最终生成的bean所使用的class，
+	 * 可能是 String, 也可能是 Class
 	 */
 	@Nullable
 	private volatile Object beanClass;
@@ -222,6 +223,10 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	@Nullable
 	private ConstructorArgumentValues constructorArgumentValues;
 
+	/**
+	 * 普通属性集合
+	 * 注意这里使用了MutablePropertyValues，表示这些属性值在最终被设置到bean实例之前一直是可以被修改的
+	 */
 	@Nullable
 	private MutablePropertyValues propertyValues;
 
@@ -354,6 +359,11 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * {@code initMethodName}, and {@code destroyMethodName} if specified
 	 * in the given bean definition.
 	 * </ul>
+	 *
+	 * 本方法的一个主要用途是用在根据bean定义之间的父子关系生成最终merged的孩子bean定义对象:
+	 * 此时先使用双亲bean定义生成一个RootBeanDefinition,然后调用该RootBeanDefinition
+	 * 对象的overrideFrom(other)方法，这里other就是child bean定义，然后这个RootBeanDefinition
+	 * 就是一个继承自双亲bean定义又符合原始child bean定义的一个最终被使用的BeanDefinition了。
 	 */
 	public void overrideFrom(BeanDefinition other) {
 		if (StringUtils.hasLength(other.getBeanClassName())) {
@@ -423,6 +433,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Apply the provided default values to this bean.
 	 * @param defaults the default settings to apply
 	 * @since 2.5
+	 *
+	 * <p>
+	 * 使用缺省值定义进行当前bean定义的初始化
 	 */
 	public void applyDefaults(BeanDefinitionDefaults defaults) {
 		Boolean lazyInit = defaults.getLazyInit();
