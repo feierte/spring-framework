@@ -600,8 +600,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
-			// 为了避免后期的循环依赖，在bean初始化完成前，将创建bean的工厂添加到缓存中，
-			// 如果其他的bean依赖该bean，直接从缓存中获取对应的工厂创建集合，解决循环依赖，注意是只有单例情况才能这么做
+
 
 			/*
 			 * 此处就是解决循环依赖的关键，这段代码发生在createBeanInstance之后，也就是说单例对象此时已经被创建出来的。
@@ -618,6 +617,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			 *
 			 * 知道了这个原理时候，肯定就知道为啥Spring不能解决“A的构造方法中依赖了B的实例对象，同时B的构造方法中依赖了A的实例对象”这类问题了！
 			 */
+			// 这里创建了一个匿名的ObjectFactory实现类，它是一个工厂，可以用来获取对象
+			// addSingletonFactory将这个工厂放到singletonFactories中去了，singletonFactories是spring的三级缓存
+			// 为了避免后期的循环依赖，在bean初始化完成前，将创建bean的工厂添加到缓存中，
+			// 如果其他的bean依赖该bean，直接从缓存中获取对应的工厂创建集合，解决循环依赖，注意是只有单例情况才能这么做
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
@@ -628,7 +631,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 为bean实例填充属性:依赖注入处理，属性设置
 			populateBean(beanName, mbd, instanceWrapper);
 			// 初始化 bean : 调用设置的初始化方法，接口定义的初始化方法，
-			// 以及相应的 pre-/post-init 生命周期回调函数
+			// 以及相应的 pre-/post-init 生命周期回调函数， AOP就是在这里完成处理的
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1419,6 +1422,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param beanName the name of the bean
 	 * @param mbd the bean definition for the bean
 	 * @param bw the BeanWrapper with bean instance
+	 * <p></>
+	 * 1、获取属性列表pvs
+	 * 2、在属性填充到bean前，应用后置处理器 自定义属性填充
+	 * 3、根据名称或者类型解析相关依赖
+	 * 4、再次应用后置处理器，用于动态修改属性列表pvs的内容
+	 * 5、将属性应用到bean对象中
 	 */
 	@SuppressWarnings("deprecation")  // for postProcessPropertyValues
 	protected void populateBean(String beanName, RootBeanDefinition mbd, @Nullable BeanWrapper bw) {
@@ -1436,6 +1445,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Give any InstantiationAwareBeanPostProcessors the opportunity to modify the
 		// state of the bean before properties are set. This can be used, for example,
 		// to support styles of field injection.
+		/*
+		 * 在属性填充前，给InstantiationAwareBeanPostProcessor一个修改bean状态的机会。
+		 * 关于这个后置处理器，官方的解释是：让用户可以自定义属性注入。比如一个用户实现了一个InstantiationAwareBeanPostProcessor后置处理器，
+		 * 并通过postProcessAfterInstantiation方法向bean的成员变量注入自定义的信息。当然，如果无特殊需求，直接使用配置中的信息注入即可。
+		 * 另外Spring不建议大家直接实现InstantiationAwareBeanPostProcessor接口，如果想实现这种类型的后置处理器，
+		 * 更建议通过继承InstantiationAwarePostProcessorAdapter抽象类实现自定义后置处理器
+		 */
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (BeanPostProcessor bp : getBeanPostProcessors()) {
 				if (bp instanceof InstantiationAwareBeanPostProcessor) {
@@ -1450,6 +1466,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
 
 		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
+		// 如果一个类设置了AUTOWIRE_BY_NAME或AUTOWIRE_BY_TYPE，那么类中的属性会根据该规则自动注入，而不需要使用@Autowired或@Resource
+		// 默认情况下，是AUTOWIRE_NO，所以这里默认是不执行的
 		if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
 			// Add property values based on autowire by name if applicable.

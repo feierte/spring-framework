@@ -1427,6 +1427,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					 * 	然后mbd就是针对当前bd的一个MergedBeanDefinition(合并的BeanDefinition)了。
 					 */
 					mbd = new RootBeanDefinition(pbd);
+					// 父子BeanDefinition属性合并
 					mbd.overrideFrom(bd);
 				}
 
