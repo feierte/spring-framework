@@ -318,7 +318,7 @@ public interface BeanFactory {
 	 * @see #getBean
 	 * @see #getType
 	 */
-	// 用于判断容器中定义的 Bean 是否匹配指定的类型。
+	// 用于判断容器中定义的 Bean 是否匹配 指定的类型（typeToMatch）。
 	boolean isTypeMatch(String name, Class<?> typeToMatch) throws NoSuchBeanDefinitionException;
 
 	/**

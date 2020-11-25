@@ -9,6 +9,8 @@ import org.springframework.demo.ioc.annotation.config.JdbcConfig;
 import org.springframework.demo.ioc.annotation.config.SpringConfiguration;
 import org.springframework.demo.ioc.annotation.config.YamlPropertySourceFactoryDemo;
 
+import java.util.Arrays;
+
 /**
  * @author Jie Zhao
  * @date 2020/11/24 20:44
@@ -24,7 +26,7 @@ public class AopTest {
 		User user = new User();
 		user.setId("1");
 		user.setUsername("test");
-		userService.saveUser(user);
+		// userService.saveUser(user);
+		userService.saveAllUser(Arrays.asList(user));
 	}
-
 }

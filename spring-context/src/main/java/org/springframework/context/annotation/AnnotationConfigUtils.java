@@ -225,7 +225,7 @@ public abstract class AnnotationConfigUtils {
 			beanDefs.add(registerPostProcessor(registry, def, EVENT_LISTENER_PROCESSOR_BEAN_NAME));
 		}
 
-		/**
+		/*
 		 * 注册用于处理事件监听器工厂的 后置处理器 {@link org.springframework.context.event.EventListenerFactory}
 		 */
 		if (!registry.containsBeanDefinition(EVENT_LISTENER_FACTORY_BEAN_NAME)) {

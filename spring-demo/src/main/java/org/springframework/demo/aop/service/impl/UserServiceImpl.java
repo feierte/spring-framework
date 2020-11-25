@@ -1,9 +1,12 @@
 package org.springframework.demo.aop.service.impl;
 
 
+import org.springframework.aop.framework.AopContext;
 import org.springframework.demo.aop.domain.User;
 import org.springframework.demo.aop.service.UserService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author Jie Zhao
@@ -16,4 +19,13 @@ public class UserServiceImpl implements UserService {
 	public void saveUser(User user) {
 		System.out.println("执行了保存用户：" + user);
 	}
+
+	@Override
+	public void saveAllUser(List<User> users) {
+		for (User user : users) {
+			UserService proxyUserService = (UserService) AopContext.currentProxy();
+			proxyUserService.saveUser(user);
+		}
+	}
+
 }

@@ -1427,7 +1427,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * 2、在属性填充到bean前，应用后置处理器 自定义属性填充
 	 * 3、根据名称或者类型解析相关依赖
 	 * 4、再次应用后置处理器，用于动态修改属性列表pvs的内容
-	 * 5、将属性应用到bean对象中
+	 * 5、将pvs中的属性值设置到BeanWrapper中
 	 */
 	@SuppressWarnings("deprecation")  // for postProcessPropertyValues
 	protected void populateBean(String beanName, RootBeanDefinition mbd, @Nullable BeanWrapper bw) {
@@ -1463,6 +1463,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 		}
 
+		// pvs是一个MutablePropertyValues实例，里面实现了PropertyValues接口，提供属性的读写操作实现，同时可以通过调用构造函数实现深拷贝
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
 
 		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
@@ -1519,7 +1520,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (pvs != null) {
-			// 将属性应用到 bean 中
+			// 将PropertyValues中的属性值设置到BeanWrapper中
 			applyPropertyValues(beanName, mbd, bw, pvs);
 		}
 	}
