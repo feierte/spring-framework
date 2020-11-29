@@ -46,6 +46,9 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 
 	private final List<PropertyValue> propertyValueList;
 
+	/**
+	 * 已经解析过的PropertyValue
+	 */
 	@Nullable
 	private Set<String> processedProperties;
 
@@ -218,6 +221,8 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	 * Merges the value of the supplied 'new' {@link PropertyValue} with that of
 	 * the current {@link PropertyValue} if merging is supported and enabled.
 	 * @see Mergeable
+	 * <p>
+	 *
 	 */
 	private PropertyValue mergeIfRequired(PropertyValue newPv, PropertyValue currentPv) {
 		Object value = newPv.getValue();

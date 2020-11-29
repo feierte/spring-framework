@@ -499,8 +499,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			 * 很多读者可能会不知道这个方法的作用，因为在Spring的配置里面根本就没有诸如 override-method之类的配置，那么这个方法到底是干什么用的呢？
 			 *
 			 * 其实在Spring中确实没有override-method这样的配置，但是如果读过前面的部分，可能会有所发现，
-			 * 在Spring配置（<bean/>标签）中是存在lookup-method和replace-method的这两个子标签，这两个标签会被解析放到 BeanDefinition 对象的 methodOverrides 属性中，表示需要覆盖的方法.
-			 * 而这两个配置的加载其实就是将配置统一存放在BeanDefinition中的methodOverrides属性里，而这个方法的操作其实也就是针对于这两个配置的。
+			 * 在Spring配置（<bean/>标签）中是存在lookup-method和replace-method的这两个子标签，这两个标签会被解析放到 BeanDefinition 对象的 methodOverrides 属性中，
+			 * 表示需要覆盖的方法.而这两个配置的加载其实就是将配置统一存放在BeanDefinition中的methodOverrides属性里，而这个方法的操作其实也就是针对于这两个配置的。
 			 */
 			mbdToUse.prepareMethodOverrides();
 		}
@@ -600,7 +600,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
-
 
 			/*
 			 * 此处就是解决循环依赖的关键，这段代码发生在createBeanInstance之后，也就是说单例对象此时已经被创建出来的。
@@ -1870,7 +1869,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
-			// 执行后置处理器 applyBeanPostProcessorsAfterInitialization
+			// 执行后置处理器 applyBeanPostProcessorsBeforeInitialization
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 

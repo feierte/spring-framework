@@ -28,6 +28,14 @@ import org.springframework.util.Assert;
  * @see BeanDefinition#getPropertyValues()
  * @see org.springframework.beans.factory.BeanFactory#getBean(String)
  * @see org.springframework.beans.factory.BeanFactory#getBean(Class)
+ * <p>
+ * 当属性值对象是工厂中的另一个bean的引用时，使用不可变得占位符类，在运行时进行解析
+ * 		<bean class="foo.bar.xx">
+ * 		 	<property name="referBeanName" ref="otherBeanName"/>
+ * 		<bean/>
+ * 解析器会依据bean的name创建一个RuntimeBeanReference对象，将这个对象放入BeanDefinition的MutablePropertyValues中，即：
+ * 		RuntimeBeanReference reference = new RuntimeBeanReference("otherBeanName");
+ * 		xxxBeanDefinition.getPropertyValues().addPropertyValue("referBeanName", reference);
  */
 public class RuntimeBeanReference implements BeanReference {
 

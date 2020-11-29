@@ -1945,7 +1945,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/**
-	 * Add the given bean to the list of disposable beans in this factory,
+	 * Add the given bean to the list of disposable beans in t cvxb
 	 * registering its DisposableBean interface and/or the given destroy method
 	 * to be called on factory shutdown (if applicable). Only applies to singletons.
 	 * @param beanName the name of the bean
