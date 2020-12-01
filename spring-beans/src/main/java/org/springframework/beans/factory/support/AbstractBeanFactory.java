@@ -1856,14 +1856,19 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * 	1.辅助性检查；
 	 * 	2.进行了子类父类的合并，并把存储xml配置的GernericBeanDefinition转换为RootBeanDefinition；
 	 * 	3.真正核心是调用了getObjectFromFactoryBean这个方法。
+	 *
+	 * 	getObjectForBeanInstance方法所做的工作：
+	 * （1）对FactoryBean正确性的验证。
+	 * （2）对非FactoryBean不做任何处理。
+	 * （3）对bean进行转换。
+	 * （4）将从 FactoryBean 中解析 bean 的工作委托给 getObjectFromFactoryBean。
 	 */
 	protected Object  getObjectForBeanInstance(
 			Object beanInstance, String name, String beanName, @Nullable RootBeanDefinition mbd) {
 
 		// Don't let calling code try to dereference the factory if the bean isn't a factory.
 		// 整个这个判断的意思是说，如果要获取的bean是FactoryBean的引用，但是beanInstance不是FactoryBean的就抛异常
-		// 判断输入的bean的name是否是FactoryBean相关的（前缀是&）
-		if (BeanFactoryUtils.isFactoryDereference(name)) {
+		if (BeanFactoryUtils.isFactoryDereference(name)) { // 判断输入的bean的name是否是FactoryBean相关的（前缀是&）
 			if (beanInstance instanceof NullBean) {
 				return beanInstance;
 			}
@@ -1900,7 +1905,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		}
 		if (object == null) {
 			// Return bean instance from factory.
-			//强转为FactoryBean。此时的beanInstance一定是FactoryBean类型的，因为如果不是，就会在上面的if中直接返回了
+			// 强转为FactoryBean。此时的beanInstance一定是FactoryBean类型的，因为如果不是，就会在上面的if中直接返回了
 			FactoryBean<?> factory = (FactoryBean<?>) beanInstance;
 			// Caches object obtained from FactoryBean if it is a singleton.
 			// 检测这个bean是否已经被加载过

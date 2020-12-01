@@ -4,13 +4,14 @@ plugins {
 
 group 'org.springframework'
 version '5.2.10.BUILD-SNAPSHOT'
-
+apply plugin: 'war'
 repositories {
     mavenCentral()
 }
 
 dependencies {
-
+    compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    compile group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.3.3'
     // yaml文件解析工具类
     compile group: 'org.yaml', name: 'snakeyaml', version: '1.27'
 
@@ -20,6 +21,8 @@ dependencies {
     compile(project(":spring-aop"))
     compile(project(":spring-context"))
     compile(project(":spring-jdbc"))
+    compile(project(":spring-web"))
+    compile(project(":spring-webmvc"))
     optional("org.aspectj:aspectjweaver")
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

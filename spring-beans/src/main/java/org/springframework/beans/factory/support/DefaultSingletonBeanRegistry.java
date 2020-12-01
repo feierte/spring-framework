@@ -191,7 +191,6 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * 如果获取不到并且对象在创建中，则尝试从earlySingletonObjects(二级缓存)中获取，
 	 * 如果还是获取不到并且允许从singletonFactories通过getObject获取，则通过singletonFactory.getObject()(三级缓存)获取。
 	 * 如果获取到了则移除对应的singletonFactory,将singletonObject放入到earlySingletonObjects，其实就是将三级缓存提升到二级缓存中！
-	 *
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {

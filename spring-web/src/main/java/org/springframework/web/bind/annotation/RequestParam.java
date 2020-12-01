@@ -57,6 +57,12 @@ import org.springframework.core.annotation.AliasFor;
  * @see RequestMapping
  * @see RequestHeader
  * @see CookieValue
+ *
+ * <p>
+ * 此注解是从请求正文中获取请求参数，给控制器方法的形参赋值的。
+ * 当请求参数的名称和控制器方法形参变量名一致时，无需使用此注解。
+ * 同时，当没有获取到请求参数时，此注解还可以给控制器方法形参提供默认值。
+ * 它只能出现在方法的形参上
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
@@ -65,6 +71,8 @@ public @interface RequestParam {
 
 	/**
 	 * Alias for {@link #name}.
+	 * <p>
+	 * 用于指定获取请求参数的名称。它和name属性的作用是一样的
 	 */
 	@AliasFor("name")
 	String value() default "";

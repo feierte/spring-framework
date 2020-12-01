@@ -120,6 +120,10 @@ public @interface RequestMapping {
 	 * <p><b>Supported at the type level as well as at the method level!</b>
 	 * When used at the type level, all method-level mappings inherit this
 	 * HTTP method restriction.
+	 * <p>
+	 * method：用于指定请求的方式。它支持以下这些类型：
+	 * GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE
+	 * 这些值是通过RequestMethod枚举指定的。
 	 */
 	RequestMethod[] method() default {};
 
@@ -135,6 +139,8 @@ public @interface RequestMapping {
 	 * <p><b>Supported at the type level as well as at the method level!</b>
 	 * When used at the type level, all method-level mappings inherit this
 	 * parameter restriction.
+	 * <p></>
+	 * 验证请求url中是否有 params中 指定的参数
 	 */
 	String[] params() default {};
 
@@ -157,6 +163,8 @@ public @interface RequestMapping {
 	 * When used at the type level, all method-level mappings inherit this
 	 * header restriction.
 	 * @see org.springframework.http.MediaType
+	 * <p>
+	 * 验证请求头中是否有 headers指定的 请求头
 	 */
 	String[] headers() default {};
 
