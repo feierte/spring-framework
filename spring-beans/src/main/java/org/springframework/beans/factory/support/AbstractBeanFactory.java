@@ -1324,7 +1324,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		if (mbd != null && !mbd.stale) {
 			return mbd;
 		}
-		// 没有合并，执行同名不同参的另一个方法
+		// 没有合并，进行合并，执行同名不同参的另一个方法
 		return getMergedBeanDefinition(beanName, getBeanDefinition(beanName));
 	}
 
@@ -1389,7 +1389,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 				else {
 					// Child bean definition: needs to be merged with parent.
-					/**
+					/*
 					 * bd是一个ChildBeanDefinition的情况,
 					 * 这种情况下，需要将bd和其parent bean definition 合并到一起，形成最终的 mbd
 					 * 下面是获取bd的 parent bean definition 的过程，最终结果记录到 pbd，并且可以看到该过程中递归使用了getMergedBeanDefinition(), 为什么呢?
@@ -1879,7 +1879,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			if (mbd != null) {
 				mbd.isFactoryBean = true;
 			}
-			return beanInstance;
+			return beanInstance; // 如果本来期望返回的就是FactoryBean，那么也可以就直接返回了
 		}
 
 		// Now we have the bean instance, which may be a normal bean or a FactoryBean.
