@@ -359,7 +359,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * {@code initMethodName}, and {@code destroyMethodName} if specified
 	 * in the given bean definition.
 	 * </ul>
-	 *
+	 * <p>
 	 * 本方法的一个主要用途是用在根据bean定义之间的父子关系生成最终merged的孩子bean定义对象:
 	 * 此时先使用双亲bean定义生成一个RootBeanDefinition,然后调用该RootBeanDefinition
 	 * 对象的overrideFrom(other)方法，这里other就是child bean定义，然后这个RootBeanDefinition

@@ -1422,8 +1422,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					/*
 					 * 现在已经获取 bd 的parent bd到pbd，从上面的过程可以看出，这个pbd也是已经"合并"过的。
 					 * 这里根据pbd创建最终的mbd，然后再使用bd覆盖一次，
-					 * 这样就相当于mbd来自两个BeanDefinition:
-					 * 	当前 BeanDefinition 及其合并的("Merged")双亲 BeanDefinition,
+					 * 这样就相当于mbd来自两个BeanDefinition:当前 BeanDefinition 及其合并的("Merged")双亲 BeanDefinition,
 					 * 	然后mbd就是针对当前bd的一个MergedBeanDefinition(合并的BeanDefinition)了。
 					 */
 					mbd = new RootBeanDefinition(pbd);
