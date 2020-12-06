@@ -43,6 +43,9 @@ import org.springframework.core.annotation.AliasFor;
  * @see RequestMapping
  * @see SessionAttributes
  * @see RequestAttribute
+ * <p>
+ * 此注解是用于让开发者和Servlet API进行解耦
+ * 让开发者可以无需使用HttpSession的getAttribute方法即可从会话域中获取数据。
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
@@ -51,6 +54,7 @@ public @interface SessionAttribute {
 
 	/**
 	 * Alias for {@link #name}.
+	 * 用于指定在会话域中数据的名称。
 	 */
 	@AliasFor("name")
 	String value() default "";
@@ -68,6 +72,8 @@ public @interface SessionAttribute {
 	 * if the attribute is missing in the session or there is no session.
 	 * Switch this to {@code false} if you prefer a {@code null} or Java 8
 	 * {@code java.util.Optional} if the attribute doesn't exist.
+	 * <p>
+	 * 用于指定是否必须从会话域中获取到数据。默认值是true，表示如果指定名称不存在会报错。
 	 */
 	boolean required() default true;
 

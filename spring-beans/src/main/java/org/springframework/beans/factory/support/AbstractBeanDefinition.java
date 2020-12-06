@@ -140,7 +140,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 	/**
 	 * 当前bean定义的beanClass属性，注意并不一定是最终生成的bean所使用的class，
-	 * 可能是 String, 也可能是 Class
+	 * 可能是 String（bean名称）, 也可能是 Class（bean的class对象）
 	 */
 	@Nullable
 	private volatile Object beanClass;
@@ -220,6 +220,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	@Nullable
 	private String factoryMethodName;
 
+	/**
+	 * 记录构造函数注入属性，对应bean属性constructor-arg
+	 */
 	@Nullable
 	private ConstructorArgumentValues constructorArgumentValues;
 
@@ -237,7 +240,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 	/**
 	 * 初始化方法。
-	 * 对应XML配置中bean标签属性的init-method。<bean id="xxx" class="xxx" init-method="xxx">
+	 * 对应XML配置中bean标签的属性init-method。<bean id="xxx" class="xxx" init-method="xxx">
 	 * 对应注解：@javax.annotation.PostConstruct
 	 */
 	@Nullable
@@ -245,7 +248,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 	/**
 	 * 销毁方法。
-	 * 对应XML配置中bean标签属性的destory-method。<bean id="xxx" class="xxx" destroy-method="xxx">
+	 * 对应XML配置中bean标签的属性destory-method。<bean id="xxx" class="xxx" destroy-method="xxx">
 	 * 对应注解：@javax.annotation.PreDestroy
 	 */
 	@Nullable

@@ -111,6 +111,8 @@ public @interface ControllerAdvice {
 	 * <p>Consider creating a special no-op marker class or interface in each package
 	 * that serves no purpose other than being referenced by this attribute.
 	 * @since 4.0
+	 * <p>
+	 * 对给定类所在的包及其子包下的 Controller 进行增强
 	 */
 	Class<?>[] basePackageClasses() default {};
 
@@ -119,6 +121,8 @@ public @interface ControllerAdvice {
 	 * <p>Controllers that are assignable to at least one of the given types
 	 * will be advised by the {@code @ControllerAdvice} annotated class.
 	 * @since 4.0
+	 * <p></>
+	 * 对某些 Controller 进行增强
 	 */
 	Class<?>[] assignableTypes() default {};
 
@@ -129,6 +133,8 @@ public @interface ControllerAdvice {
 	 * <p>Consider creating a custom composed annotation or use a predefined one,
 	 * like {@link RestController @RestController}.
 	 * @since 4.0
+	 * <p>
+	 * 对某些注解修饰的 Controller 进行增强
 	 */
 	Class<? extends Annotation>[] annotations() default {};
 

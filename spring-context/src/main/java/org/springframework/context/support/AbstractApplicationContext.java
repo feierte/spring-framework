@@ -129,6 +129,7 @@ import org.springframework.util.ReflectionUtils;
 public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		implements ConfigurableApplicationContext {
 
+
 	/**
 	 * Name of the MessageSource bean in the factory.
 	 * If none is supplied, message resolution is delegated to the parent.
@@ -521,11 +522,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
-			// 告诉子类刷新内部bean工厂，实际就是重新创建一个bean工厂
+			// 告诉子类刷新内部bean工厂，实际就是重新创建一个bean工厂（实例化一个BeanFactory）
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
-			// 准备使用创建的这个BeanFactory，添加或者注册到当前Bean工厂一些必要的对象
+			// 准备使用创建的这个BeanFactory，添加或者注册到当前Bean工厂一些必要的对象（初始化BeanFactory）
 			prepareBeanFactory(beanFactory);
 
 			try {

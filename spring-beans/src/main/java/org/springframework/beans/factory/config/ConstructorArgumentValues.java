@@ -43,8 +43,15 @@ import org.springframework.util.ObjectUtils;
  */
 public class ConstructorArgumentValues {
 
+	/**
+	 * key:对应<constructor-arg/>标签中的index属性值
+	 * value：对应<constructor-arg/>标签
+	 */
 	private final Map<Integer, ValueHolder> indexedArgumentValues = new LinkedHashMap<>();
 
+	/**
+	 * 如果配置文件中没有指定index属性，那么将会把<constructor-arg/>标签解析的结果放入到genericArgumentValues中
+	 */
 	private final List<ValueHolder> genericArgumentValues = new ArrayList<>();
 
 
@@ -437,12 +444,21 @@ public class ConstructorArgumentValues {
 	 */
 	public static class ValueHolder implements BeanMetadataElement {
 
+		/**
+		 * 对应<constructor-arg/>标签中的value属性
+		 */
 		@Nullable
 		private Object value;
 
+		/**
+		 * 对应<constructor-arg/>标签中的type属性
+		 */
 		@Nullable
 		private String type;
 
+		/**
+		 * 对应<constructor-arg/>标签中的name属性
+		 */
 		@Nullable
 		private String name;
 

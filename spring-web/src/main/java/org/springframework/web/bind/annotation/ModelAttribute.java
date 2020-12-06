@@ -52,6 +52,10 @@ import org.springframework.ui.Model;
  * @author Juergen Hoeller
  * @author Rossen Stoyanchev
  * @since 2.5
+ * <p>
+ * 它可以用于修饰方法，或者参数。
+ * 当修饰方法时，表示执行控制器方法之前，被此注解修饰的方法都会先执行
+ * 当修饰参数时，用于获取指定的数据给参数赋值
  */
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -60,6 +64,10 @@ public @interface ModelAttribute {
 
 	/**
 	 * Alias for {@link #name}.
+	 * <p></>
+	 * 当注解在方法上，则表示存入时的key名称。（value是方法的返回值）
+	 * 当注解在参数上，可以从ModelMap、Model、Map中获取数据。（前提是之前存入过）
+	 * 指定的是存入时的key
 	 */
 	@AliasFor("name")
 	String value() default "";

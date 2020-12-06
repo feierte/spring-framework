@@ -40,6 +40,8 @@ import org.springframework.core.annotation.AliasFor;
  * @see RequestMapping
  * @see RequestParam
  * @see CookieValue
+ * <p>
+ * 此注解是从请求消息头中获取消息头的值，并把值赋给控制器方法形参
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
@@ -48,6 +50,8 @@ public @interface RequestHeader {
 
 	/**
 	 * Alias for {@link #name}.
+	 * <p>
+	 * 用于指定请求消息头的名称。它和name属性的作用是一样的
 	 */
 	@AliasFor("name")
 	String value() default "";
