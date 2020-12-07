@@ -36,6 +36,9 @@ import org.springframework.core.annotation.AliasFor;
  * @since 3.0
  * @see RequestMapping
  * @see org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
+ * <p></>
+ * 该注解是Spring MVC框架支持rest风格url的标识。
+ * 它可以用于获取请求url映射中占位符对应的值。
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
@@ -44,6 +47,7 @@ public @interface PathVariable {
 
 	/**
 	 * Alias for {@link #name}.
+	 * 指定url映射中占位符的名称
 	 */
 	@AliasFor("name")
 	String value() default "";

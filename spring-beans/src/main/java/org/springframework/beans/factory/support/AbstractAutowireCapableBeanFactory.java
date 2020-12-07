@@ -1205,37 +1205,53 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @see #instantiateUsingFactoryMethod
 	 * @see #autowireConstructor
 	 * @see #instantiateBean
+	 * <p>创建bean实例的主要步骤
+	 * 1、如果RootBeanDefinition中存在Suppiler接口实例，则直接使用Suppiler接口回调来实例化bean。
+	 * 2、如果RootBeanDefinition中存在factoryMethodName属性，或者在配置文件中配置了factory-method，spring会尝试使用
+	 * instantiateUsingFactoryMethod方法，根据RootBeanDefinition中的配置生成bean实例。如果一个类中的方法被@Bean注解修饰，
+	 * 那么Spring会将其封装成一个ConfigurationClassBeanDefinition。此时factoryMethodName也被赋值（此时的factoryMethodName的值正是@Bean修饰的方法本身）。所以也会调用
+	 * instantiateUsingFactoryMethod方法，通过反射方法完成方法的调用，并将结果注入到Spring容器中。
+	 * 3、当以上两种都不存在时，Spring则打算通过bean的构造函数来创建bean。首先会判断是否有缓存，即构造函数是否已经解析过了，
+	 * 因为一个bean可能会存在多个构造函数，这时候Spring会根据参数列表来判断使用哪个构造函数进行实例化。但是判断过程比较消耗性能，
+	 * 所以Spring将判断好的构造函数缓存到RootBeanDefinition中的resolvedConstructorOrFactoryMethod属性中。
+	 * 4、如果缓存，则不需要解析，直接调用autowireConstructor或者instantiateBean方法创建bean。有参构造调用autowireConstructor方法，
+	 * 无参构造函数调用instantiateBean方法。
+	 * 5、否则需要先进行解析，这里通过determineConstructorsFromBeanPostProcessors方法调用了SmartInstantiationAwareBeanPostProcessor.determineCandiateConstructors
+	 * 的后置处理器方法来进行解析，Spring默认的实现在AutowiredAnnotationBeanPostProcessor.determineCandiateConstructors方法中。
+	 * 6、获取解析后的候选的构造函数列表ctors后（最终的构造函数就从这个列表中选取），开始调用autowireConstructor或者instantiateBean方法创建bean。
+	 * 在autowireConstructor中，进行了候选构造函数的选举，选择最适合的构造函数来构建bean，如果缓存已经解析了构造函数，则不用选举，直接使用解析好的构造函数来进行bean的创建。
 	 */
 	protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd, @Nullable Object[] args) {
 		// Make sure bean class is actually resolved at this point.
-		// 1.获取这个bean的class属性，确保beanDefinition中beanClass属性已经完成解析
+		// 获取这个bean的class属性，确保beanDefinition中beanClass属性已经完成解析
 		// 我们通过xml从<bean>标签中解析出来的class属性在刚刚开始的时候必定是个字符串
 		Class<?> beanClass = resolveBeanClass(mbd, beanName);
 
+		// 确保beanClass不为空，且访问权限是public
 		if (beanClass != null && !Modifier.isPublic(beanClass.getModifiers()) && !mbd.isNonPublicAccessAllowed()) {
 			throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 					"Bean class isn't public, and non-public access not allowed: " + beanClass.getName());
 		}
 
-		// 2.通过beanDefinition中的supplier实例化这个bean
+		// 1.通过beanDefinition中的supplier实例化这个bean
 		Supplier<?> instanceSupplier = mbd.getInstanceSupplier();
 		if (instanceSupplier != null) {
 			return obtainFromSupplier(instanceSupplier, beanName);
 		}
 
-		// 3.通过FactoryMethod实例化这个bean
+		// 2.通过factory-method实例化这个bean
 		if (mbd.getFactoryMethodName() != null) {
 			return instantiateUsingFactoryMethod(beanName, mbd, args);
 		}
 
-		// 4.下面这段代码都是在通过构造函数实例化这个Bean,
+		// 3.下面这段代码都是在通过构造函数实例化这个Bean,
 		// 分两种情况，一种是通过默认的无参构造，一种是通过推断出来的构造函数
 		// Shortcut when re-creating the same bean...
 		boolean resolved = false;
 		boolean autowireNecessary = false;
 		if (args == null) {
 			synchronized (mbd.constructorArgumentLock) {
-				// 一个类有多个构造方法，带有不同的参数，所以调用前，需要根据参数解析出需要调用的构造方法，
+				// 一个类有多个构造方法，带有不同的参数，所以调用前，需要根据参数及参数类型解析出需要调用的构造方法，
 				// 这里使用了缓存，如果以前解析过构造方法，则在这里直接使用即可。
 				if (mbd.resolvedConstructorOrFactoryMethod != null) {
 					resolved = true;
@@ -1243,19 +1259,19 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 			}
 		}
-		if (resolved) {
-			if (autowireNecessary) {
+		if (resolved) { // 有构造参数或者工厂方法
+			if (autowireNecessary) { // 构造器有参数
 				// 构造方法自动注入
 				return autowireConstructor(beanName, mbd, null, null);
 			}
-			else {
+			else { // 无参构造函数
 				// 使用默认的无参构造方法实例化Bean
 				return instantiateBean(beanName, mbd);
 			}
 		}
 
 		// Candidate constructors for autowiring?
-		// 解析构造方法
+		// 解析构造方法，从bean的后置处理器中为自动装配寻找狗仔方法
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
 		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
 				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
@@ -1263,12 +1279,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Preferred constructors for default construction?
+		// 找出最合适的默认构造函数
 		ctors = mbd.getPreferredConstructors();
 		if (ctors != null) {
 			// 构造方法自动注入
 			return autowireConstructor(beanName, mbd, ctors, null);
 		}
 
+		// 4.使用默认构造函数实例化bean
 		// No special handling: simply use no-arg constructor.
 		return instantiateBean(beanName, mbd);
 	}
@@ -1367,6 +1385,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 						getAccessControlContext());
 			}
 			else {
+				// 获取实例化策略并且进行实例化操作
 				beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, this);
 			}
 			BeanWrapper bw = new BeanWrapperImpl(beanInstance);
