@@ -56,6 +56,9 @@ public class SimpleBeanDefinitionRegistry extends SimpleAliasRegistry implements
 		}
 	}
 
+	/**
+	 * 需要注意的是：如果没有Bean定义，是抛出的异常，而不是返回null这点需要注意
+	 */
 	@Override
 	public BeanDefinition getBeanDefinition(String beanName) throws NoSuchBeanDefinitionException {
 		BeanDefinition bd = this.beanDefinitionMap.get(beanName);

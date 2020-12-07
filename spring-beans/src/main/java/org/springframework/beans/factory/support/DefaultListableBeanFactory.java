@@ -944,6 +944,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			if (!isAllowBeanDefinitionOverriding()) {
 				throw new BeanDefinitionOverrideException(beanName, beanDefinition, existingDefinition);
 			}
+			// 若允许覆盖  那还得比较下role  如果新进来的这个Bean的role更大
+			// 比如老的是ROLE_APPLICATION（0）  新的是ROLE_INFRASTRUCTURE(2)
+			// 最终会执行到put，但是此处输出一个info日志，告知你的bean被覆盖啦~~~~~~~（我们自己覆盖Spring框架内的bean显然就不需要warn提示了）
 			else if (existingDefinition.getRole() < beanDefinition.getRole()) {
 				// e.g. was ROLE_APPLICATION, now overriding with ROLE_SUPPORT or ROLE_INFRASTRUCTURE
 				if (logger.isInfoEnabled()) {
@@ -969,8 +972,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 		else {
+			// hasBeanCreationStarted:表示已经存在bean开始创建了（开始getBean()了吧~~~）
 			if (hasBeanCreationStarted()) {
 				// Cannot modify startup-time collection elements anymore (for stable iteration)
+				// 注册过程需要synchronized，保证数据的一致性
 				synchronized (this.beanDefinitionMap) {
 					this.beanDefinitionMap.put(beanName, beanDefinition);
 					List<String> updatedDefinitions = new ArrayList<>(this.beanDefinitionNames.size() + 1);
@@ -980,16 +985,22 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					removeManualSingletonName(beanName);
 				}
 			}
-			else {
+			else { // 表示仍然在启动  注册的状态~~~就很好处理了 put仅需名字add进去
 				// Still in startup registration phase
 				this.beanDefinitionMap.put(beanName, beanDefinition);
 				this.beanDefinitionNames.add(beanName);
+				// 手动注册的BeanNames里面移除~~~ 因为有Bean定义信息了，所以现在不是手动直接注册的Bean单例~~~~
 				removeManualSingletonName(beanName);
 			}
+			// 这里的意思是：但凡你新增了一个新的Bean定义信息，之前已经冻结的就清空呗~~~
 			this.frozenBeanDefinitionNames = null;
 		}
-
+		// 最后异步很有意思：已经存在的bean定义信息不为null（beanName已经存在了）,或者这个beanName直接是一个单例Bean了~
 		if (existingDefinition != null || containsSingleton(beanName)) {
+			// 做清理工作：
+			// clearMergedBeanDefinition(beanName)
+			// destroySingleton(beanName);  销毁这个单例Bean  因为有了该bean定义信息  最终还是会创建的
+			// Reset all bean definitions that have the given bean as parent (recursively).  处理该Bean定义的getParentName  有相同的也得做清楚  所以这里是个递归
 			resetBeanDefinition(beanName);
 		}
 		else if (isConfigurationFrozen()) {

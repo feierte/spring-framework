@@ -214,9 +214,16 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 */
 	private boolean lenientConstructorResolution = true;
 
+	/**
+	 * 用于实例化的 工厂类
+	 */
 	@Nullable
 	private String factoryBeanName;
 
+	/**
+	 * 用于调用工厂类方法。和factoryBeanName一起配合使用。
+	 * 当factoryMethodName指向静态方法：无须创建工厂类实例的情况下就可以调用工厂类方法，即不需要factoryBeanName指定工厂类
+	 */
 	@Nullable
 	private String factoryMethodName;
 
