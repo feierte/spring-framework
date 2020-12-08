@@ -1489,6 +1489,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// 如果一个类设置了AUTOWIRE_BY_NAME或AUTOWIRE_BY_TYPE，那么类中的属性会根据该规则自动注入，而不需要使用@Autowired或@Resource
 		// 默认情况下，是AUTOWIRE_NO，所以这里默认是不执行的
 		if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
+			// 深拷贝当前已有的配置
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
 			// Add property values based on autowire by name if applicable.
 			if (resolvedAutowireMode == AUTOWIRE_BY_NAME) {
@@ -1500,11 +1501,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				// 类型注入 byType
 				autowireByType(beanName, mbd, bw, newPvs);
 			}
+			// 结合注入后的配置，覆盖当前配置
 			pvs = newPvs;
 		}
 
 		// 后置处理器是否初始化
 		boolean hasInstAwareBpps = hasInstantiationAwareBeanPostProcessors();
+		// 是否进行依赖检查  默认值就是None  所以此处返回false，表示不需要依赖检查(关于依赖检查的4种模式,建议使用@Required来显示控制)
+		// @Required注解作用于Bean的setter方法上，用于检查一个Bean的属性的值在配置期间是否被赋予或设置(populated)
 		// 需要依赖检查
 		boolean needsDepCheck = (mbd.getDependencyCheck() != AbstractBeanDefinition.DEPENDENCY_CHECK_NONE);
 
@@ -1516,12 +1520,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			for (BeanPostProcessor bp : getBeanPostProcessors()) {
 				if (bp instanceof InstantiationAwareBeanPostProcessor) {
 					InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
+					// （5.1~）
 					PropertyValues pvsToUse = ibp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
 					if (pvsToUse == null) {
 						if (filteredPds == null) {
+							// 过滤出所有需要进行依赖检查的属性编辑器
 							filteredPds = filterPropertyDescriptorsForDependencyCheck(bw, mbd.allowCaching);
 						}
-						// 对所有需要依赖检查的属性进行后置处理
+						// 对所有需要依赖检查的属性进行后置处理（1.2~5.0）
 						pvsToUse = ibp.postProcessPropertyValues(pvs, filteredPds, bw.getWrappedInstance(), beanName);
 						if (pvsToUse == null) {
 							return;
@@ -1556,11 +1562,20 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected void autowireByName(
 			String beanName, AbstractBeanDefinition mbd, BeanWrapper bw, MutablePropertyValues pvs) {
 
+		// 获取bw中有setter方法 && 非简单类型属性 && mbd的PropertyValues中没有该pd的属性名的 PropertyDescriptor 属性名数组
+		// 根据bw的PropertyDescriptors，遍历出所有可写的（即set方法存在)，存在于BeanDefinition里的PropertyValues，
+		// 且不是简单属性的属性名(简单属性的判定参照下面方法，主要涵盖基本类型及其包装类，Number,Date等)
 		String[] propertyNames = unsatisfiedNonSimpleProperties(mbd, bw);
 		for (String propertyName : propertyNames) {
 			if (containsBean(propertyName)) {
+				// 注意：此处找到依赖了，调用了getBean()，所以即使你现在仅仅只是Bean定义，那么也会被创建实例对象
 				Object bean = getBean(propertyName);
 				pvs.add(propertyName, bean);
+				// 注册依赖关系
+				// 此处需要知道的是：Spring中使用dependentBeanMap和dependenciesForBeanMap来管理这些Bean的依赖关系：
+				// Map<String, Set<String>> dependentBeanMap：存放着当前Bean被引用的Bean的集合
+				// Map<String, Set<String>> dependenciesForBeanMap：存放的则是当前Bean所依赖的Bean的集合
+				// 依赖注入的具体实现是在BeanWrapperImpl类中的setPropertyValue方法里=======================
 				registerDependentBean(propertyName, beanName);
 				if (logger.isTraceEnabled()) {
 					logger.trace("Added autowiring by name from bean name '" + beanName +
@@ -1590,6 +1605,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected void autowireByType(
 			String beanName, AbstractBeanDefinition mbd, BeanWrapper bw, MutablePropertyValues pvs) {
 
+		// 类型转换器，如果没有指定，就用BeanWrapper作为转换器
 		TypeConverter converter = getCustomTypeConverter();
 		if (converter == null) {
 			converter = bw;
@@ -1602,16 +1618,25 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				PropertyDescriptor pd = bw.getPropertyDescriptor(propertyName);
 				// Don't try autowiring by type for type Object: never makes sense,
 				// even if it technically is a unsatisfied, non-simple property.
+				// 如果是Object类型，不进行装配
 				if (Object.class != pd.getPropertyType()) {
+					// 获取相关写方法参数
 					MethodParameter methodParam = BeanUtils.getWriteMethodParameter(pd);
 					// Do not allow eager init for type matching in case of a prioritized post-processor.
+					// 看看实例是否实现了PriorityOrdered接口，若没有实现  就稍后点加载吧-----
 					boolean eager = !(bw.getWrappedInstance() instanceof PriorityOrdered);
 					DependencyDescriptor desc = new AutowireByTypeDependencyDescriptor(methodParam, eager);
+					// 这里会根据传入desc里的入参类型，作为依赖装配的类型
+					// 再根据这个类型在BeanFactory中查找所有类或其父类相同的BeanName
+					// 最后根据BeanName获取或初始化相应的类，然后将所有满足条件的BeanName填充到autowiredBeanNames中。
 					Object autowiredArgument = resolveDependency(desc, beanName, autowiredBeanNames, converter);
 					if (autowiredArgument != null) {
 						pvs.add(propertyName, autowiredArgument);
 					}
+
+					// 需要注入的依赖都拿到后，就开始注册这些依赖吧
 					for (String autowiredBeanName : autowiredBeanNames) {
+						// 和autowireByName一样的 这里注册这些依赖
 						registerDependentBean(autowiredBeanName, beanName);
 						if (logger.isTraceEnabled()) {
 							logger.trace("Autowiring by type from bean name '" + beanName + "' via property '" +
@@ -1773,7 +1798,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 如果 pvs 不是 MutablePropertyValues 封装的类，则直接使用原始的属性获取方法
 			original = Arrays.asList(pvs.getPropertyValues());
 		}
-		// 获取用户自定义的类型转换器
+		// 获取用户自定义的类型转换器，如果没有，就是用BeanWrapper作为类型转换器
 		TypeConverter converter = getCustomTypeConverter();
 		if (converter == null) {
 			converter = bw;
