@@ -7,7 +7,7 @@
         http://www.springframework.org/schema/context
         https://www.springframework.org/schema/context/spring-context.xsd">
 
-	<bean>
+	<bean autowire="byName" autowire-candidate="true">
 		<lookup-method></lookup-method>
 		<replaced-method></replaced-method>
 	</bean>

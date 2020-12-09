@@ -63,6 +63,9 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	/** Determines if the definition needs to be re-merged. */
 	volatile boolean stale;
 
+	/**
+	 * 允许缓存
+	 */
 	boolean allowCaching = true;
 
 	boolean isFactoryMethodUnique = false;

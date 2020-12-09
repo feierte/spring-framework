@@ -1271,7 +1271,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Candidate constructors for autowiring?
-		// 解析构造方法，从bean的后置处理器中为自动装配寻找狗仔方法
+		// 解析构造方法，从bean的后置处理器中为自动装配寻找构造方法
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
 		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
 				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
@@ -1469,7 +1469,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		 * 关于这个后置处理器，官方的解释是：让用户可以自定义属性注入。比如一个用户实现了一个InstantiationAwareBeanPostProcessor后置处理器，
 		 * 并通过postProcessAfterInstantiation方法向bean的成员变量注入自定义的信息。当然，如果无特殊需求，直接使用配置中的信息注入即可。
 		 * 另外Spring不建议大家直接实现InstantiationAwareBeanPostProcessor接口，如果想实现这种类型的后置处理器，
-		 * 更建议通过继承InstantiationAwarePostProcessorAdapter抽象类实现自定义后置处理器
+		 * 更建议通过继承InstantiationAwareBeanPostProcessorAdapter抽象类实现自定义后置处理器
+		 *
+		 * 可以在这里通过InstantiationAwareBeanPostProcessor接口实现字段注入
 		 */
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (BeanPostProcessor bp : getBeanPostProcessors()) {
@@ -1915,6 +1917,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
 			// 执行后置处理器 applyBeanPostProcessorsBeforeInitialization
+			// 思考：BeanPostProcessor注入时机？
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
