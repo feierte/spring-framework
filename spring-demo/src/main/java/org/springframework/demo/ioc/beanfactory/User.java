@@ -30,6 +30,13 @@ public class User {
         this.age = age;
     }
 
+    public static User createUser() {
+		User user = new User();
+		user.setId(1);
+		user.setName("xiaomage");
+		return user;
+	}
+
 	public int getId() {
 		return id;
 	}
