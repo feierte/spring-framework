@@ -12,7 +12,9 @@ public class BeanInstantiationDemo {
 	public static void main(String[] args) throws Exception {
 		String location = "classpath:/META-INF/ioc/beanfactory/bean-instantiation-context.xml";
 		BeanFactory beanFactory = new ClassPathXmlApplicationContext(location);
+		// 通过静态方法实例化bean
 		User user = beanFactory.getBean("user-by-static-method", User.class);
+		// 通过实例方法实例化bean
 		User user2 = beanFactory.getBean("user-by-instance-method", User.class);
 		System.out.println(user);
 		System.out.println(user2);
