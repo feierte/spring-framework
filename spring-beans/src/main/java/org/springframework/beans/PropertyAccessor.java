@@ -38,6 +38,7 @@ public interface PropertyAccessor {
 	 * Path separator for nested properties.
 	 * Follows normal Java conventions: getFoo().getBar() would be "foo.bar".
 	 */
+	// 嵌套属性的分隔符,比如"foo.bar"将会调用getFoo().getBar()两个方法
 	String NESTED_PROPERTY_SEPARATOR = ".";
 
 	/**
@@ -50,6 +51,7 @@ public interface PropertyAccessor {
 	 * Marker that indicates the start of a property key for an
 	 * indexed or mapped property like "person.addresses[0]".
 	 */
+	// 代表角标index的符号  如person.addresses[0]  这样就可以把值放进集合/数组/Map里了
 	String PROPERTY_KEY_PREFIX = "[";
 
 	/**

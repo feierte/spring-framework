@@ -51,6 +51,7 @@ public interface TypeConverter {
 	 * @see org.springframework.core.convert.ConversionService
 	 * @see org.springframework.core.convert.converter.Converter
 	 */
+	// 将指定的值转换成指定的类型
 	@Nullable
 	<T> T convertIfNecessary(@Nullable Object value, @Nullable Class<T> requiredType) throws TypeMismatchException;
 
@@ -70,6 +71,7 @@ public interface TypeConverter {
 	 * @see org.springframework.core.convert.ConversionService
 	 * @see org.springframework.core.convert.converter.Converter
 	 */
+	// 将指定的值转换成指定的类型，支持处理泛型
 	@Nullable
 	<T> T convertIfNecessary(@Nullable Object value, @Nullable Class<T> requiredType,
 			@Nullable MethodParameter methodParam) throws TypeMismatchException;
@@ -90,6 +92,7 @@ public interface TypeConverter {
 	 * @see org.springframework.core.convert.ConversionService
 	 * @see org.springframework.core.convert.converter.Converter
 	 */
+	// 将指定的值转换成指定的类型，支持处理泛型
 	@Nullable
 	<T> T convertIfNecessary(@Nullable Object value, @Nullable Class<T> requiredType, @Nullable Field field)
 			throws TypeMismatchException;
@@ -110,6 +113,7 @@ public interface TypeConverter {
 	 * @see org.springframework.core.convert.ConversionService
 	 * @see org.springframework.core.convert.converter.Converter
 	 */
+	// 将指定的值转换成指定的类型，支持处理泛型
 	@Nullable
 	default <T> T convertIfNecessary(@Nullable Object value, @Nullable Class<T> requiredType,
 			@Nullable TypeDescriptor typeDescriptor) throws TypeMismatchException {

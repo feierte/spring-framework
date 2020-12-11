@@ -59,6 +59,10 @@ import org.springframework.util.ReflectionUtils;
  * @see #getPropertyType
  * @see BeanWrapper
  * @see PropertyEditorRegistrySupport
+ * <p>BeanWrapperImpl主要的几个功能
+ * 	1、对Bean进行包装
+ * 	2、对Bean的属性进行访问以及设置
+ * 	3、在操作属性的过程中，必然涉及到类型转换，所以还有类型转换的功能
  */
 public class BeanWrapperImpl extends AbstractNestablePropertyAccessor implements BeanWrapper {
 

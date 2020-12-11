@@ -45,6 +45,10 @@ import java.beans.PropertyDescriptor;
  * @see org.springframework.beans.factory.BeanFactory
  * @see org.springframework.validation.BeanPropertyBindingResult
  * @see org.springframework.validation.DataBinder#initBeanPropertyAccess()
+ * <p>
+ * BeanWrapper其实就是一个Bean的包装器，它对Bean包装的目的是为了能操纵Bean中的属性，所以它同时需要具备获取以及设置Bean中的属性能力，
+ * 所以它也必须是一个属性访问器（PropertyAccessor），另外为了将各种不同类型的配置数据绑定到Bean的属性上，那么它还得具备属性转换的能力，
+ * 因为它还得是一个类型转换器（TypeConverter）。
  */
 public interface BeanWrapper extends ConfigurablePropertyAccessor {
 
