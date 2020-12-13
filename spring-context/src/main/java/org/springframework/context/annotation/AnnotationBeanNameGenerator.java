@@ -69,6 +69,12 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	 * A convenient constant for a default {@code AnnotationBeanNameGenerator} instance,
 	 * as used for component scanning purposes.
 	 * @since 5.2
+	 * <p>这里将DefaultBeanNameGenerator设置为单例，是为了从节约内存开销考虑的。
+	 * 但是设置为单例，却没有把构造器变为私有的？
+	 * 这是有道理的，因为DefaultBeanNameGenerator是公有的API，
+	 * 将DefaultBeanNameGenerator设置为单例模式是在5.2版本，而这个API在2.0.3版本就有了，
+	 * 这样如果擅自在高本版里面把DefaultBeanNameGenerator构造函数设置为私有，其他版本会出现兼容方式的问题。
+	 * 但是Spring官方推荐使用这个API还是通过单例的方式使用
 	 */
 	public static final AnnotationBeanNameGenerator INSTANCE = new AnnotationBeanNameGenerator();
 
