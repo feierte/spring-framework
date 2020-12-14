@@ -1532,7 +1532,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			throws CannotLoadBeanClassException {
 
 		try {
+			// 如果mbd指定了bean的Class对象
 			if (mbd.hasBeanClass()) {
+				// 直接返回mbd的指定bean的Class对象
 				return mbd.getBeanClass();
 			}
 			if (System.getSecurityManager() != null) {
@@ -1555,6 +1557,33 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		}
 	}
 
+	/**
+	 * 获取mbd配置的bean的Class对象，将bean类名解析为Class对象,并将解析后的Class对象缓存在mdb中（RootBeanDefinition#beanClass）以备将来使用。
+	 * 	1、获取该工厂的加载bean用的类加载器【变量 beanClassLoader】
+	 * 	2、声明一个动态类加载器【变量 dynamicLoader】，默认引用beanClassLoader
+	 * 	3、声明一个表示mdb的配置的bean类名需要重新被dynameicLoader加载的标记，默认不需要。【变量 freshResolve】
+	 * 	4、如果传入了typesToMatch，且该工厂有临时类加载器【变量 tempClassLoader】：
+	 * 		4.1、改变dynamicLoader引用为tempClassLoader
+	 * 		4.2、标记mdb的配置的bean类名需要重新被dynameicLoader加载
+	 * 		4.3、如果tempClassLoader属于DecoratingClassLoader实例,会对tempClassLoader进行强转为DecoratingClassLoader 【变量 dcl】，
+	 * 		然后对typeToMatch在dcl中的排除，使其交由其父classLoader【默认情况下父classLoader是线程上下文类加载器】 进行常规方式处理
+	 * 	5、从mbd中获取配置的bean类名【变量名 className】
+	 * 	6、如果获取到className:
+	 * 		6.1、评估benaDefinition中包含的className,如果className是可解析表达式，会对其进行解析，否则直接返回className.【变量 evaluated】
+	 * 		6.2、如果className与evaluated不一样:
+	 * 			6.2.1、如果evaluated属于Class实例,强转evaluatedw为Class对象并返回出去
+	 * 			6.2.2、如果evaluated属于String实例,将evaluated作为className的值,然后标记mdb配置的bean类名需要重新 被dynameicLoader加载
+	 * 			6.2.3、否则：抛出非法状态异常：无效的类名表达式结果：evaluated
+	 * 		6.3、如果mdb的配置的bean类名需要重新被dynameicLoader加载:
+	 * 			6.3.1、如果dynameicLoader不为null,使用dynamicLoader加载className对应的类型，并返回加载成功的Class对象. 同时捕捉未找到类异常【变量ex】
+	 * 			6.3.2、如果抛出了ex.打印追踪日志：无法从dynamicLoader中加载类[className]:ex
+	 * 			6.3.3、调用ClassUtils.forName(className, dynamicLoader)来获取Class对象并返回出去
+	 * 	7、否则，使用beanClassLoader加载mbd所配置的Bean类名的Class对象并返回出去
+	 * @param mbd
+	 * @param typesToMatch
+	 * @return
+	 * @throws ClassNotFoundException
+	 */
 	@Nullable
 	private Class<?> doResolveBeanClass(RootBeanDefinition mbd, Class<?>... typesToMatch)
 			throws ClassNotFoundException {
@@ -1579,27 +1608,32 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 		}
 
+		// 从mbd中获取配置的bean全路径类名
 		String className = mbd.getBeanClassName();
+		// 如果能成功获得配置的bean全路径类名
 		if (className != null) {
+			// 评估benaDefinition中包含的className,如果className是可解析表达式，会对其进行解析，否则直接返回className:
 			Object evaluated = evaluateBeanDefinitionString(className, mbd);
-			if (!className.equals(evaluated)) {
+			if (!className.equals(evaluated)) {	// 如果className与解析后的值不一样
 				// A dynamically resolved expression, supported as of 4.2...
 				if (evaluated instanceof Class) {
 					return (Class<?>) evaluated;
 				}
 				else if (evaluated instanceof String) {
 					className = (String) evaluated;
+					// 标记mdb的配置的bean类名需要重新被dynameicLoader加载
 					freshResolve = true;
 				}
 				else {
 					throw new IllegalStateException("Invalid class name expression result: " + evaluated);
 				}
 			}
-			if (freshResolve) {
+			if (freshResolve) { // 如果mdb的配置的bean类名需要重新被dynameicLoader加载
 				// When resolving against a temporary class loader, exit early in order
 				// to avoid storing the resolved Class in the bean definition.
 				if (dynamicLoader != null) {
 					try {
+						// 使用dynamicLoader加载className对应的类型，并返回加载成功的Class对象
 						return dynamicLoader.loadClass(className);
 					}
 					catch (ClassNotFoundException ex) {
@@ -1608,11 +1642,17 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 						}
 					}
 				}
+				// 使用classLoader加载name对应的Class对象,该方式是Spring用于代替Class.forName()的方法，支持返回原始的类实例(如'int')
+				// 和数组类名 (如'String[]')。此外，它还能够以Java source样式解析内部类名(如:'java.lang.Thread.State'
+				// 而不是'java.lang.Thread$State')
 				return ClassUtils.forName(className, dynamicLoader);
 			}
 		}
 
 		// Resolve regularly, caching the result in the BeanDefinition...
+		// 定期解析，将结果缓存在BeanDefinition中...
+		// 使用classLoader加载当前BeanDefinitiond对象所配置的Bean类名的Class对象（每次调用都会重新加载,可通过
+		// AbstractBeanDefinition#getBeanClass 获取缓存）
 		return mbd.resolveBeanClass(beanClassLoader);
 	}
 
