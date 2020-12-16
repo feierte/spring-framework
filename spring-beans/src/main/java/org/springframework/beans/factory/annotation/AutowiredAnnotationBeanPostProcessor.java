@@ -127,6 +127,12 @@ import org.springframework.util.StringUtils;
  * @see #setAutowiredAnnotationType
  * @see Autowired
  * @see Value
+ * <p>让我们总结一下这个类的作用:
+ * 其实这个类就是在实例化某个bean时，对bean中的属性或者方法进行扫描，扫描的是@Autowired和@Value注解，一旦发现方法或者属性上有这些注解，
+ * 就把属性或者方法封装成AutowiredFieldElement或者AutowiredMethodElement对象，这个对象有一个Member，属性描述对象PropertyDescriptor，
+ * 属性描述对象可以对属性进行反射读和写操作。最后把这些对象封装成InjectionMetadata对象，这些对象封装了类Class和集合，
+ * 集合里面装了AutowiredFieldElement或者AutowiredMethodElement对象。这样AutowiredAnnotationBeanPostProcessor类的装配工作就完成了，
+ * 在后续IOC，依赖注入，对bean进行依赖注入时就可以根据InjectionMetadata对象里面封装的内容进行属性赋值了。
  */
 public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBeanPostProcessorAdapter
 		implements MergedBeanDefinitionPostProcessor, PriorityOrdered, BeanFactoryAware {
