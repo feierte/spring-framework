@@ -73,7 +73,7 @@ public class AnnotationDependencyInjectionResolutionDemo {
 
 		XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(applicationContext);
 
-		String xmlResourcePath = "classpath:/META-INF/ioc/beanfactory/dependency.xml";
+		String xmlResourcePath = "classpath:/META-INF/ioc/beanfactory/dependency-lookup-context.xml";
 		// 加载 XML 资源，解析并且生成 BeanDefinition
 		beanDefinitionReader.loadBeanDefinitions(xmlResourcePath);
 
