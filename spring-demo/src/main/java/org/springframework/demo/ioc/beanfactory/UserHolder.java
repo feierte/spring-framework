@@ -41,7 +41,10 @@ public class UserHolder implements BeanNameAware, BeanClassLoaderAware, BeanFact
         System.out.println("afterSingletonsInstantiated(): " + description);
     }
 
-    public UserHolder(User user) {
+	public UserHolder() {
+	}
+
+	public UserHolder(User user) {
         this.user = user;
     }
 
