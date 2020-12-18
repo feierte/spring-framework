@@ -36,6 +36,9 @@ import org.springframework.util.ObjectUtils;
  * @since 4.3
  * @see UnsatisfiedDependencyException#getInjectionPoint()
  * @see org.springframework.beans.factory.config.DependencyDescriptor
+ * <p>InjectionPoint用于描述一个注入点，这个注入点是以下两种情况之一 :
+ * 		1.一个实例方法(构造函数或者成员方法)的某个参数(参数类型，参数索引)及该参数上的注解信息;
+ * 		2.实例成员属性以及该属性上的注解信息；
  */
 public class InjectionPoint {
 
