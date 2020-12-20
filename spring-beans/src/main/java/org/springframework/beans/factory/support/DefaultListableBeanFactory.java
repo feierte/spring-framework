@@ -790,12 +790,18 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * @param descriptor the descriptor of the dependency to resolve
 	 * @param resolver the AutowireCandidateResolver to use for the actual resolution algorithm
 	 * @return whether the bean should be considered as autowire candidate
+	 * <p>isAutowireCandidate 方法过滤候选对象有三重规则：①bd.autowireCandidate=true -> ②泛型匹配 -> ③@Qualifier
 	 */
 	protected boolean isAutowireCandidate(String beanName, RootBeanDefinition mbd,
 			DependencyDescriptor descriptor, AutowireCandidateResolver resolver) {
 
 		String bdName = BeanFactoryUtils.transformedBeanName(beanName);
+		// 1. 传统方式：解析 bd.beanClass，注意 Spring注解驱动时根本不会配置beanClassName
+		// 说明：主要注意一下传统方式和注解驱动获取 Bean 类型的不同：
+		//		传统方式：配置 beanClassName，直接解析成 beanClass，从而获取对象类型。
+		//		注解驱动：如 @Bean 方式，需要解析方法返回值类型，获取对象类型。
 		resolveBeanClass(mbd, bdName);
+		// 2. 注解驱动：解析工厂方法 bd.factoryMethodToIntrospect
 		if (mbd.isFactoryMethodUnique && mbd.factoryMethodToIntrospect == null) {
 			new ConstructorResolver(this).resolveFactoryMethodIfPossible(mbd);
 		}
@@ -803,6 +809,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				this.mergedBeanDefinitionHolders.computeIfAbsent(beanName,
 						key -> new BeanDefinitionHolder(mbd, beanName, getAliases(bdName))) :
 				new BeanDefinitionHolder(mbd, beanName, getAliases(bdName)));
+		// 3. 直接委托给AutowireCandidateResolver
 		return resolver.isAutowireCandidate(holder, descriptor);
 	}
 
@@ -1221,7 +1228,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			@Nullable Set<String> autowiredBeanNames, @Nullable TypeConverter typeConverter) throws BeansException {
 
 		descriptor.initParameterNameDiscovery(getParameterNameDiscoverer());
-		if (Optional.class == descriptor.getDependencyType()) {
+
+		/*
+		 * Spring IOC容器支持 Optional、延迟注入、懒加载注入、正常注入 这四种场景的依赖注入
+		 * 其实无论是什么场景，最底层都是调用 doResolveDependency。
+		 */
+		if (Optional.class == descriptor .getDependencyType()) {
 			return createOptionalDependency(descriptor, requestingBeanName);
 		}
 		else if (ObjectFactory.class == descriptor.getDependencyType() ||
@@ -1241,28 +1253,46 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 	}
 
+	/**
+	 * doResolveDependency 封装了依赖查找的各种情况：
+	 * 		1、快速查找： @Autowired 注解处理场景。AutowiredAnnotationBeanPostProcessor 处理 @Autowired 注解时，如果注入的对象只有一个，会将该 bean 对应的名称缓存起来，下次直接通过名称查找会快很多。
+	 * 		2、注入指定值：@Value 注解处理场景。QualifierAnnotationAutowireCandidateResolver 处理 @Value 注解时，会读取 @Value 对应的值进行注入。如果是 String 要经过三个过程：①占位符处理 -> ②EL 表达式解析 -> ③类型转换，这也是一般的处理过程，BeanDefinitionValueResolver 处理 String 对象也是这个过程。
+	 * 		3、集合依赖查询：直接全部委托给 resolveMultipleBeans 方法。
+	 * 		4、单个依赖查询：先调用 findAutowireCandidates 查找所有可用的依赖，如果有多个依赖，则根据规则匹配： @Primary -> @Priority -> ③方法名称或字段名称。
+	 * @param descriptor
+	 * @param beanName
+	 * @param autowiredBeanNames
+	 * @param typeConverter
+	 * @return
+	 * @throws BeansException
+	 */
 	@Nullable
 	public Object doResolveDependency(DependencyDescriptor descriptor, @Nullable String beanName,
 			@Nullable Set<String> autowiredBeanNames, @Nullable TypeConverter typeConverter) throws BeansException {
 
 		InjectionPoint previousInjectionPoint = ConstructorResolver.setCurrentInjectionPoint(descriptor);
 		try {
+			// 1. 快速查找，根据名称查找。AutowiredAnnotationBeanPostProcessor用到
 			Object shortcut = descriptor.resolveShortcut(this);
 			if (shortcut != null) {
 				return shortcut;
 			}
 
+			// 2. 注入指定值，QualifierAnnotationAutowireCandidateResolver解析@Value会用到
 			Class<?> type = descriptor.getDependencyType();
 			Object value = getAutowireCandidateResolver().getSuggestedValue(descriptor);
 			if (value != null) {
 				if (value instanceof String) {
+					// 2.1 占位符解析
 					String strVal = resolveEmbeddedValue((String) value);
 					BeanDefinition bd = (beanName != null && containsBean(beanName) ?
 							getMergedBeanDefinition(beanName) : null);
+					// 2.2 Spring EL 表达式
 					value = evaluateBeanDefinitionString(strVal, bd);
 				}
 				TypeConverter converter = (typeConverter != null ? typeConverter : getTypeConverter());
 				try {
+					// 2.3 类型转换
 					return converter.convertIfNecessary(value, type, descriptor.getTypeDescriptor());
 				}
 				catch (UnsupportedOperationException ex) {
@@ -1273,12 +1303,21 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 			}
 
+			// 3. 集合依赖，如 Array、List、Set、Map。内部查找依赖也是使用findAutowireCandidates
 			Object multipleBeans = resolveMultipleBeans(descriptor, beanName, autowiredBeanNames, typeConverter);
 			if (multipleBeans != null) {
 				return multipleBeans;
 			}
 
+			// 4. 单个依赖查询
+			/*
+			 * 思考：findAutowireCandidates 返回的为什么是对象类型，而不是实例对象？
+			 * matchingBeans 中的 Object 对象可能是对象类型，而不全部是实例对象。
+			 * 因为 findAutowireCandidates 方法是根据类型 type 查找名称 beanNames，如果容器中该 beanName 还没有实例化，
+			 * findAutowireCandidates 不会画蛇添足直接实例化该 bean，当然如果已经实例化了会直接返回这个 bean。
+			 */
 			Map<String, Object> matchingBeans = findAutowireCandidates(beanName, type, descriptor);
+			// 4.1 没有查找到依赖，判断descriptor.require
 			if (matchingBeans.isEmpty()) {
 				if (isRequired(descriptor)) {
 					raiseNoMatchingBeanFound(type, descriptor.getResolvableType(), descriptor);
@@ -1289,8 +1328,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			String autowiredBeanName;
 			Object instanceCandidate;
 
+			// 4.2 有多个，如何过滤
 			if (matchingBeans.size() > 1) {
+				// 4.2.1 @Primary -> @Priority -> 方法名称或字段名称匹配
 				autowiredBeanName = determineAutowireCandidate(matchingBeans, descriptor);
+				// 4.2.2 根据是否必须，抛出异常。注意这里如果是集合处理，则返回null
 				if (autowiredBeanName == null) {
 					if (isRequired(descriptor) || !indicatesMultipleBeans(type)) {
 						return descriptor.resolveNotUnique(descriptor.getResolvableType(), matchingBeans);
@@ -1311,9 +1353,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				instanceCandidate = entry.getValue();
 			}
 
+			// 4.3 到了这，说明有且仅有命中一个
 			if (autowiredBeanNames != null) {
 				autowiredBeanNames.add(autowiredBeanName);
 			}
+			// 4.4 实际上调用 getBean(autowiredBeanName, type)。但什么情况下会出现这种场景？
 			if (instanceCandidate instanceof Class) {
 				instanceCandidate = descriptor.resolveCandidate(autowiredBeanName, type, this);
 			}
@@ -1477,6 +1521,39 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * @throws BeansException in case of errors
 	 * @see #autowireByType
 	 * @see #autowireConstructor
+	 * <p>根据类型查找依赖
+	 * 真正在 Spring IoC 容器中进行依赖查找，依赖查找的来源有三：
+	 * 		①内部对象
+	 * 		②托管Bean
+	 * 		③BeanDefinition。
+	 * 	最后如果无法查找到依赖对象，会进行一些补偿机制，想方设法获取注入的对象，如泛型补偿，自引用补偿。
+	 *
+	 * <p>resolveDependency 方法对 Optional、延迟注入、懒加载注入等分别进行了处理。之后 doResolveDependency 在正式查找之前看能不能快速查找，
+	 * 	如缓存 beanName、@Value 等快速指定需要注入的值，避免通过类型查找，最后才对集合依赖和单一依赖分别进行了处理。
+	 * 	实际上，无论是集合依赖还是单一依赖查找，本质上都是调用 findAutowireCandidates 进行类型依赖查找。
+	 *
+	 * <p>从 findAutowireCandidates 方法，我们可以看到 Spring IoC 依赖注入的来源：
+	 * 	1、先查找 Spring IoC 内部依赖 resolvableDependencies。
+	 * 		在 AbstractApplicationContext#prepareBeanFactory 方法中默认设置了如下内部依赖：BeanFactory、ResourceLoader、ApplicationEventPublisher、ApplicationContext。
+	 * 	2、在父子容器进行类型查找：
+	 * 		查找类型匹配的 beanNames，beanFactory#beanNamesForType 方法根据类型查找是，先匹配单例实例类型（包括 Spring 托管 Bean），再匹配 BeanDefinition 的类型。
+	 * 		从这一步，我们可以看到 Spring 依赖注入的另外两个来源：一是 Spring 托管的外部 Bean，二是 Spring BeanDefinition。
+	 *
+	 * <p> findAutowireCandidates 大致可以分为三步：先查找内部依赖，再根据类型查找，最后没有可注入的依赖则进行补偿。
+	 * 	1.查找内部依赖：Spring IoC 容器本身相关依赖，这部分内容是用户而言是透明的，也不用感知。resolvableDependencies 集合中注册如 BeanFactory、ApplicationContext 、ResourceLoader、ApplicationEventPublisher 等。
+	 * 	2.根据类型查找：包括 ①外部托管 Bean ②注册 BeanDefinition。类型查找调用 beanFactory#beanNamesForType 方法，详见 Spring IoC 依赖查找之类型自省。我们来看一下如何过滤的。
+	 * 		2.1.自身引用：isSelfReference 方法判断 beanName 和 candidate 是否是同一个对象，包括两种情况：一是名称完全相同，二是 candidate 对应的工厂对象创建了 beanName。
+	 * 		2.2.是否可以注入：底层实际调用 resolver.isAutowireCandidate 方法进行过滤，包含三重规则：①bd.autowireCandidate=true -> ②泛型匹配 -> ③@Qualifier。下面会详细介绍这个方法。
+	 * 	3.补偿机制：如果依赖查找无法匹配，怎么办？Spring 提供了两种补偿机制：一是泛型补偿，允许注入对象对象的泛型无法解析，二是自身引用补偿，对这两种机制使用如下：
+	 * 		3.1.先使用泛型补偿，不允许自身引用：即 fallbackDescriptor。此时如果是集合依赖，对象必须是 @Qualifier 类型。
+	 * 		3.2.允许泛型补偿和自身引用补偿：但如果是集合依赖，必须过滤自己本身，即 beanName.equals(candidate) 必须剔除。
+	 *
+	 * <p>现在 findAutowireCandidates 处理过程，基本上很清晰了，还有两个小问题需要再澄清一下：
+	 * 		1.isAutowireCandidate 方法是如何过滤修改对象？
+	 * 		2.addCandidateEntry 最终最终返回的都是实例对象吗？
+	 * 先看一下 addCandidateEntry 方法，如果对象还未实例化，Spring 不会画蛇添足将 candidateName 通过 getName 提前实例化。
+	 * 之所以要强调这点，是因为 Spring 的 Bean 生命周期，其实从 Bean 还未实例化就已经开始，Spring 会尽可能的不要初始化该 Bean，
+	 * 除非显式调用 getBean 或不得不实例化时，这点在阅读源码是会感受非常强烈，我们在使用 Spring API 时也要非常注意这点。
 	 */
 	protected Map<String, Object> findAutowireCandidates(
 			@Nullable String beanName, Class<?> requiredType, DependencyDescriptor descriptor) {
@@ -1484,6 +1561,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		String[] candidateNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 				this, requiredType, true, descriptor.isEager());
 		Map<String, Object> result = new LinkedHashMap<>(candidateNames.length);
+		// 1. Spring IOC 内部依赖 resolvableDependencies
 		for (Map.Entry<Class<?>, Object> classObjectEntry : this.resolvableDependencies.entrySet()) {
 			Class<?> autowiringType = classObjectEntry.getKey();
 			if (autowiringType.isAssignableFrom(requiredType)) {
@@ -1495,21 +1573,29 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 			}
 		}
+		// 2. 类型查找：本质上递归调用BeanFactory#beanNamesForType。先匹配实例类型，在匹配bd
 		for (String candidate : candidateNames) {
+			// 2.1 isSelfReference说明beanName和candidate本质是同一个对象
+			//     isAutowireCandidate进一步匹配bd.autowireCandidate、泛型、@@Qualifier等进行过滤
 			if (!isSelfReference(beanName, candidate) && isAutowireCandidate(candidate, descriptor)) {
+				// 2.2 添加到候选对象中
 				addCandidateEntry(result, candidate, descriptor, requiredType);
 			}
 		}
+		// 3. 补偿机制：如果依赖查找无法匹配，怎么办？包含泛型补偿和自身引用补偿两种。
 		if (result.isEmpty()) {
 			boolean multiple = indicatesMultipleBeans(requiredType);
 			// Consider fallback matches if the first pass failed to find anything...
+			// 3.1 fallbackDescriptor：泛型补偿，实际上是允许注入对象类型的泛型存在无法解析的情况。
 			DependencyDescriptor fallbackDescriptor = descriptor.forFallbackMatch();
+			// 3.2 补偿1：不允许自称依赖，但如果是集合依赖，需要过滤非@Qualifier对象。什么场景？
 			for (String candidate : candidateNames) {
 				if (!isSelfReference(beanName, candidate) && isAutowireCandidate(candidate, fallbackDescriptor) &&
 						(!multiple || getAutowireCandidateResolver().hasQualifier(descriptor))) {
 					addCandidateEntry(result, candidate, descriptor, requiredType);
 				}
 			}
+			// 3.3 补偿2：允许自称依赖，但如果是集合依赖，注入的集合依赖中需要过滤自己。
 			if (result.isEmpty() && !multiple) {
 				// Consider self references as a final pass...
 				// but in the case of a dependency collection, not the very same bean itself.
@@ -1528,21 +1614,26 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	/**
 	 * Add an entry to the candidate map: a bean instance if available or just the resolved
 	 * type, preventing early bean initialization ahead of primary candidate selection.
+	 * <p>
+	 * 在大部分场景中，addCandidateEntry 方法只会以返回该 candidateName 对应的类型，而不会提前实例该对象。
 	 */
 	private void addCandidateEntry(Map<String, Object> candidates, String candidateName,
 			DependencyDescriptor descriptor, Class<?> requiredType) {
-
+		// 1. 集合依赖，直接调用 getBean(candidateName) 实例化
 		if (descriptor instanceof MultiElementDescriptor) {
+			// descriptor.resolveCandidate 基本上都是直接调用 getName(beanName) 实例化 bean。
 			Object beanInstance = descriptor.resolveCandidate(candidateName, requiredType, this);
 			if (!(beanInstance instanceof NullBean)) {
 				candidates.put(candidateName, beanInstance);
 			}
 		}
+		// 2. 已经实例化，直接返回实例对象
 		else if (containsSingleton(candidateName) || (descriptor instanceof StreamDependencyDescriptor &&
 				((StreamDependencyDescriptor) descriptor).isOrdered())) {
 			Object beanInstance = descriptor.resolveCandidate(candidateName, requiredType, this);
 			candidates.put(candidateName, (beanInstance instanceof NullBean ? null : beanInstance));
 		}
+		// 3. 只获取candidateName的类型，真正需要注入时才实例化对象
 		else {
 			candidates.put(candidateName, getType(candidateName));
 		}

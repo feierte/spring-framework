@@ -62,17 +62,29 @@ public class MethodParameter {
 
 	private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 
-
+	/**
+	 * 当前Method或构造函数对象
+	 * <p>Executable类是Method和Constructor的父类，一个抽象类，直接继承AccessibleObject类，并实现Member与GenericDeclaration接口，
+	 * 主要作用是实现类型变量的相关操作以及展示方法的信息。
+	 */
 	private final Executable executable;
+
 
 	private final int parameterIndex;
 
+	/**
+	 * 当前方法/构造函数 {@link #parameterIndex} 位置的参数
+	 */
 	@Nullable
 	private volatile Parameter parameter;
 
+	/**
+	 * 目标类型的嵌套等级（通常为1；比如，在列表的列表的情况下，则1表示嵌套列表，而2表示嵌套列表的元素）
+	 */
 	private int nestingLevel;
 
 	/** Map from Integer level to Integer type index. */
+	// 从整数嵌套等级到整数类型索引的映射
 	@Nullable
 	Map<Integer, Integer> typeIndexesPerLevel;
 
@@ -80,21 +92,39 @@ public class MethodParameter {
 	@Nullable
 	private volatile Class<?> containingClass;
 
+	/**
+	 * 当前参数类型
+	 */
 	@Nullable
 	private volatile Class<?> parameterType;
 
+	/**
+	 * 当前泛型参数类型
+	 */
 	@Nullable
 	private volatile Type genericParameterType;
 
+	/**
+	 * 当前参数的注解
+	 */
 	@Nullable
 	private volatile Annotation[] parameterAnnotations;
 
+	/**
+	 * 用于发现 方法和构造函数的 参数名 的发现器
+	 */
 	@Nullable
 	private volatile ParameterNameDiscoverer parameterNameDiscoverer;
 
+	/**
+	 * 当前参数名
+	 */
 	@Nullable
 	private volatile String parameterName;
 
+	/**
+	 * 内嵌的 方法参数
+	 */
 	@Nullable
 	private volatile MethodParameter nestedMethodParameter;
 

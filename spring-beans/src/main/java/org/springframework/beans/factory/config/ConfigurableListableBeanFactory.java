@@ -101,6 +101,8 @@ public interface ConfigurableListableBeanFactory
 	 * @param descriptor the descriptor of the dependency to resolve
 	 * @return whether the bean should be considered as autowire candidate
 	 * @throws NoSuchBeanDefinitionException if there is no bean with the given name
+	 * <p>判断候选对象是否可用。
+	 * 实际是都是委托给 AutowireCandidateResolver#isAutowireCandidate 接口判断，Spring 中默认的实现是 ContextAnnotationAutowireCandidateResolver。
 	 */
 	boolean isAutowireCandidate(String beanName, DependencyDescriptor descriptor)
 			throws NoSuchBeanDefinitionException;

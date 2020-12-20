@@ -392,6 +392,9 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * @throws BeansException if dependency resolution failed for any other reason
 	 * @since 2.5
 	 * @see DependencyDescriptor
+	 * <p>
+	 * resolveDependency 是 Spring 进行依赖查找的核心 API。弄明白了 resolveDependency，基本上依赖注入的问题也就搞明白了一半。
+	 * resolveDependency 本质是根据类型查找依赖，调用 beanFactory#beanNamesForType 方法根据类型查找依赖名称。
 	 */
 	@Nullable
 	Object resolveDependency(DependencyDescriptor descriptor, @Nullable String requestingBeanName,

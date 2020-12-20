@@ -28,6 +28,9 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @author Mark Fisher
  * @since 2.5
+ *
+ * <p>判断 DependencyDescriptor 是否是可注入对象。
+ * Spring IoC 容器默认实现为 ContextAnnotationAutowireCandidateResolver。
  */
 public interface AutowireCandidateResolver {
 
