@@ -1,11 +1,9 @@
-package org.springframework.demo.ioc.beanfactory.di;
+package org.springframework.demo.ioc.beanfactory.dependency.di;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.demo.ioc.beanfactory.User;
 import org.springframework.demo.ioc.beanfactory.UserHolder;
 
 /**

@@ -3,6 +3,8 @@ package org.springframework.demo.ioc.beanfactory;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.core.io.Resource;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -16,7 +18,7 @@ import java.util.Properties;
 @ToString*/
 public class User implements BeanNameAware {
 
-    private int id;
+    private long id;
 
     private String name;
 
@@ -65,11 +67,21 @@ public class User implements BeanNameAware {
 		return user;
 	}
 
-	public int getId() {
+	@PostConstruct
+	public void init() {
+		System.out.println("User Bean [" + beanName + "] 初始化...");
+	}
+
+	@PreDestroy
+	public void destroy() {
+		System.out.println("User Bean [" + beanName + "] 销毁中...");
+	}
+
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

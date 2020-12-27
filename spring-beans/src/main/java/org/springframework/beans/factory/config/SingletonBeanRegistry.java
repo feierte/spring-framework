@@ -54,6 +54,10 @@ public interface SingletonBeanRegistry {
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet
 	 * @see org.springframework.beans.factory.DisposableBean#destroy
 	 * @see org.springframework.beans.factory.support.BeanDefinitionRegistry#registerBeanDefinition
+	 * <p>以指定的名称 把Object放入到 SingletonBeanRegistry中
+	 * 1、给定的Object必须是被完全初始化了的（比如new出来的）。
+	 * 2、此注册单例的接口不会提供任何用以初始化的回调函数（比如：InitializingBean#afterPropertiesSet等都是不会被执行的）
+	 * 3、如果侧接口的实现类是一个BeanFactory，最好最好最好将你的类注册成BeanDefinition，而不是直接注册成单例对象（这样可以使你定义的bean收到InitializingBean和DisposableBean的回调）
 	 */
 	void registerSingleton(String beanName, Object singletonObject);
 
@@ -69,6 +73,8 @@ public interface SingletonBeanRegistry {
 	 * @param beanName the name of the bean to look for
 	 * @return the registered singleton object, or {@code null} if none found
 	 * @see ConfigurableListableBeanFactory#getBeanDefinition
+	 * <p>仅仅返回已经初始化完成的Bean，对于还没有初始化的BeanDefinition则不予考虑
+	 * 注意：该方法并不支持 对Bean的别名查找，如果只有别名的话，要先将别名转换为正式名（通过transformedBeanName方法）
 	 */
 	@Nullable
 	Object getSingleton(String beanName);

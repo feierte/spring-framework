@@ -995,6 +995,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			else { // 表示仍然在启动  注册的状态~~~就很好处理了 put仅需名字add进去
 				// Still in startup registration phase
 				this.beanDefinitionMap.put(beanName, beanDefinition);
+				// 这里为什么已经添加了beanDefinitionMap，还要添加到beanDefinitionNames中？
+				// 是因为beanDefinitionMap是map是无序的，而beanDefinitionNames是ArrayList，能保证bean注入到容器中的顺序
 				this.beanDefinitionNames.add(beanName);
 				// 手动注册的BeanNames里面移除~~~ 因为有Bean定义信息了，所以现在不是手动直接注册的Bean单例~~~~
 				removeManualSingletonName(beanName);

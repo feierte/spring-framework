@@ -1,4 +1,4 @@
-package org.springframework.demo.ioc.beanfactory.di;
+package org.springframework.demo.ioc.beanfactory.dependency.di;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;

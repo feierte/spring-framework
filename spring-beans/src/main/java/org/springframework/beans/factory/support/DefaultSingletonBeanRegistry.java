@@ -81,25 +81,29 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * Spring就用这三级缓存巧妙的解决了循环依赖问题。
 	 */
 	/** Cache of singleton objects: bean name to bean instance. */
-	// “一级缓存”
+	// “一级缓存”，所有的单例bean最终都会到这里来
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 
 	/** Cache of singleton factories: bean name to ObjectFactory. */
-	// “三级缓存”
+	// “三级缓存”，缓存了bean name和ObjectFactory，因为最终的Bean都是通过ObjectFactory的回调方法来创建的
 	private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(16);
 
 	/** Cache of early singleton objects: bean name to bean instance. */
-	// “二级缓存”
+	// “二级缓存”，存放singletonFactory制造出来的 singleton 的缓存早期单例对象缓存
 	private final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>(16);
 
 	/** Set of registered singletons, containing the bean names in registration order. */
+	// 存放已经注册好的单例bean的名称， 和singletonObjects的bean名称保持同步
 	private final Set<String> registeredSingletons = new LinkedHashSet<>(256);
 
 	/** Names of beans that are currently in creation. */
+	// 目前正在创建中的单例bean的名称集合 存放着正在初始化的bean，即不要再次发起初始化了
 	private final Set<String> singletonsCurrentlyInCreation =
 			Collections.newSetFromMap(new ConcurrentHashMap<>(16));
 
 	/** Names of beans currently excluded from in creation checks. */
+	// 直接缓存当前不能加载的bean
+	// 这个值是留给开发者自己set的，Spring自己不会往里面放值
 	private final Set<String> inCreationCheckExclusions =
 			Collections.newSetFromMap(new ConcurrentHashMap<>(16));
 
@@ -108,20 +112,24 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	private Set<Exception> suppressedExceptions;
 
 	/** Flag that indicates whether we're currently within destroySingletons. */
+	// 标志，表示我们目前是否在销毁单例中
 	private boolean singletonsCurrentlyInDestruction = false;
 
 	/** Disposable bean instances: bean name to disposable instance. */
+	// 一次性Bean  也就是说Bean是DisposableBean接口的实现
+	// 实现DisposableBean接口的类，在类销毁时，会调用destroy()方法，开发人员可以重新该方法完成自己的工作
+	// 目前像里添加的只有`AbstractBeanFactory#registerDisposableBeanIfNecessary`  其实还是来自于  doCreateBean方法
 	private final Map<String, Object> disposableBeans = new LinkedHashMap<>();
 
 	/** Map between containing bean names: bean name to Set of bean names that the bean contains. */
 	private final Map<String, Set<String>> containedBeanMap = new ConcurrentHashMap<>(16);
 
 	/** Map between dependent bean names: bean name to Set of dependent bean names. */
-	// 存储指定的bean与 该bean被哪些其他bean组件依赖 的缓存（依赖我的）
+	// 存储指定bean与 该bean所依赖的其他bean组件 的缓存（我依赖的）
 	private final Map<String, Set<String>> dependentBeanMap = new ConcurrentHashMap<>(64);
 
 	/** Map between depending bean names: bean name to Set of bean names for the bean's dependencies. */
-	// 存储指定bean与 该bean所依赖的其他bean组件 的缓存（我依赖的）
+	// 存储指定的bean与 该bean被哪些其他bean组件依赖 的缓存（依赖我的）
 	private final Map<String, Set<String>> dependenciesForBeanMap = new ConcurrentHashMap<>(64);
 
 
@@ -129,7 +137,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	public void registerSingleton(String beanName, Object singletonObject) throws IllegalStateException {
 		Assert.notNull(beanName, "Bean name must not be null");
 		Assert.notNull(singletonObject, "Singleton object must not be null");
-		synchronized (this.singletonObjects) {
+		synchronized (this.singletonObjects) { // 因为这里有两步操作：先get在addSingleton，所以需要加锁操作
 			Object oldObject = this.singletonObjects.get(beanName);
 			if (oldObject != null) {
 				throw new IllegalStateException("Could not register object [" + singletonObject +
@@ -146,6 +154,9 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * @param singletonObject the singleton object
 	 */
 	protected void addSingleton(String beanName, Object singletonObject) {
+		// 可以看到该方法在registerSingleton里被调用时已经加了锁，为什么这里还要加锁？
+		// 因为该方法可能会被单独调用，因为锁的是同一个对象（singletonObjects），按照锁的可重进入，所以这里不会增加新的锁。
+		// 如果该方法在没有加锁的方法中被调用，该方法的锁可以很好的起到线程安全的作用
 		synchronized (this.singletonObjects) {
 			this.singletonObjects.put(beanName, singletonObject);
 			this.singletonFactories.remove(beanName);

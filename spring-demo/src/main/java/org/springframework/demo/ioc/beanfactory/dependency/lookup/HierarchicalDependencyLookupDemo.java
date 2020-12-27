@@ -1,4 +1,4 @@
-package org.springframework.demo.ioc.beanfactory.lookup;
+package org.springframework.demo.ioc.beanfactory.dependency.lookup;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.HierarchicalBeanFactory;

@@ -1,4 +1,4 @@
-package org.springframework.demo.ioc.beanfactory.di;
+package org.springframework.demo.ioc.beanfactory.dependency.di;
 
 /**
  * @author Jie Zhao
