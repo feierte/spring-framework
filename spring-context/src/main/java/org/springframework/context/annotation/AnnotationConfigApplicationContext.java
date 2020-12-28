@@ -65,6 +65,11 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	public AnnotationConfigApplicationContext() {
 		this.reader = new AnnotatedBeanDefinitionReader(this);
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
+		/*
+		 * 从上面的这个构造函数可以顺便提一句：如果你仅仅是这样
+		 * ApplicationContext applicationContext = new AnnotationConfigApplicationContext();
+		 * 容器是不会启动的（也就是不会执行refresh()的），这时候需要自己之后再手动启动容器
+		 */
 	}
 
 	/**

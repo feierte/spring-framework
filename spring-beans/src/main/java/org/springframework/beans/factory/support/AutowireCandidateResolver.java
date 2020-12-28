@@ -29,7 +29,7 @@ import org.springframework.lang.Nullable;
  * @author Mark Fisher
  * @since 2.5
  *
- * <p>判断 DependencyDescriptor 是否是可注入对象。
+ * <p>判断 DependencyDescriptor 是否是可注入对象。（用于确定特定的Bean定义是否符合特定的依赖项的候选者的策略接口）
  * Spring IoC 容器默认实现为 ContextAnnotationAutowireCandidateResolver。
  */
 public interface AutowireCandidateResolver {
@@ -43,6 +43,7 @@ public interface AutowireCandidateResolver {
 	 * @param descriptor the descriptor for the target method parameter or field
 	 * @return whether the bean definition qualifies as autowire candidate
 	 * @see org.springframework.beans.factory.config.BeanDefinition#isAutowireCandidate()
+	 * <p>判断给定的bean definition是否允许 被依赖注入（作为依赖的候选者）
 	 */
 	default boolean isAutowireCandidate(BeanDefinitionHolder bdHolder, DependencyDescriptor descriptor) {
 		return bdHolder.getBeanDefinition().isAutowireCandidate();
@@ -56,6 +57,7 @@ public interface AutowireCandidateResolver {
 	 * non-required status some other way (e.g. through a parameter annotation)
 	 * @since 5.0
 	 * @see DependencyDescriptor#isRequired()
+	 * <p>给定的descriptor 是否是必须的
 	 */
 	default boolean isRequired(DependencyDescriptor descriptor) {
 		return descriptor.isRequired();

@@ -84,6 +84,7 @@ public class AnnotatedBeanDefinitionReader {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		Assert.notNull(environment, "Environment must not be null");
 		this.registry = registry;
+		// ConditionEvaluator完成条件注解的判断，在后面的SpringBoot中有大量的应用
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
 		// registerAnnotationConfigProcessors顾名思义，就是注册用于处理注解的后置处理器
 		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
@@ -251,7 +252,13 @@ public class AnnotatedBeanDefinitionReader {
 			@Nullable Class<? extends Annotation>[] qualifiers, @Nullable Supplier<T> supplier,
 			@Nullable BeanDefinitionCustomizer[] customizers) {
 
+		// 先把此实体类转换为一个BeanDefinition
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
+		/*
+		 * abd.getMetadata()返回的AnnotationMetadata，该元数据包括注解信息、是否是内部类、类Class基本信息等等
+		 * 此处由conditionEvaluator#shouldSkip进行过滤，此Class是否是配置类。
+		 * 大体逻辑为：必须有 @Configuration 修饰，然后解析一些Condition注解，看是否排除~~ ？？？
+		 */
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
 		}
@@ -259,7 +266,7 @@ public class AnnotatedBeanDefinitionReader {
 		abd.setInstanceSupplier(supplier);
 		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
 		abd.setScope(scopeMetadata.getScopeName());
-		// 这里是为bean创建名称，如果指定了名称就是用指定的名称，否则生成类名小写的默认名称
+		// 这里是为bean创建名称，如果指定了名称就是用指定的名称，否则生成类名小写（AnnotationBeanNameGenerator）的默认名称
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
 
 		// 处理通用注解 @Lazy @Primary @DependsOn @Role @Description
@@ -278,6 +285,8 @@ public class AnnotatedBeanDefinitionReader {
 				}
 			}
 		}
+
+		// 自定义信息
 		// 查看是否传入了BeanDefinitionCustomizer，如果传入了，可以对BeanDefinition进行一些自定义操作
 		if (customizers != null) {
 			for (BeanDefinitionCustomizer customizer : customizers) {
