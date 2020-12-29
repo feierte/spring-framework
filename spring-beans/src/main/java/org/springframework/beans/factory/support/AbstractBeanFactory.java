@@ -1112,11 +1112,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	public BeanDefinition getMergedBeanDefinition(String name) throws BeansException {
 		String beanName = transformedBeanName(name);
 		// Efficiently check whether bean definition exists in this factory.
+		// 如果当前BeanFactory不包含此BeanDefinition，则递归的向父容器中查找
 		if (!containsBeanDefinition(beanName) && getParentBeanFactory() instanceof ConfigurableBeanFactory) {
 			return ((ConfigurableBeanFactory) getParentBeanFactory()).getMergedBeanDefinition(beanName);
 		}
 		// Resolve merged bean definition locally.
-		return getMergedLocalBeanDefinition(beanName);
+		// 如果当前BeanFactory中包含此BeanDefinition，则对该BeanDefinition合并
+		return getMergedLocalBeanDefinition(beanName); // 只和当前BeanFactory的parent合并
 	}
 
 	@Override
@@ -1368,9 +1370,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			RootBeanDefinition previous = null;
 
 			// Check with full lock now in order to enforce the same merged instance.
-			// containingBd传进来是null的话,检测在这之间是否已经被合并过
 			if (containingBd == null) {
-				mbd = this.mergedBeanDefinitions.get(beanName);
+				mbd = this.mergedBeanDefinitions.get(beanName);// containingBd传进来是null的话,检测在这之间是否已经被合并过
 			}
 			// 没有合并过，或者合并过但是需要重新合并（mbd.stale）
 			if (mbd == null || mbd.stale) {
