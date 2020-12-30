@@ -122,6 +122,7 @@ class ConstructorResolver {
 	 * or {@code null} if none (-> use constructor argument values from bean definition)
 	 * @return a BeanWrapper for the new instance
 	 * <p>根据合适的参数列表，来匹配到合适的构造函数进行bean的创建
+	 * 注意：对构造函数中参数的注入是按照参数的类型进入注入的
 	 */
 	public BeanWrapper autowireConstructor(String beanName, RootBeanDefinition mbd,
 			@Nullable Constructor<?>[] chosenCtors, @Nullable Object[] explicitArgs) {
