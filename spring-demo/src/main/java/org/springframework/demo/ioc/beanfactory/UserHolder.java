@@ -2,11 +2,13 @@ package org.springframework.demo.ioc.beanfactory;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.*;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
 
-public class UserHolder implements BeanNameAware, BeanClassLoaderAware, BeanFactoryAware,
-        InitializingBean, SmartInitializingSingleton {
+public class UserHolder implements BeanNameAware, BeanClassLoaderAware, BeanFactoryAware, EnvironmentAware,
+        InitializingBean, SmartInitializingSingleton, DisposableBean {
 
     private User user;
 
@@ -107,4 +109,21 @@ public class UserHolder implements BeanNameAware, BeanClassLoaderAware, BeanFact
         this.beanName = name;
     }
 
+    private Environment environment;
+
+	@Override
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
+	}
+
+	@Override
+	public void destroy() throws Exception {
+		// preDestroy : The user holder V10
+		this.description = "The user holder V11";
+		System.out.println("destroy() = " + description);
+	}
+
+	protected void finalize() throws Throwable {
+		System.out.println("The UserHolder is finalized...");
+	}
 }
