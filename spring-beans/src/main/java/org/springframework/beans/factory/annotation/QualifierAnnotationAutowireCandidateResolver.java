@@ -56,6 +56,8 @@ import org.springframework.util.StringUtils;
  * @see AutowireCandidateQualifier
  * @see Qualifier
  * @see Value
+ * <p>该类不仅能处理泛型依赖注入，还能处理@Qualifier和@Value注解注入
+ * 该类4.0之前是继承自SimpleAutowireCandidateResolver，4.0之后才继承自GenericTypeAwareAutowireCandidateResolver
  */
 public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwareAutowireCandidateResolver {
 
@@ -343,6 +345,9 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 	/**
 	 * Determine whether the given dependency declares a value annotation.
 	 * @see Value
+	 * <p>
+	 * 该方法是3.0后提供的，因为{@code @Value}注解是Spring 3.0才引入的强大注解
+	 * 需要注意的是：该类不负责解析占位符，只负责把字符串返回，最终交给evaluateBeanDefinitionString(String，BeanDefinition)解析
 	 */
 	@Override
 	@Nullable

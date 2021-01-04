@@ -41,6 +41,8 @@ import org.springframework.util.ClassUtils;
  *
  * @author Juergen Hoeller
  * @since 4.0
+ * <p>增加了对泛型的注入。
+ * Spring4.0后的泛型依赖注入主要是它来实现的，所以这个类也是Spring4.0增加的。
  */
 public class GenericTypeAwareAutowireCandidateResolver extends SimpleAutowireCandidateResolver
 		implements BeanFactoryAware, Cloneable {
@@ -72,6 +74,7 @@ public class GenericTypeAwareAutowireCandidateResolver extends SimpleAutowireCan
 	/**
 	 * Match the given dependency type with its generic type information against the given
 	 * candidate bean definition.
+	 * <p>处理泛型依赖的核心方法，也是该实现类的灵魂
 	 */
 	protected boolean checkGenericTypeMatch(BeanDefinitionHolder bdHolder, DependencyDescriptor descriptor) {
 		ResolvableType dependencyType = descriptor.getResolvableType();

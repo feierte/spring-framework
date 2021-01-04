@@ -45,6 +45,8 @@ import org.springframework.util.Assert;
  *
  * @author Juergen Hoeller
  * @since 4.0
+ * <p>AutowireCandidateResolver接口的完整实现，它不仅支持处理泛型依赖注入，处理@Qualifier和@Value注解注入，
+ * 还支持{@code @Lazy}延迟处理。是功能最全的AutowireCandidateResolver。
  */
 public class ContextAnnotationAutowireCandidateResolver extends QualifierAnnotationAutowireCandidateResolver {
 
