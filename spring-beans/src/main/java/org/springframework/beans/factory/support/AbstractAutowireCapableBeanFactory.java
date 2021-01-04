@@ -1626,7 +1626,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				// even if it technically is a unsatisfied, non-simple property.
 				// 如果是Object类型，不进行装配
 				if (Object.class != pd.getPropertyType()) {
-					// 获取相关写方法参数
+					// 获取相关写方法（set方法）参数
 					MethodParameter methodParam = BeanUtils.getWriteMethodParameter(pd);
 					// Do not allow eager init for type matching in case of a prioritized post-processor.
 					// 看看实例是否实现了PriorityOrdered接口，若没有实现  就稍后点加载吧-----
@@ -1921,7 +1921,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
 			// 执行后置处理器 applyBeanPostProcessorsBeforeInitialization
-			// 思考：BeanPostProcessor注入时机？
+			// 思考：BeanPostProcessor注入时机？ ConfigurableBeanFactory#addBeanPostProcessor(BeanPostProcessor)
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
@@ -1998,6 +1998,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (StringUtils.hasLength(initMethodName) &&
 					!(isInitializingBean && "afterPropertiesSet".equals(initMethodName)) &&
 					!mbd.isExternallyManagedInitMethod(initMethodName)) {
+				// 调用<bean/>标签中init-method属性指定的 自定义初始化方法
 				invokeCustomInitMethod(beanName, bean, mbd);
 			}
 		}

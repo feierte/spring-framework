@@ -1228,7 +1228,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Nullable
 	public Object resolveDependency(DependencyDescriptor descriptor, @Nullable String requestingBeanName,
 			@Nullable Set<String> autowiredBeanNames, @Nullable TypeConverter typeConverter) throws BeansException {
-
+		// 获取工厂的参数名发现器，设置到descriptor中。使得descriptor初始化基础方法参数的参数名发现。
+		// 此时，该方法实际上并没有尝试检索参数名称；它仅允许发现再应用程序调用getDependencyName时发生
 		descriptor.initParameterNameDiscovery(getParameterNameDiscoverer());
 
 		/*
@@ -1238,6 +1239,17 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		if (Optional.class == descriptor .getDependencyType()) {
 			return createOptionalDependency(descriptor, requestingBeanName);
 		}
+		/*
+		 * ObjectFactory则只是一个普通的对象工厂接口。在Spring中主要两处用了它:
+		 * 	1. org.springframework.beans.factory.config.Scope.get(String, ObjectFactory).这个方法的目的就是从对应的域中获取到指定名称的对象。
+		 * 		为什么要传入一个objectFactory呢？主要是为了方便我们扩展自定义的域，而不是仅仅使用request，session等域。
+		 * 	2. {@link org.springframework.beans.factory.config.ConfigurableListableBeanFactory#registerResolvableDependency(Class, Object)}
+		 * 		autowiredValue这个参数可能就是一个ObjectFactory，主要是为了让注入点能够被延迟注入
+		 * 	ObjectProvider:ObjectFactory的一种变体，专门为注入点设置，允许程序选择和扩展的非唯一处理。
+		 * 		具体用法参考博客：https://blog.csdn.net/qq_41907991/article/details/105123387
+		 *
+		 * 	如果descriptor的依赖类型是ObjectFactory或者是ObjectProvider
+		 */
 		else if (ObjectFactory.class == descriptor.getDependencyType() ||
 				ObjectProvider.class == descriptor.getDependencyType()) {
 			return new DependencyObjectProvider(descriptor, requestingBeanName);
@@ -1257,8 +1269,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	/**
 	 * doResolveDependency 封装了依赖查找的各种情况：
-	 * 		1、快速查找： @Autowired 注解处理场景。AutowiredAnnotationBeanPostProcessor 处理 @Autowired 注解时，如果注入的对象只有一个，会将该 bean 对应的名称缓存起来，下次直接通过名称查找会快很多。
-	 * 		2、注入指定值：@Value 注解处理场景。QualifierAnnotationAutowireCandidateResolver 处理 @Value 注解时，会读取 @Value 对应的值进行注入。如果是 String 要经过三个过程：①占位符处理 -> ②EL 表达式解析 -> ③类型转换，这也是一般的处理过程，BeanDefinitionValueResolver 处理 String 对象也是这个过程。
+	 * 		1、快速查找： @Autowired 注解处理场景。
+	 * 			AutowiredAnnotationBeanPostProcessor 处理 @Autowired 注解时，如果注入的对象只有一个，会将该 bean 对应的名称缓存起来，下次直接通过名称查找会快很多。
+	 * 		2、注入指定值：@Value 注解处理场景。
+	 * 			QualifierAnnotationAutowireCandidateResolver 处理 @Value 注解时，会读取 @Value 对应的值进行注入。
+	 * 			如果是 String 要经过三个过程：①占位符处理 -> ②EL 表达式解析 -> ③类型转换，这也是一般的处理过程，BeanDefinitionValueResolver 处理 String 对象也是这个过程。
 	 * 		3、集合依赖查询：直接全部委托给 resolveMultipleBeans 方法。
 	 * 		4、单个依赖查询：先调用 findAutowireCandidates 查找所有可用的依赖，如果有多个依赖，则根据规则匹配： @Primary -> @Priority -> ③方法名称或字段名称。
 	 * @param descriptor
