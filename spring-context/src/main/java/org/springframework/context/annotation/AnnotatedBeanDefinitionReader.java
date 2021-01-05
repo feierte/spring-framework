@@ -52,8 +52,10 @@ public class AnnotatedBeanDefinitionReader {
 
 	private BeanNameGenerator beanNameGenerator = AnnotationBeanNameGenerator.INSTANCE;
 
+	/** 解析 {@code @Scope}注解的 */
 	private ScopeMetadataResolver scopeMetadataResolver = new AnnotationScopeMetadataResolver();
 
+	/** 解析 {@code @Condition}注解的 */
 	private ConditionEvaluator conditionEvaluator;
 
 
@@ -253,6 +255,7 @@ public class AnnotatedBeanDefinitionReader {
 			@Nullable BeanDefinitionCustomizer[] customizers) {
 
 		// 先把此实体类转换为一个BeanDefinition
+		// Spring在这里写死了，直接new了几个AnnotatedGenericBeanDefinition，也就是说通过AnnotatedBeanDefinitionReader对象注册的BeanDefinition都是AnnotatedGenericBeanDefinition
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
 		/*
 		 * abd.getMetadata()返回的AnnotationMetadata，该元数据包括注解信息、是否是内部类、类Class基本信息等等
@@ -263,7 +266,9 @@ public class AnnotatedBeanDefinitionReader {
 			return;
 		}
 
+		// 在注册的时候可以提供一个supplier
 		abd.setInstanceSupplier(supplier);
+		// 解析@Scope注解，得到一个ScopeMetadata
 		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
 		abd.setScope(scopeMetadata.getScopeName());
 		// 这里是为bean创建名称，如果指定了名称就是用指定的名称，否则生成类名小写（AnnotationBeanNameGenerator）的默认名称
@@ -288,6 +293,7 @@ public class AnnotatedBeanDefinitionReader {
 
 		// 自定义信息
 		// 查看是否传入了BeanDefinitionCustomizer，如果传入了，可以对BeanDefinition进行一些自定义操作
+		// 我们注册时，可以传入一些回调方法，在解析得到bd后调用
 		if (customizers != null) {
 			for (BeanDefinitionCustomizer customizer : customizers) {
 				customizer.customize(abd);
@@ -296,6 +302,7 @@ public class AnnotatedBeanDefinitionReader {
 
 		// 将bean名称和bean定义封装成BeanDefinitionHolder对象
 		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);
+		// 这个地方主要是解析Scope中的ProxyMode属性，默认为no，不生成代理对象
 		definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 		// 将BeanDefinition注册到bean定义注册中心（BeanDefinitionRegistry）中
 		BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);
