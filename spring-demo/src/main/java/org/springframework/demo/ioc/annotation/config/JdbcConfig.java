@@ -1,8 +1,8 @@
 package org.springframework.demo.ioc.annotation.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -15,6 +15,7 @@ import java.sql.Connection;
  * @date 2020/10/28 21:47
  */
 @Configuration
+@PropertySource("classpath:db.properties")
 public class JdbcConfig {
 
 
@@ -31,13 +32,14 @@ public class JdbcConfig {
 	private String password;
 
 	@Bean
+	@Primary
 	public DataSource dataSource(){
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(driver);
 		dataSource.setUrl(url);
 		dataSource.setUsername(username);
 		dataSource.setPassword(password);
-		System.out.println(driver);
+		System.out.println("driver: " + driver);
 		return dataSource;
 	}
 
@@ -57,3 +59,4 @@ public class JdbcConfig {
 		return connection;
 	}
 }
+

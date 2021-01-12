@@ -22,10 +22,10 @@ public class SpringConfiguration {
 	@Resource
 	private DataSource dataSource;
 
-	@Bean(name = "dataSource", autowireCandidate = false)
+	/*@Bean(name = "dataSource", autowireCandidate = false)
 	public DataSource dataSource() {
 		return new DriverManagerDataSource();
-	}
+	}*/
 
 	@Bean
 	public JdbcTemplate jdbcTemplate() {
