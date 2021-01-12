@@ -2,11 +2,9 @@ package org.springframework.demo.aop;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.demo.aop.config.AopConfig;
-import org.springframework.demo.aop.domain.User;
-import org.springframework.demo.aop.service.UserService;
-import org.springframework.demo.ioc.annotation.config.JdbcConfig;
-import org.springframework.demo.ioc.annotation.config.SpringConfiguration;
+import org.springframework.demo.aop.quickstart.config.AopConfig;
+import org.springframework.demo.aop.quickstart.domain.User;
+import org.springframework.demo.aop.quickstart.service.UserService;
 import org.springframework.demo.ioc.annotation.config.YamlPropertySourceFactoryDemo;
 
 import java.util.Arrays;

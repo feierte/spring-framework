@@ -1,4 +1,4 @@
-package org.springframework.demo.aop.util;
+package org.springframework.demo.aop.quickstart.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

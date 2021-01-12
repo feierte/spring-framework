@@ -1,9 +1,9 @@
-package org.springframework.demo.aop.factory;
+package org.springframework.demo.aop.quickstart.factory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.demo.aop.service.AccountService;
-import org.springframework.demo.aop.util.TransactionManager;
+import org.springframework.demo.aop.quickstart.service.AccountService;
+import org.springframework.demo.aop.quickstart.util.TransactionManager;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationHandler;

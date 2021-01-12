@@ -1,4 +1,4 @@
-package org.springframework.demo.aop.domain;
+package org.springframework.demo.aop.quickstart.domain;
 
 import java.util.Date;
 

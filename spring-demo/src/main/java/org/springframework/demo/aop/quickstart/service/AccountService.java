@@ -1,4 +1,4 @@
-package org.springframework.demo.aop.service;
+package org.springframework.demo.aop.quickstart.service;
 
 /**
  * @author Jie Zhao

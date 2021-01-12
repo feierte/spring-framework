@@ -1,6 +1,6 @@
-package org.springframework.demo.aop.service.impl;
+package org.springframework.demo.aop.quickstart.service.impl;
 
-import org.springframework.demo.aop.service.AccountService;
+import org.springframework.demo.aop.quickstart.service.AccountService;
 import org.springframework.stereotype.Service;
 
 /**

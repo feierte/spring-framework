@@ -81,7 +81,7 @@ abstract class ConfigurationClassUtils {
 	 * @param metadataReaderFactory the current factory in use by the caller
 	 * @return whether the candidate qualifies as (any kind of) configuration class
 	 * <p>
-	 * 该方法是用来判断一个是否是一个配置类，并为BeanDefinition设置属性为lite或者full。
+	 * 该方法是用来判断一个类是否是一个配置类，并为BeanDefinition设置属性为lite或者full。
 	 * 如果加了@Configuration，那么对应的BeanDefinition为full，
 	 * 如果加了@Bean，@Component，@ComponentScan，@Import，@ImportResource这其中任意一个或多个注解，则为lite。
 	 * lite和full均表示这个BeanDefinition对应的类是一个配置类。

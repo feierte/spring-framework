@@ -1,9 +1,9 @@
-package org.springframework.demo.aop.service.impl;
+package org.springframework.demo.aop.quickstart.service.impl;
 
 
 import org.springframework.aop.framework.AopContext;
-import org.springframework.demo.aop.domain.User;
-import org.springframework.demo.aop.service.UserService;
+import org.springframework.demo.aop.quickstart.domain.User;
+import org.springframework.demo.aop.quickstart.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
