@@ -35,7 +35,7 @@ public class SpringConfigurationTest {
 	@Test
 	public void testImport() {
 		ApplicationContext applicationContext =
-				new AnnotationConfigApplicationContext("org.springframework.demo");
+				new AnnotationConfigApplicationContext("org.springframework.demo.ioc.annotation");
 		DataSource dataSource = applicationContext.getBean("dataSource", DataSource.class);
 		System.out.println(dataSource);
 	}
