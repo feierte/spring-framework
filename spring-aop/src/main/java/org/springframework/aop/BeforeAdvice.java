@@ -26,6 +26,9 @@ import org.aopalliance.aop.Advice;
  *
  * @author Rod Johnson
  * @see AfterAdvice
+ *
+ * <p>前置增强，而Spring目前只支持方法的前置增强（MethodBeforeAdvice），在以后的版本中可能会看到Spring提供的其他类型的前置增强，
+ * 所以BeforeAdvice是为了将来版本扩展需要而定义的。
  */
 public interface BeforeAdvice extends Advice {
 

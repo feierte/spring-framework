@@ -25,6 +25,8 @@ import org.aopalliance.aop.Advice;
  * @author Juergen Hoeller
  * @since 2.0.3
  * @see BeforeAdvice
+ *
+ * <p>后置增强
  */
 public interface AfterAdvice extends Advice {
 

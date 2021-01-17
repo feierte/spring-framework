@@ -100,6 +100,14 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	/**
+	 * 需要织入目标对象的bean列表。它接收增强bean的名称而非增强bean的实例。
+	 * 这是因为ProxyFactoryBean内部在生成代理类时，需要使用增强bean的类，而非增强bean的实例，以织入增强类中所写的横切逻辑代码，因而可以说增强是类级别的。
+	 * 这些bean必须是实现org.aopalliance.intercept.MethodInterceptor 或 org.springframework.aop.Advisor的 bean
+	 *
+	 * @see org.aopalliance.intercept.MethodInterceptor
+	 * @see Advisor
+	 */
 	@Nullable
 	private String[] interceptorNames;
 
@@ -108,6 +116,9 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 
 	private boolean autodetectInterfaces = true;
 
+	/**
+	 * 返回的代理对象是否是单例的，默认为单例的
+	 */
 	private boolean singleton = true;
 
 	private AdvisorAdapterRegistry advisorAdapterRegistry = GlobalAdvisorAdapterRegistry.getInstance();

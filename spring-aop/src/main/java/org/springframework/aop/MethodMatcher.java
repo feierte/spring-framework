@@ -49,6 +49,12 @@ import java.lang.reflect.Method;
  * @since 11.11.2003
  * @see Pointcut
  * @see ClassFilter
+ * <p>
+ * Spring 支持两种方法匹配器：静态方法匹配器（StaticMethodMatcher）和动态方法匹配器（DynamicMethodMatcher）。
+ * 静态方法匹配器：仅对方法名签名（包括方法名和入参类型及顺序）进行匹配；
+ * 动态方法匹配器：会在运行期检查方法入参的值。
+ * 静态匹配仅会判别一次，而动态匹配因为每次调用方法的入参都可能不一样，所以每次调用方法都必须判断，
+ * 因此，动态匹配对性能的影响很大。一般情况下，动态匹配不常使用。
  */
 public interface MethodMatcher {
 
@@ -73,6 +79,8 @@ public interface MethodMatcher {
 	 * @return whether or not a runtime match via the 3-arg
 	 * {@link #matches(java.lang.reflect.Method, Class, Object[])} method
 	 * is required if static matching passed
+	 * <p>判断方法匹配器的类型。
+	 * 返回false表示是静态方法匹配器，返回true表示是动态方法匹配器
 	 */
 	boolean isRuntime();
 

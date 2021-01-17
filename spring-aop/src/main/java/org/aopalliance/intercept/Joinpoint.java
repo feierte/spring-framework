@@ -36,6 +36,8 @@ import java.lang.reflect.AccessibleObject;
  *
  * @author Rod Johnson
  * @see Interceptor
+ * <p>连接点：一个类或一段程序代码拥有一些具有边界性质的特定点（如类开始初始化前、类初始化后、类的方法调用前/调用后、方法抛出异常后），这些代码中的特定点就被称为“连接点”。
+ * Spring仅支持方法的连接点，即仅能在方法调用前、方法调用后、方法抛出异常时及方法调用前后这些程序执行点织入增强。
  */
 public interface Joinpoint {
 

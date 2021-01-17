@@ -51,13 +51,13 @@ import org.springframework.lang.Nullable;
  * PostProcessorRegistrationDelegate是AbstractApplicationContext委托执行post processors任务的工具类
  * 这里的postProcessor包括两类 : BeanFactoryPostProcessor 和 BeanPostProcessor
  * 实际上BeanFactoryPostProcessor又可以分为两类：
- * 		1、BeanDefinitionRegistryPostProcessor ——> BeanDefinition后置处理器
+ * 		1、BeanDefinitionRegistryPostProcessor ——> BeanDefinitionRegistry后置处理器
  * 		2、BeanFactoryPostProcessor ——> BeanFactory后置处理器
  * 	BeanDefinitionRegistryPostProcessor其实继承自BeanFactoryPostProcessor,是一种特殊的BeanFactoryPostProcessor。
  * 	BeanDefinitionRegistryPostProcessor的设计目的是在常规BeanFactoryPostProcessor处理BeanFactory(也就是容器)前先对bean注册做处理，
  * 	比如注册更多的bean，实现此目的是通过BeanDefinitionRegistryPostProcessor定义的方法postProcessBeanDefinitionRegistry。
  *
- * 	如果一个实现类是BeanDefinitionRegistryPostProcessor,那么它的postProcessBeanDefinitionRegistry方法总是要早与它的postProcessBeanFactory方法被调用。
+ * <p>如果一个实现类是BeanDefinitionRegistryPostProcessor,那么它的postProcessBeanDefinitionRegistry方法总是要早与它的postProcessBeanFactory方法被调用。
  */
 final class PostProcessorRegistrationDelegate {
 

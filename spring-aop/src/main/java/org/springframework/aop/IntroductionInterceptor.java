@@ -28,6 +28,13 @@ import org.aopalliance.intercept.MethodInterceptor;
  *
  * @author Rod Johnson
  * @see DynamicIntroductionAdvice
+ *
+ * <p>IntroductionInterceptor（引介增强）表示在目标类中添加一些新的方法和属性
+ * 引介增强是一种特殊的增强，它不是在目标方法周围织入增强，而是为目标类创建新的方法和属性，所以引介增强的连接点是类级别的，而非方法级别的。
+ * <p>通过引介增强，可以为目标类添加一个接口的实现，即原来目标类未实现某个接口，通过引介增强可以为目标类创建实现某接口的代理。
+ * Spring定义的引介增强接口IntroductionInterceptor没有任何方法，Spring为该接口提供了DelegatingIntroductionInterceptor实现类。
+ * 一般情况下，通过扩展该实现类定义自己的引介增强类。
+ *
  */
 public interface IntroductionInterceptor extends MethodInterceptor, DynamicIntroductionAdvice {
 

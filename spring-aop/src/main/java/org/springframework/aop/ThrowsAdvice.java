@@ -47,6 +47,17 @@ package org.springframework.aop;
  * @author Juergen Hoeller
  * @see AfterReturningAdvice
  * @see MethodBeforeAdvice
+ *
+ * <p>抛出异常增强，表示在目标方法抛出异常后实施增强
+ * <p>异常抛出增强接口没有定义任何方法，它是一个标签接口，在运行期Spring使用反射机制自行判断，必须采用以下签名形式定义异常抛出的增强方法：
+ * 		void afterThrowing([Method method, Object[] args, Object target], Throwable);
+ * 方法名必须为afterThrowing，方法入参规定如下：前三个参数Method method, Object[] args, Object target是可选的（3个参数要么都提供，要么都不提供），
+ * 而最后一个入参必须是Throwable或其子类。如以下方法都是合法的：
+ * 		public void afterThrowing(Exception ex)
+ *  	public void afterThrowing(RemoteException)
+ *  	public void afterThrowing(Method method, Object[] args, Object target, Exception ex)
+ *  	public void afterThrowing(Method method, Object[] args, Object target, ServletException ex)
+ * 可以在一个ThrowsAdvice中定义多个afterThrowing方法，当目标类方法抛出异常时，Spring会自动选用最匹配的增强方法。
  */
 public interface ThrowsAdvice extends AfterAdvice {
 

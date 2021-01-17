@@ -34,8 +34,16 @@ public class ProxyConfig implements Serializable {
 	private static final long serialVersionUID = -8409359707199703185L;
 
 
+	/**
+	 * 是否对类进行代理（而不是对接口进行代理）
+	 * 当设置为true时，使用cglib动态代理
+	 */
 	private boolean proxyTargetClass = false;
 
+	/**
+	 * 当设置为true时，强制使用cglib动态代理。
+	 * 对于Singleton的代理，推荐使用cglib，因为cglib创建代理比jdk动态代理慢，但是创建出来的代理对象运行效率更高
+	 */
 	private boolean optimize = false;
 
 	boolean opaque = false;

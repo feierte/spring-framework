@@ -38,6 +38,8 @@ package org.aopalliance.intercept;
  * </pre>
  *
  * @author Rod Johnson
+ *
+ * <p>方法环绕增强，表示在目标方法执行前后进行增强
  */
 @FunctionalInterface
 public interface MethodInterceptor extends Interceptor {
