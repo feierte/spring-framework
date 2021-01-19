@@ -13,14 +13,24 @@
 
 	<aop:aspectj-autoproxy/>
 
+	<bean id="aspectXmlConfig" class="org.springframework.demo.aop.feature.aspect.AspectXmlConfig"/>
+
+	<aop:config>
+		<aop:aspect id="AspectXmlConfig" ref="aspectXmlConfig">
+			<aop:pointcut id="anyPublicMethod" expression="execution(public * *(..))"/>
+			<aop:around method="aroundAnyPublicMethod" pointcut-ref="anyPublicMethod"/>
+			<aop:before method="beforeAnyPublicMethod" pointcut-ref="anyPublicMethod"/>
+			<aop:before method="beforeAnyPublicMethod" pointcut="execution(public * *(..))"/>
+			<aop:after method="finalizeAnyPublicMethod" pointcut-ref="anyPublicMethod"/>
+			<aop:after-returning method="afterAnyPublicMethod" pointcut-ref="anyPublicMethod"/>
+			<aop:after-throwing method="afterThrowingAnyPublicMethod" pointcut-ref="anyPublicMethod"/>
+		</aop:aspect>
+	</aop:config>
+
 	<bean id="echoService" class="org.springframework.demo.aop.feature.targetclass.DefaultEchoService"/>
 
 	<bean id="echoServiceMethodInterceptor"
 		  class="org.springframework.demo.aop.feature.interceptor.EchoServiceMethodInterceptor"/>
-
-	<bean id="echoServiceProxyFactoryBean" class="org.springframework.aop.framework.ProxyFactoryBean" >
-		<property name="targetName" value="echoService"/>
-	</bean>
 
 	<bean id="targetSource" class="org.springframework.aop.target.HotSwappableTargetSource">
 		<constructor-arg ref="echoService"/>

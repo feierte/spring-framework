@@ -27,6 +27,9 @@ import org.springframework.aop.Pointcut;
  * be overridden to customize ClassFilter behaviour as well.
  *
  * @author Rod Johnson
+ *
+ * <p>DynamicMethodMatcherPointcut: 继承的{@link DynamicMethodMatcher#isRuntime()} 方法标识为final且返回值为true，
+ * 这样其子类就一定是一个动态切点。该类默认匹配所有的类和方法，因此需要通过扩展该类编写符合要求的动态切点。
  */
 public abstract class DynamicMethodMatcherPointcut extends DynamicMethodMatcher implements Pointcut {
 

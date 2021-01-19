@@ -36,6 +36,25 @@ import org.springframework.util.ObjectUtils;
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @author Sam Brannen
+ * <p>流程切点（ControlFlowPointcut）：代表由某个方法直接或间接发起调用的其他方法。
+ * Spring的流程切面由DefaultPointcutAdvisor和ControlFlowPointcut实现。
+ *
+ * <pre> {@code
+ * 	public class WaiterDelegate {
+ * 	    private Waiter waiter;
+ * 	    public void service (String clientName) { // waiter的方法通过该方法发起调用
+ * 	        waiter.greeTo(clientName);
+ * 	        waiter.serveTo(clientName);
+ * 	    }
+ * 	    public void setWaiter(Waiter waiter) {
+ * 	        this.waiter = waiter;
+ * 	    }
+ * 	}
+ * }</pre>
+ * 如果希望所有由WaiterDelegate#service()方法发起调用的其他方法都织入增强，就必须使用流程切面来完成目标。
+ *
+ * <p>流程切面和动态切面从某种程度上说可以算是一类切面，因为二者都需要在运行期判断动态的环境。对于流程切面来说，代理对象在每次调用目标类方法时，
+ * 都需要判断方法调用堆栈中是否满足流程切点要求的方法。因此，和动态切面一样，流程切面对性能的影响也很大。
  */
 @SuppressWarnings("serial")
 public class ControlFlowPointcut implements Pointcut, ClassFilter, MethodMatcher, Serializable {

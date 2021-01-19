@@ -33,9 +33,12 @@ import org.aopalliance.aop.Advice;
  * @author Rod Johnson
  * @author Juergen Hoeller
  *
- * <p>Advisor（通知者、下命令）：该接口表示切面（Pointcut + Advice）的概念。
- * PointcutAdvisor：表示具有切点的切面
+ * <p>Advisor（通知者、下命令）：该接口表示切面的概念。
+ * PointcutAdvisor：表示具有切点的切面。（Pointcut + Advice）
  * IndroductionAdvisor：表示引介切面。
+ *
+ * <p>此外，Advisor的实现类都实现了{@link org.springframework.core.Ordered}接口，
+ * Spring将根据Advisor定义的顺序决定织入切面的顺序。
  */
 public interface Advisor {
 

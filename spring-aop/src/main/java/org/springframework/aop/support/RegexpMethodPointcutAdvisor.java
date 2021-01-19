@@ -41,10 +41,16 @@ import org.springframework.util.ObjectUtils;
  * @see #setPattern
  * @see #setPatterns
  * @see JdkRegexpMethodPointcut
+ *
+ * <p>RegexpMethodPointcutAdvisor:是正则表达式方法匹配的切面实现类，该类已经是功能齐备的实现类。
  */
 @SuppressWarnings("serial")
 public class RegexpMethodPointcutAdvisor extends AbstractGenericPointcutAdvisor {
 
+	/**
+	 * 定义用于 匹配目标类方法的全限定名（即带类名的方法名） 的匹配模式串
+	 * 该字段表示多个匹配模式串，这些匹配模式串之间是 “或” 的关系。
+	 */
 	@Nullable
 	private String[] patterns;
 
