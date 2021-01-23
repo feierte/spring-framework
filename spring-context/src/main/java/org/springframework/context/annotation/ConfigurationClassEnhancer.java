@@ -74,7 +74,9 @@ class ConfigurationClassEnhancer {
 
 	// The callbacks to use. Note that these callbacks must be stateless.
 	private static final Callback[] CALLBACKS = new Callback[] {
+			// 拦截@Bean方法的调用，以确保正确处理@Bean语义
 			new BeanMethodInterceptor(),
+			// 拦截 BeanFactoryAware#setBeanFactory 的调用
 			new BeanFactoryAwareMethodInterceptor(),
 			NoOp.INSTANCE
 	};
@@ -152,6 +154,7 @@ class ConfigurationClassEnhancer {
 	 * <p>Note that this interface is intended for framework-internal use only, however
 	 * must remain public in order to allow access to subclasses generated from other
 	 * packages (i.e. user code).
+	 * <p>标志接口，仅有Spring框架内部使用，并且由所有@Configuration CGLIB代理的子类实现
 	 */
 	public interface EnhancedConfiguration extends BeanFactoryAware {
 	}

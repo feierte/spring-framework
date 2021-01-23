@@ -107,6 +107,13 @@ import org.springframework.util.StringUtils;
  * @author Stephane Nicoll
  * @since 3.0
  * @see ConfigurationClassBeanDefinitionReader
+ *
+ * <p>ConfigurationClassParser用于分析@Configuration注解的配置类，产生一组ConfigurationClass对象，是Spring内置的一个工具类。
+ * 一般情况下一个@Configuration注解的类只会产生一个ConfigurationClass对象，但是因为@Configuration注解的类可能会使用注解@Import引入其他配置类，也可能内部嵌套定义配置类，
+ * 所以总的来看，ConfigurationClassParser分析一个@Configuration注解的类，可能产生任意多个ConfigurationClass对象。
+ * <p>
+ * 这个工具类自身的逻辑并不注册bean定义，它的主要任务是发现@Configuration注解的所有配置类并将这些配置类交给调用者(调用者会通过其他方式注册其中的bean定义)，
+ * 而对于非@Configuration注解的其他bean定义，比如@Component注解的bean定义，该工具类使用另外一个工具ComponentScanAnnotationParser扫描和注册它们。
  */
 class ConfigurationClassParser {
 
@@ -167,13 +174,20 @@ class ConfigurationClassParser {
 	}
 
 
+	/**
+	 * 1、接收外部提供的参数 configCandidates , 是一组需要被分析的候选配置类的集合，每个元素使用类型BeanDefinitionHolder包装 ;
+	 * 2、parse() 方法针对每个候选配置类元素BeanDefinitionHolder，执行以下逻辑 :
+	 * 	（1）.将其封装成一个ConfigurationClass
+	 * 	（2）.调用processConfigurationClass(ConfigurationClass configClass)
+	 * > 分析过的每个配置类都被保存到属性 this.configurationClasses 中。
+	 * @param configCandidates
+	 */
 	public void parse(Set<BeanDefinitionHolder> configCandidates) {
 		for (BeanDefinitionHolder holder : configCandidates) {
 			BeanDefinition bd = holder.getBeanDefinition();
 			try {
 				// 根据BeanDefinition类型的不同，调用parse()不同的重载方法，
 				// 实际上最终调用的都是processConfigurationClass()方法
-
 				if (bd instanceof AnnotatedBeanDefinition) {
 					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
 				}
@@ -193,6 +207,10 @@ class ConfigurationClassParser {
 			}
 		}
 
+		// 执行找到的 DeferredImportSelector
+		//  DeferredImportSelector 是 ImportSelector 的一个变种。
+		// ImportSelector 被设计成其实和@Import注解的类同样的导入效果，但是实现 ImportSelector的类可以条件性地决定导入哪些配置。
+		// DeferredImportSelector 的设计目的是在所有其他的配置类被处理后才处理。这也正是该语句被放到本函数最后一行的原因。
 		this.deferredImportSelectorHandler.process();
 	}
 
@@ -233,6 +251,7 @@ class ConfigurationClassParser {
 		ConfigurationClass existingClass = this.configurationClasses.get(configClass);
 		if (existingClass != null) {
 			if (configClass.isImported()) {
+				// 这里判断是否有 @Import 注解
 				if (existingClass.isImported()) {
 					existingClass.mergeImportedBy(configClass);
 				}
@@ -249,14 +268,15 @@ class ConfigurationClassParser {
 
 		// Recursively process the configuration class and its superclass hierarchy.
 		/*
-		 * 处理配置类，由于配置类可能存在父类(若父类的全类名是以java开头的，则除外)，所有需要将configClass变成sourceClass去解析，然后返回sourceClass的父类。
+		 * 处理配置类，由于配置类可能存在父类(若父类的全类名是以java开头的，则除外)，所以需要将configClass变成sourceClass去解析，然后返回sourceClass的父类。
 		 * 如果此时父类为空，则不会进行while循环去解析，如果父类不为空，则会循环的去解析父类
 		 * SourceClass的意义：简单的包装类，目的是为了以统一的方式去处理带有注解的类，不管这些类是如何加载的
 		 * 如果无法理解，可以把它当做一个黑盒，不会影响看spring源码的主流程
 		 */
 		SourceClass sourceClass = asSourceClass(configClass, filter);
 		do {
-			// 核心处理逻辑
+			// 核心处理逻辑，循环处理配置类configClass直到sourceClass变为null
+			// doProcessConfigurationClass的返回值是其参数configClass的父类，如果该父类是由Java提供的类或者已经处理过，返回null
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass, filter);
 		}
 		while (sourceClass != null);
@@ -272,18 +292,29 @@ class ConfigurationClassParser {
 	 * @param configClass the configuration class being build
 	 * @param sourceClass a source class
 	 * @return the superclass, or {@code null} if none found or previously processed
+	 * <p>
+	 * doProcessConfigurationClass()会对一个配置类执行真正的处理：
+	 * 	1、一个配置类的成员类(配置类内嵌套定义的类)也可能适配类，先遍历这些成员配置类，调用processConfigurationClass处理它们;
+	 * 	2、处理配置类上的注解@PropertySources,@PropertySource
+	 * 	3、处理配置类上的注解@ComponentScans,@ComponentScan
+	 * 	4、处理配置类上的注解@Import
+	 * 	5、处理配置类上的注解@ImportResource
+	 * 	6、处理配置类中每个带有@Bean注解的方法
+	 * 	7、处理配置类所实现接口的缺省方法
+	 * 	8、检查父类是否需要处理，如果父类需要处理返回父类，否则返回null
 	 */
 	@Nullable
 	protected final SourceClass doProcessConfigurationClass(
 			ConfigurationClass configClass, SourceClass sourceClass, Predicate<String> filter)
 			throws IOException {
-
+		// 判断是否有 @Component 注解，因为@Configuration嵌套了@Component注解，所以配置类会走进这个分支
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
 			processMemberClasses(configClass, sourceClass, filter);
 		}
 
 		// Process any @PropertySource annotations
+		// 处理解析 @PropertySource和@PropertySources
 		for (AnnotationAttributes propertySource : AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), PropertySources.class,
 				org.springframework.context.annotation.PropertySource.class)) {
@@ -297,6 +328,7 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @ComponentScan annotations
+		// 处理解析@ComponentScan
 		Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
 		if (!componentScans.isEmpty() &&
@@ -319,9 +351,11 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @Import annotations
+		// 处理解析 @Import
 		processImports(configClass, sourceClass, getImports(sourceClass), filter, true);
 
 		// Process any @ImportResource annotations
+		// 处理解析 @ImportResource
 		AnnotationAttributes importResource =
 				AnnotationConfigUtils.attributesFor(sourceClass.getMetadata(), ImportResource.class);
 		if (importResource != null) {
@@ -334,15 +368,18 @@ class ConfigurationClassParser {
 		}
 
 		// Process individual @Bean methods
+		// 处理解析 @Bean
 		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
 		for (MethodMetadata methodMetadata : beanMethods) {
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
 		}
 
 		// Process default methods on interfaces
+		// 处理接口上的默认方法，将其加到bd的beanMethods中
 		processInterfaces(configClass, sourceClass);
 
 		// Process superclass, if any
+		// 如果有父类，则返回父类Class，上一层方法会进行递归处理
 		if (sourceClass.getMetadata().hasSuperClass()) {
 			String superclass = sourceClass.getMetadata().getSuperClassName();
 			if (superclass != null && !superclass.startsWith("java") &&
