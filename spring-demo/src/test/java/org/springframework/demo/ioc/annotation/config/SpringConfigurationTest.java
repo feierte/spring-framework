@@ -7,6 +7,7 @@ import org.springframework.demo.ioc.annotation.service.UserService;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.Arrays;
 
 /**
  * @author Jie Zhao
@@ -38,6 +39,7 @@ public class SpringConfigurationTest {
 				new AnnotationConfigApplicationContext("org.springframework.demo.ioc.annotation");
 		DataSource dataSource = applicationContext.getBean("dataSource", DataSource.class);
 		System.out.println(dataSource);
+		Arrays.stream(applicationContext.getBeanDefinitionNames()).forEach(System.out::println);
 	}
 
 	@Test

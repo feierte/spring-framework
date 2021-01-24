@@ -113,6 +113,10 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	@Nullable
 	private ResourcePatternResolver resourcePatternResolver;
 
+	/**
+	 * 默认使用的是CachingMetadataReaderFactory
+	 * 它在解析@ComponentScan的时候使用：拿到元数据判断是否是@Component或其派生注解。
+	 */
 	@Nullable
 	private MetadataReaderFactory metadataReaderFactory;
 

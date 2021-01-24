@@ -49,6 +49,9 @@ import java.lang.annotation.Target;
  * @see ImportSelector
  * @see ImportBeanDefinitionRegistrar
  * @see ImportResource
+ *
+ * <p>@Import注解在4.2之前只支持导入配置类
+ * 在4.2，@Import注解支持导入普通的java类,并将其声明成一个bean
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
