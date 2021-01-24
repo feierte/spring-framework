@@ -33,7 +33,7 @@ import org.aopalliance.aop.Advice;
  * @author Rod Johnson
  * @author Juergen Hoeller
  *
- * <p>Advisor（通知者、下命令）：该接口表示切面的概念。
+ * <p>Advisor（通知者、下命令）：该接口表示切面的概念。类似被 Aspect中的@Aspect 注解的类
  * PointcutAdvisor：表示具有切点的切面。（Pointcut + Advice）
  * IndroductionAdvisor：表示引介切面。
  *

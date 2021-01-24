@@ -13,9 +13,9 @@ public class EchoServicePointcut extends StaticMethodMatcherPointcut {
 
 	private String methodName;
 
-	private Class targetClass;
+	private Class<?> targetClass;
 
-	public EchoServicePointcut(String methodName, Class targetClass) {
+	public EchoServicePointcut(String methodName, Class<?> targetClass) {
 		this.methodName = methodName;
 		this.targetClass = targetClass;
 	}
@@ -34,11 +34,11 @@ public class EchoServicePointcut extends StaticMethodMatcherPointcut {
 		this.methodName = methodName;
 	}
 
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return targetClass;
 	}
 
-	public void setTargetClass(Class targetClass) {
+	public void setTargetClass(Class<?> targetClass) {
 		this.targetClass = targetClass;
 	}
 }
