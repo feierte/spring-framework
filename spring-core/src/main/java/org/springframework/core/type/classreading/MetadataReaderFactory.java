@@ -28,6 +28,7 @@ import org.springframework.core.io.Resource;
  * @since 2.5
  * @see SimpleMetadataReaderFactory
  * @see CachingMetadataReaderFactory
+ * <p>MetadataReader的实现类都未暴露出来（非public），所以需要此工厂来获取它的实例。
  */
 public interface MetadataReaderFactory {
 

@@ -37,6 +37,10 @@ import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
  * @see StandardAnnotationMetadata
  * @see org.springframework.core.type.classreading.MetadataReader#getAnnotationMetadata()
  * @see AnnotatedTypeMetadata
+ *
+ * <p>AnnotationMetadata是ClassMetadata和AnnotatedTypeMetadata的子接口，具有两者的能力，并且新增了访问注解的相关方法。可以简单的理解为塔山对注解的抽象。
+ * 经常这么使用得到注解里面所有的属性值：
+ * AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(annoMetadata, annType);
  */
 public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata {
 
@@ -44,6 +48,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * Get the fully qualified class names of all annotation types that
 	 * are <em>present</em> on the underlying class.
 	 * @return the annotation type names
+	 * <p>获取当前类上所有的注解的全类名 （注意是全类名）
 	 */
 	default Set<String> getAnnotationTypes() {
 		return getAnnotations().stream()
@@ -58,6 +63,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * @param annotationName the fully qualified class name of the meta-annotation
 	 * type to look for
 	 * @return the meta-annotation type names, or an empty set if none found
+	 * <p>获取指定的注解类型的全类名
 	 */
 	default Set<String> getMetaAnnotationTypes(String annotationName) {
 		MergedAnnotation<?> annotation = getAnnotations().get(annotationName, MergedAnnotation::isDirectlyPresent);
@@ -116,6 +122,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * @return a set of {@link MethodMetadata} for methods that have a matching
 	 * annotation. The return value will be an empty set if no methods match
 	 * the annotation type.
+	 * <p>获取所有 标注有指定注解的方法元信息。
 	 */
 	Set<MethodMetadata> getAnnotatedMethods(String annotationName);
 

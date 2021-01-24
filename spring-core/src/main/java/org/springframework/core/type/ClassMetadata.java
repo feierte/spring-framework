@@ -27,6 +27,7 @@ import org.springframework.lang.Nullable;
  * @see StandardClassMetadata
  * @see org.springframework.core.type.classreading.MetadataReader#getClassMetadata()
  * @see AnnotationMetadata
+ * <p>类的元信息，对Class的抽象和适配
  */
 public interface ClassMetadata {
 
@@ -127,7 +128,7 @@ public interface ClassMetadata {
 	 * @since 3.1
 	 * <p>
 	 * 返回类中定义的公共、私有、保护的内部类
-	 * 基于{@code Class#getDeclaredClasses}  返回类中定义的公共、私有、保护的内部类
+	 * 基于{@code Class#getDeclaredClasses}实现  返回类中定义的公共、私有、保护的内部类
 	 */
 	String[] getMemberClassNames();
 

@@ -84,6 +84,7 @@ public class SimpleMetadataReaderFactory implements MetadataReaderFactory {
 		catch (FileNotFoundException ex) {
 			// Maybe an inner class name using the dot name syntax? Need to use the dollar syntax here...
 			// ClassUtils.forName has an equivalent check for resolution into Class references later on.
+			// 此处是兼容内部类的形式
 			int lastDotIndex = className.lastIndexOf('.');
 			if (lastDotIndex != -1) {
 				String innerClassName =

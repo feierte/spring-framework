@@ -42,6 +42,10 @@ import org.springframework.util.MultiValueMap;
  * @since 4.0
  * @see AnnotationMetadata
  * @see MethodMetadata
+ * <p>能够被注解类型的元数据，即对注解元素（{@link java.lang.reflect.AnnotatedElement}）的封装和适配。
+ * Spring 4.0新增的这个接口提供了对注解统一的、便捷的访问，使用起来更加的方便高效了。
+ * <p>AnnotatedTypeMetadata有两个子接口：MethodMetadata和AnnotationMetadata。
+ * 这两个子接口都相应的提供了标准（反射）实现以及基于ASM的Visitor模式实现
  */
 public interface AnnotatedTypeMetadata {
 
@@ -59,8 +63,9 @@ public interface AnnotatedTypeMetadata {
 	 * <p>If this method returns {@code true}, then
 	 * {@link #getAnnotationAttributes} will return a non-null Map.
 	 * @param annotationName the fully qualified class name of the annotation
-	 * type to look for
+	 * type to look for 注解的全类名
 	 * @return whether a matching annotation is defined
+	 * <p>此元素是否标注有此注解
 	 */
 	default boolean isAnnotated(String annotationName) {
 		return getAnnotations().isPresent(annotationName);
@@ -95,6 +100,9 @@ public interface AnnotatedTypeMetadata {
 	 * @return a Map of attributes, with the attribute name as key (e.g. "value")
 	 * and the defined attribute value as Map value. This return value will be
 	 * {@code null} if no matching annotation is defined.
+	 *
+	 * <p>获取指定类型注解的所有的属性和对应的值 K-V
+	 * classValuesAsString：若是true表示Class用它的字符串的全类名来表示。这样可以避免Class被提前加载
 	 */
 	@Nullable
 	default Map<String, Object> getAnnotationAttributes(String annotationName,

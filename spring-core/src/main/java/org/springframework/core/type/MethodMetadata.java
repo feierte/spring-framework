@@ -28,6 +28,7 @@ package org.springframework.core.type;
  * @see StandardMethodMetadata
  * @see AnnotationMetadata#getAnnotatedMethods
  * @see AnnotatedTypeMetadata
+ * <p>描述方法的元数据，是对{@link java.lang.reflect.Method}的抽象和适配
  */
 public interface MethodMetadata extends AnnotatedTypeMetadata {
 

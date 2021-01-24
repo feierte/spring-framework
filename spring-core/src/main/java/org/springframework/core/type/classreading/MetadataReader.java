@@ -27,6 +27,11 @@ import org.springframework.core.type.ClassMetadata;
  * @author Juergen Hoeller
  * @since 2.5
  *
+ * <p>访问类元数据的入口
+ * 元数据，是框架设计中必须的一个概念，所有的流行框架里都能看到它的影子，包括且不限于Spring、SpringBoot、SpringCloud、Mybatis、Hibernate等。
+ * 它的作用肯定是大大的，它能模糊掉具体的类型，能让数据输出变得统一，能解决Java抽象解决不了的问题，比如运用的最广的便是注解，因为它不能继承，无法抽象，
+ * 所以元数据方式就可以完美形成统一的向上抽取让它变得与类型无关，也就是常说的模糊效果，这便是矿建的核心设计思想。
+ *
  * <p>
  * 为何Spring要为ClassMetadata和AnnotatedTypeMetadata提供一个标准实现（反射实现）和一个ASM的实现呢？这里就能给你答案。
  * 此接口是一个访问ClassMetadata等的简单门面，实现是委托给org.springframework.asm.ClassReader、ClassVisitor来处理的，
@@ -36,7 +41,7 @@ public interface MetadataReader {
 
 	/**
 	 * Return the resource reference for the class file.
-	 * 返回此Class文件的来源（资源）
+	 * <p>返回此Class文件的来源（资源）
 	 */
 	Resource getResource();
 
