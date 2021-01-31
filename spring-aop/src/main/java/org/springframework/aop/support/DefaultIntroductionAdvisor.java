@@ -54,6 +54,7 @@ public class DefaultIntroductionAdvisor implements IntroductionAdvisor, ClassFil
 	 * @param advice the Advice to apply (may implement the
 	 * {@link org.springframework.aop.IntroductionInfo} interface)
 	 * @see #addInterface
+	 * <p>通过一个增强创建引介切面，引介切面将为目标对象新增 增强对象中所有接口的实现。
 	 */
 	public DefaultIntroductionAdvisor(Advice advice) {
 		this(advice, (advice instanceof IntroductionInfo ? (IntroductionInfo) advice : null));
@@ -64,6 +65,7 @@ public class DefaultIntroductionAdvisor implements IntroductionAdvisor, ClassFil
 	 * @param advice the Advice to apply
 	 * @param introductionInfo the IntroductionInfo that describes
 	 * the interface to introduce (may be {@code null})
+	 * <p>通过一个增强和一个IntroductionInfo创建引介切面，目标对象需要实现哪些接口由  该introductionInfo参数 的getInterfaces()方法标识
 	 */
 	public DefaultIntroductionAdvisor(Advice advice, @Nullable IntroductionInfo introductionInfo) {
 		Assert.notNull(advice, "Advice must not be null");
@@ -83,6 +85,8 @@ public class DefaultIntroductionAdvisor implements IntroductionAdvisor, ClassFil
 	 * Create a DefaultIntroductionAdvisor for the given advice.
 	 * @param advice the Advice to apply
 	 * @param ifc the interface to introduce
+	 *
+	 * <p>通过一个增强和一个指定的接口类创建引介切面，仅为目标对象新增 ifc参数指定的接口 的实现
 	 */
 	public DefaultIntroductionAdvisor(DynamicIntroductionAdvice advice, Class<?> ifc) {
 		Assert.notNull(advice, "Advice must not be null");

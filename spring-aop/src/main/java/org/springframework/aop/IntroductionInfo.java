@@ -28,7 +28,7 @@ package org.springframework.aop;
  * @author Rod Johnson
  * @since 1.1.1
  *
- * <p>IntroductionInfo：描述了目标类需要实现的接口。
+ * <p>IntroductionInfo：描述了目标类需要实现的新接口。
  */
 public interface IntroductionInfo {
 

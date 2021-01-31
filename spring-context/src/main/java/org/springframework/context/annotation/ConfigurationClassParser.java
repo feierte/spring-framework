@@ -249,9 +249,10 @@ class ConfigurationClassParser {
 		}
 
 		ConfigurationClass existingClass = this.configurationClasses.get(configClass);
+		// 在这里处理Configuration重复import
+		// 如果同一个配置类被处理两次，两次都属于被import的则合并导入类，返回。如果配置类不是被导入的，则移除旧使用新的配置类
 		if (existingClass != null) {
 			if (configClass.isImported()) {
-				// 这里判断是否有 @Import 注解
 				if (existingClass.isImported()) {
 					existingClass.mergeImportedBy(configClass);
 				}
@@ -618,12 +619,18 @@ class ConfigurationClassParser {
 			this.problemReporter.error(new CircularImportProblem(configClass, this.importStack));
 		}
 		else {
+			// importStack 用来进行递归循环处理，可能当前处理的 import 中 import 进来了新的 import
 			this.importStack.push(configClass);
 			try {
+				// 遍历所有被 import 的类，并根据所属类型执行对应的操作:
+				// 如果是 ImportSelector，执行 select 操作并递归处理
+				// 如果是 ImportBeanDefinitionRegistrar，添加到当前 configClass 的 importBeanDefinitionRegistrars 中
+				// 否则其他所有的都当做 Configuration 来处理，调用 processConfigurationClass
 				for (SourceClass candidate : importCandidates) {
 					if (candidate.isAssignable(ImportSelector.class)) {
 						// Candidate class is an ImportSelector -> delegate to it to determine imports
 						Class<?> candidateClass = candidate.loadClass();
+						// 实例化，如果该类有实现对应的Aware接口，则注入对应的属性
 						ImportSelector selector = ParserStrategyUtils.instantiateClass(candidateClass, ImportSelector.class,
 								this.environment, this.resourceLoader, this.registry);
 						Predicate<String> selectorFilter = selector.getExclusionFilter();
@@ -633,7 +640,7 @@ class ConfigurationClassParser {
 						if (selector instanceof DeferredImportSelector) {
 							this.deferredImportSelectorHandler.handle(configClass, (DeferredImportSelector) selector);
 						}
-						else {
+						else {  // ImportSelector 返回的是类名数组，可能又返回了一个 ImportSelector，所以递归处理
 							String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata());
 							Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames, exclusionFilter);
 							processImports(configClass, currentSourceClass, importSourceClasses, exclusionFilter, false);
@@ -648,7 +655,7 @@ class ConfigurationClassParser {
 										this.environment, this.resourceLoader, this.registry);
 						configClass.addImportBeanDefinitionRegistrar(registrar, currentSourceClass.getMetadata());
 					}
-					else {
+					else { // 当做 @Configuration class 处理
 						// Candidate class not an ImportSelector or ImportBeanDefinitionRegistrar ->
 						// process it as an @Configuration class
 						this.importStack.registerImport(

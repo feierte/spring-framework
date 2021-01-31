@@ -42,10 +42,15 @@ import org.springframework.util.StringUtils;
  * @see #isMatch
  * @see #setInterceptorNames
  * @see AbstractAutoProxyCreator
+ *
+ * <p>基于Bean配置名规则的自动代理创建器：允许为一组特定配置名的Bean自动创建代理实例的代理创建器
  */
 @SuppressWarnings("serial")
 public class BeanNameAutoProxyCreator extends AbstractAutoProxyCreator {
 
+	/**
+	 * 一组需要自动代理的bean名称，bean名称可以使用*通配符（不过使用通配符会带来一定的风险）
+	 */
 	@Nullable
 	private List<String> beanNames;
 
