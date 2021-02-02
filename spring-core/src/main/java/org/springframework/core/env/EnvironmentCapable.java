@@ -37,6 +37,9 @@ package org.springframework.core.env;
  * @see Environment
  * @see ConfigurableEnvironment
  * @see org.springframework.context.ConfigurableApplicationContext#getEnvironment()
+ *
+ * <p>带有Capable后缀的接口在Spring中带有getXXX的含义，也就是实现了这个接口，就可以通过该接口的实例获取到XXX，这个和Aware接口很类似。
+ *
  */
 public interface EnvironmentCapable {
 

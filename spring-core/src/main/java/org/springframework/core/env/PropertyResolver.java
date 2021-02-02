@@ -26,6 +26,8 @@ import org.springframework.lang.Nullable;
  * @since 3.1
  * @see Environment
  * @see PropertySourcesPropertyResolver
+ *
+ * <p>对获取属性的抽象
  */
 public interface PropertyResolver {
 
