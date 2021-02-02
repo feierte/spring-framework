@@ -26,6 +26,8 @@ package org.springframework.context.annotation;
  * @author Phillip Webb
  * @since 4.0
  * @see Configuration
+ *
+ * <p>判断带有@Configuration注解的配置Class是否满足condition条件
  */
 public interface ConfigurationCondition extends Condition {
 
@@ -37,6 +39,11 @@ public interface ConfigurationCondition extends Condition {
 
 	/**
 	 * The various configuration phases where the condition could be evaluated.
+	 * <p>
+	 * ConfigurationPhase控制的是过滤的时机，是在创建Configuration类的时候过滤还是在创建bean的时候过滤（也可用条件注解的生效阶段来描述）
+	 *
+	 * <p>默认情况下，带有@Configuration注解的类  为full configuration ， phase 为 PARSE_CONFIGURATION，
+	 * 其余方法带有@Bean，或者注解元数据中 带有 @Component，@ComponentScan，@Import，@ImportResource的 为 lite 模式，phase 为REGISTER_BEAN
 	 */
 	enum ConfigurationPhase {
 
@@ -45,6 +52,7 @@ public interface ConfigurationCondition extends Condition {
 		 * class is being parsed.
 		 * <p>If the condition does not match at this point, the {@code @Configuration}
 		 * class will not be added.
+		 * <p>判断是否在解析配置类的时候就进行 condition 条件判断，若失败，则该配置类不注册
 		 */
 		PARSE_CONFIGURATION,
 
@@ -54,6 +62,7 @@ public interface ConfigurationCondition extends Condition {
 		 * {@code @Configuration} classes from being added.
 		 * <p>At the time that the condition is evaluated, all {@code @Configuration}
 		 * classes will have been parsed.
+		 * <p>所有配置类均注册为Bean
 		 */
 		REGISTER_BEAN
 	}

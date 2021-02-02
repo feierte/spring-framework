@@ -87,6 +87,7 @@ import org.springframework.util.ClassUtils;
 public class ClassPathScanningCandidateComponentProvider implements EnvironmentCapable, ResourceLoaderAware {
 
 	/**
+	 * 默认扫描的 包路径
 	 * 前两个**表示当前包及其子包，而 *.class 表示所有以.class结尾的文件
 	 * 合在一起则为 当前包及其子包 下面的 所有class文件
 	 */
@@ -96,7 +97,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	/**
-	 * 默认扫描的 包路径
+	 * 扫描的包路径
 	 */
 	private String resourcePattern = DEFAULT_RESOURCE_PATTERN;
 

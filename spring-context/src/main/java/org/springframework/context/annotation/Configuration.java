@@ -417,6 +417,11 @@ import org.springframework.stereotype.Component;
  * @see ConfigurationClassPostProcessor
  * @see org.springframework.core.env.Environment
  * @see org.springframework.test.context.ContextConfiguration
+ *
+ * <p>用@Configuration注解标注的类表明其主要目的是作为bean定义的源。此外，@Configuration类允许通过调用同一类中的其他@Bean method方法来定义bean之间的依赖关系
+ * <p>
+ * 需要注意的是，通常来说，我们均会把@Bean标注的方法写在@Configuration标注的类里面来配合使用。
+ * (简单粗暴理解：@Configuration标注的类等同于一个xml文件，@Bean标注的方法等同于xml文件里的一个<bean/> 标签)
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

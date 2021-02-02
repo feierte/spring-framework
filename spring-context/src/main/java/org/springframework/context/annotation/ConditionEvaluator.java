@@ -44,6 +44,8 @@ import org.springframework.util.MultiValueMap;
  * @author Phillip Webb
  * @author Juergen Hoeller
  * @since 4.0
+ *
+ * <p>条件评估器：用于解析@Conditional注解
  */
 class ConditionEvaluator {
 
@@ -76,8 +78,11 @@ class ConditionEvaluator {
 	 * @param metadata the meta data
 	 * @param phase the phase of the call
 	 * @return if the item should be skipped
+	 *
+	 * <p>判定基于@Conditional注解的配置类是否应该忽略
 	 */
 	public boolean shouldSkip(@Nullable AnnotatedTypeMetadata metadata, @Nullable ConfigurationPhase phase) {
+		// 首先判定配置类是否存在注解，然后判定注解中是否包含@Conditional注解
 		if (metadata == null || !metadata.isAnnotated(Conditional.class.getName())) {
 			return false;
 		}
@@ -113,6 +118,11 @@ class ConditionEvaluator {
 		return false;
 	}
 
+	/**
+	 * 获取@Conditional条件注解的属性值，即条件判定类 {@link Condition}
+	 * @param metadata
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	private List<String[]> getConditionClasses(AnnotatedTypeMetadata metadata) {
 		MultiValueMap<String, Object> attributes = metadata.getAllAnnotationAttributes(Conditional.class.getName(), true);
@@ -120,6 +130,12 @@ class ConditionEvaluator {
 		return (List<String[]>) (values != null ? values : Collections.emptyList());
 	}
 
+	/**
+	 * 获取条件判定类的Condition实例对象
+	 * @param conditionClassName
+	 * @param classloader
+	 * @return
+	 */
 	private Condition getCondition(String conditionClassName, @Nullable ClassLoader classloader) {
 		Class<?> conditionClass = ClassUtils.resolveClassName(conditionClassName, classloader);
 		return (Condition) BeanUtils.instantiateClass(conditionClass);

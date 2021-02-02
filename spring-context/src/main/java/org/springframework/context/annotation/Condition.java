@@ -37,6 +37,8 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
  * @see ConfigurationCondition
  * @see Conditional
  * @see ConditionContext
+ *
+ * <p>条件判定接口
  */
 @FunctionalInterface
 public interface Condition {
@@ -48,6 +50,7 @@ public interface Condition {
 	 * or {@link org.springframework.core.type.MethodMetadata method} being checked
 	 * @return {@code true} if the condition matches and the component can be registered,
 	 * or {@code false} to veto the annotated component's registration
+	 * <p>用来判定是否符合指定的条
 	 */
 	boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata);
 
