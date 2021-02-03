@@ -25,11 +25,19 @@ import org.springframework.core.type.MethodMetadata;
  *
  * @author Chris Beams
  * @since 3.1
+ *
+ * <p>表示配置类中的 方法（被@Bean注解的和不被@Bean注解的）
  */
 abstract class ConfigurationMethod {
 
+	/**
+	 * 表示配置类中 的方法 的元数据信息
+	 */
 	protected final MethodMetadata metadata;
 
+	/**
+	 * 表示配置类
+	 */
 	protected final ConfigurationClass configurationClass;
 
 

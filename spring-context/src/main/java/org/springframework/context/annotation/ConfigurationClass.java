@@ -48,6 +48,9 @@ import org.springframework.util.ClassUtils;
  */
 final class ConfigurationClass {
 
+	/**
+	 * 该配置类的注解元信息
+	 */
 	private final AnnotationMetadata metadata;
 
 	private final Resource resource;
@@ -55,16 +58,31 @@ final class ConfigurationClass {
 	@Nullable
 	private String beanName;
 
+	/**
+	 * 存放通过注解在配置类上的@Import引入的候选类
+	 * （包括ImportSelector选择器类中引入的候选类、包括DeferredImportSelector选择器中引入的候选类、包括@Import引入的普通类）
+	 */
 	private final Set<ConfigurationClass> importedBy = new LinkedHashSet<>(1);
 
+	/**
+	 * 配置类中 所有被@Bean注解的方法（BeanMethod是 对被@Bean注解的方法的封装）
+	 */
 	private final Set<BeanMethod> beanMethods = new LinkedHashSet<>();
 
+	/**
+	 * 存放 通过@ImportResource注解引入资源类 和 BeanDefinitionReader 之间的映射关系
+	 */
 	private final Map<String, Class<? extends BeanDefinitionReader>> importedResources =
 			new LinkedHashMap<>();
 
+	/**
+	 * 存放通过@Import注解引入的ImportBeanDefinitionRegistrar实现类，用于注册自定义bean到IOC容器
+	 *   value值是引入当前类的注解元数据
+	 */
 	private final Map<ImportBeanDefinitionRegistrar, AnnotationMetadata> importBeanDefinitionRegistrars =
 			new LinkedHashMap<>();
 
+	// 存放将BeanMethod标记为按其条件跳过
 	final Set<String> skippedBeanMethods = new HashSet<>();
 
 
@@ -162,6 +180,8 @@ final class ConfigurationClass {
 	 * automatically registered due to being nested within another configuration class.
 	 * @since 3.1.1
 	 * @see #getImportedBy()
+	 *
+	 * <p>判定是否是通过@Import注解被引入，还是被嵌套在其它配置类中被自动注入的：
 	 */
 	public boolean isImported() {
 		return !this.importedBy.isEmpty();

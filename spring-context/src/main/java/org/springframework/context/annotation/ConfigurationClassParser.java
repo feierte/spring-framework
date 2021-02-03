@@ -108,12 +108,15 @@ import org.springframework.util.StringUtils;
  * @since 3.0
  * @see ConfigurationClassBeanDefinitionReader
  *
+ * <p>将配置类解析为ConfigurationClass。
+ *
  * <p>ConfigurationClassParser用于分析@Configuration注解的配置类，产生一组ConfigurationClass对象，是Spring内置的一个工具类。
  * 一般情况下一个@Configuration注解的类只会产生一个ConfigurationClass对象，但是因为@Configuration注解的类可能会使用注解@Import引入其他配置类，也可能内部嵌套定义配置类，
  * 所以总的来看，ConfigurationClassParser分析一个@Configuration注解的类，可能产生任意多个ConfigurationClass对象。
  * <p>
- * 这个工具类自身的逻辑并不注册bean定义，它的主要任务是发现@Configuration注解的所有配置类并将这些配置类交给调用者(调用者会通过其他方式注册其中的bean定义)，
- * 而对于非@Configuration注解的其他bean定义，比如@Component注解的bean定义，该工具类使用另外一个工具ComponentScanAnnotationParser扫描和注册它们。
+ * 这个工具类自身的逻辑并不注册bean定义（注册备案定义由ConfigurationClassBeanDefinitionReader该类完成），
+ * 它的主要任务是发现@Configuration注解的所有配置类并将这些配置类交给调用者（调用者会通过其他方式注册其中的bean定义），而对于非@Configuration注解的其他bean定义，
+ * 比如@Component注解的bean定义，该工具类使用另外一个工具ComponentScanAnnotationParser扫描和注册它们。
  */
 class ConfigurationClassParser {
 

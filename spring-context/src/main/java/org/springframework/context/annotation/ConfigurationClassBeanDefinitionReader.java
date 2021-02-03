@@ -70,6 +70,8 @@ import org.springframework.util.StringUtils;
  * @author Sam Brannen
  * @since 3.0
  * @see ConfigurationClassParser
+ *
+ * <p>功能：读取一组已经被完整解析的配置类ConfigurationClass，向给定bean容器BeanDefinitionRegistry注册其中所有的bean定义
  */
 class ConfigurationClassBeanDefinitionReader {
 
@@ -113,6 +115,9 @@ class ConfigurationClassBeanDefinitionReader {
 	/**
 	 * Read {@code configurationModel}, registering bean definitions
 	 * with the registry based on its contents.
+	 *
+	 * <p>这是该类对外提供的唯一的服务方法入口
+	 * configurationModel 通常来自 ConfigurationClassParser
 	 */
 	public void loadBeanDefinitions(Set<ConfigurationClass> configurationModel) {
 		TrackedConditionEvaluator trackedConditionEvaluator = new TrackedConditionEvaluator();
@@ -181,7 +186,7 @@ class ConfigurationClassBeanDefinitionReader {
 		String methodName = metadata.getMethodName();
 
 		// Do we need to mark the bean as skipped by its condition?
-		// @Condition注解就是在这里起作用的
+		// 如果@Bean的方法上面注解有@Conditional，那么此时的@Conditional就是在这里起作用的
 		if (this.conditionEvaluator.shouldSkip(metadata, ConfigurationPhase.REGISTER_BEAN)) {
 			configClass.skippedBeanMethods.add(methodName);
 			return;
