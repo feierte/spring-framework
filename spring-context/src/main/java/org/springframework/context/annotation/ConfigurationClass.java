@@ -53,6 +53,9 @@ final class ConfigurationClass {
 	 */
 	private final AnnotationMetadata metadata;
 
+	/**
+	 * 该ConfigurationClass的来源
+	 */
 	private final Resource resource;
 
 	@Nullable
@@ -61,6 +64,10 @@ final class ConfigurationClass {
 	/**
 	 * 存放通过注解在配置类上的@Import引入的候选类
 	 * （包括ImportSelector选择器类中引入的候选类、包括DeferredImportSelector选择器中引入的候选类、包括@Import引入的普通类）
+	 * 例如：ConfigA对应的ConfigurationClass对象的属性importedBy就包含ConfigB所对应的ConfigurationClass对象。
+	 * @Configuration
+	 * @Import(ConfigA)
+	 * public class ConfigB {}
 	 */
 	private final Set<ConfigurationClass> importedBy = new LinkedHashSet<>(1);
 
@@ -181,7 +188,7 @@ final class ConfigurationClass {
 	 * @since 3.1.1
 	 * @see #getImportedBy()
 	 *
-	 * <p>判定是否是通过@Import注解被引入，还是被嵌套在其它配置类中被自动注入的：
+	 * <p>判定 是通过@Import注解被引入，还是被嵌套在其它配置类中被自动注入的：
 	 */
 	public boolean isImported() {
 		return !this.importedBy.isEmpty();

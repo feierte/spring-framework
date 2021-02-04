@@ -452,11 +452,33 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 						MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
 						// 判断该类是否符合@CompoentScan的过滤规则（即@ComponentScan注解在此处开始生效）
 						// 过滤匹配排除excludeFilters排除过滤器(可以没有),包含includeFilter中的包含过滤器（至少包含一个）。
+						/*
+						 * 过滤判断一
+						 * 1）非主类，因为一般是从主类扫描过来的，所以肯定排除自己
+						 * 2）标注了 @Component 元注解（元注解，即被标注有 @Component 注解
+						 * 		的注解标注也算，有点拗口，即 @Configuration 注解也算）
+						 * 3）或 标注有 javax.annotation.@ManagedBean 注解
+						 */
 						if (isCandidateComponent(metadataReader)) {
 							// 把元数据转化为 BeanDefinition
 							ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
 							sbd.setSource(resource);
 							// 判断是否是合格的bean定义
+							/*
+							 * 过滤判断二
+							 * AnnotationMetadata metadata = beanDefinition.getMetadata();
+							 * return (metadata.isIndependent() && (metadata.isConcrete() ||
+							 * 		(metadata.isAbstract() && metadata.hasAnnotatedMethods(Lookup.class.getName()))));
+							 *
+							 * isIndependent()：Top Level Class or Nested Class
+							 * Top Level Class：顶层类，即普通类
+							 * Inner Class：非静态内部类
+							 * Nested Class：嵌套类（静态内部类）
+							 * Local Class：方法内声明的局部类
+							 * Anonymous Class：匿名类
+							 *
+							 * isConcrete：isInterface or isAbstract
+							 */
 							if (isCandidateComponent(sbd)) {
 								if (debugEnabled) {
 									logger.debug("Identified candidate component class: " + resource);

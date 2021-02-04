@@ -422,6 +422,8 @@ import org.springframework.stereotype.Component;
  * <p>
  * 需要注意的是，通常来说，我们均会把@Bean标注的方法写在@Configuration标注的类里面来配合使用。
  * (简单粗暴理解：@Configuration标注的类等同于一个xml文件，@Bean标注的方法等同于xml文件里的一个<bean/> 标签)
+ *
+ * <p>配置类可以存在嵌套（如内部类），继承，实现接口等特性
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

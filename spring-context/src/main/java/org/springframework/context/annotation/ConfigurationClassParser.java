@@ -141,6 +141,9 @@ class ConfigurationClassParser {
 
 	private final BeanDefinitionRegistry registry;
 
+	/**
+	 * 解析@ComponentScan注解的解析器，在ConfigurationClassParser对象的构造器中被初始化
+	 */
 	private final ComponentScanAnnotationParser componentScanParser;
 
 	private final ConditionEvaluator conditionEvaluator;
@@ -192,12 +195,15 @@ class ConfigurationClassParser {
 				// 根据BeanDefinition类型的不同，调用parse()不同的重载方法，
 				// 实际上最终调用的都是processConfigurationClass()方法
 				if (bd instanceof AnnotatedBeanDefinition) {
+					// bd 是一个 AnnotatedBeanDefinition
 					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
 				}
 				else if (bd instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) bd).hasBeanClass()) {
+					// bd 是一个 AbstractBeanDefinition,并且指定 beanClass 属性
 					parse(((AbstractBeanDefinition) bd).getBeanClass(), holder.getBeanName());
 				}
 				else {
+					// 其他情况
 					parse(bd.getBeanClassName(), holder.getBeanName());
 				}
 			}
@@ -253,8 +259,12 @@ class ConfigurationClassParser {
 
 		ConfigurationClass existingClass = this.configurationClasses.get(configClass);
 		// 在这里处理Configuration重复import
-		// 如果同一个配置类被处理两次，两次都属于被import的则合并导入类，返回。如果配置类不是被导入的，则移除旧使用新的配置类
 		if (existingClass != null) {
+			/*
+			 * 如果同一个配置类被处理两次:
+			 * 	1）两次都属于被import的则合并导入类，返回。
+			 * 	2）如果配置类不是被Import的，则移除旧使用新的配置类
+			 */
 			if (configClass.isImported()) {
 				if (existingClass.isImported()) {
 					existingClass.mergeImportedBy(configClass);
@@ -293,9 +303,12 @@ class ConfigurationClassParser {
 	 * Apply processing and build a complete {@link ConfigurationClass} by reading the
 	 * annotations, members and methods from the source class. This method can be called
 	 * multiple times as relevant sources are discovered.
-	 * @param configClass the configuration class being build
+	 * @param configClass the configuration class being build 表示当前配置类对象
 	 * @param sourceClass a source class
-	 * @return the superclass, or {@code null} if none found or previously processed
+	 * @return the superclass, or {@code null} if none found or previously processed 超类的sourceClass，如果未找到或以前处理过就返回null
+	 *
+	 * <p>通过从sourceClass读取注解、成员和方法，应用处理并构建完整的ConfigurationClass。
+	 * 当发现多个相关sourceClass时，可以多次调用此方法。
 	 * <p>
 	 * doProcessConfigurationClass()会对一个配置类执行真正的处理：
 	 * 	1、一个配置类的成员类(配置类内嵌套定义的类)也可能适配类，先遍历这些成员配置类，调用processConfigurationClass处理它们;
@@ -312,8 +325,11 @@ class ConfigurationClassParser {
 			ConfigurationClass configClass, SourceClass sourceClass, Predicate<String> filter)
 			throws IOException {
 		// 判断是否有 @Component 注解，因为@Configuration嵌套了@Component注解，所以配置类会走进这个分支
+		// 如果元数据所属的类上存在@Component以及派生注解，那么调用processMemberClasses方法首先处理内部类配置类
+		// 常见包括@Component、@Repository、@Service、@Controller、@Configuration等注解
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
+			// 递归处理任何成员（嵌套）类，也就是内部类。内部配置类最终还是会调用processConfigurationClass方法
 			processMemberClasses(configClass, sourceClass, filter);
 		}
 
@@ -618,11 +634,25 @@ class ConfigurationClassParser {
 			return;
 		}
 
+		// 在这里检查@Import是否循环import了
 		if (checkForCircularImports && isChainedImportOnStack(configClass)) {
 			this.problemReporter.error(new CircularImportProblem(configClass, this.importStack));
 		}
 		else {
 			// importStack 用来进行递归循环处理，可能当前处理的 import 中 import 进来了新的 import
+			// importStack会存放要解析的内部类，防止内部类之间循环import。
+			/*
+			 * 比如A，B两个内部类，A有import注解，导入的是B，同样B有import注解，导入的是A，这样如果在处理的时候发现存在A了，那就说明是循环import了。
+			 * @Configuration
+			 * public class MyConfig {
+			 *
+			 * 	   @Import(B.class)
+			 *     class A {}
+			 *
+			 * 	   @Import(A.class)
+			 *     class B {}
+			 * }
+			 */
 			this.importStack.push(configClass);
 			try {
 				// 遍历所有被 import 的类，并根据所属类型执行对应的操作:
@@ -681,6 +711,11 @@ class ConfigurationClassParser {
 		}
 	}
 
+	/**
+	 * 判断是否存在循环import
+	 * @param configClass
+	 * @return
+	 */
 	private boolean isChainedImportOnStack(ConfigurationClass configClass) {
 		if (this.importStack.contains(configClass)) {
 			String configClassName = configClass.getMetadata().getClassName();
@@ -985,6 +1020,7 @@ class ConfigurationClassParser {
 	 */
 	private class SourceClass implements Ordered {
 
+		// 来源只能为Class或者MetadataReader
 		private final Object source;  // Class or MetadataReader
 
 		private final AnnotationMetadata metadata;

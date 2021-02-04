@@ -81,7 +81,7 @@ abstract class ConfigurationClassUtils {
 	 * @param metadataReaderFactory the current factory in use by the caller
 	 * @return whether the candidate qualifies as (any kind of) configuration class
 	 * <p>
-	 * 该方法是用来判断一个类是否是一个配置类，并为BeanDefinition设置属性为lite或者full。
+	 * 该方法是用来判断一个bean是否是一个配置类，并为BeanDefinition设置属性为lite或者full。
 	 * 如果加了@Configuration，那么对应的BeanDefinition为full，
 	 * 如果加了@Bean，@Component，@ComponentScan，@Import，@ImportResource这其中任意一个或多个注解，则为lite。
 	 * lite和full均表示这个BeanDefinition对应的类是一个配置类。
@@ -128,7 +128,9 @@ abstract class ConfigurationClassUtils {
 
 		Map<String, Object> config = metadata.getAnnotationAttributes(Configuration.class.getName());
 		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) {
-			// 含有@Configuration注解，那么对应的BeanDefinition的configurationClass属性值设置为full
+			// 含有@Configuration注解并属性proxyBeanMethods的值为true，那么对应的BeanDefinition的configurationClass属性值设置为full
+			// 即mark一下它是Full模式的配置，
+			// 这个mark动作很有意义：后面判断一个配置类是Full模式还是Lite模式，甚至判断它是否是个配置类均可通过beanDef.getAttribute(CONFIGURATION_CLASS_ATTRIBUTE)这样完成判断。
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
 		else if (config != null || isConfigurationCandidate(metadata)) {
