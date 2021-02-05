@@ -33,7 +33,7 @@ import org.springframework.util.Assert;
  * @since 2.5.2
  * @see org.springframework.core.io.DescriptiveResource
  */
-class BeanDefinitionResource extends AbstractResource {
+class  BeanDefinitionResource extends AbstractResource {
 
 	private final BeanDefinition beanDefinition;
 

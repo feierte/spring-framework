@@ -67,6 +67,11 @@ package org.springframework.core.env;
  * @see org.springframework.context.ConfigurableApplicationContext#getEnvironment
  * @see org.springframework.context.ConfigurableApplicationContext#setEnvironment
  * @see org.springframework.context.support.AbstractApplicationContext#createEnvironment
+ *
+ * <p>用来表示整个应用运行时的环境，为了更形象地理解Environment，你可以把Spring应用的运行时简单地想象成两个部分：
+ * 	一个是Spring应用本身，一个是Spring应用所处的环境。
+ *
+ * <p>Environment在容器中是一个抽象的集合，是指应用环境的两个方面：profiles和properties。
  */
 public interface Environment extends PropertyResolver {
 

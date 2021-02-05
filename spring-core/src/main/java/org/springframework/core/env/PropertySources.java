@@ -28,6 +28,9 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 3.1
  * @see PropertySource
+ *
+ * <p>该类相当于一个"门面"，将多个属性来源（PropertySource）封装到一起了，不用在关心来源是系统环境、系统属性、配置文件等。
+ * 在所有来源前面加一个“门面”，只把它暴露出去，用户看到的只是“单一来源”，就从这里取值，其它的啥也不用知道。
  */
 public interface PropertySources extends Iterable<PropertySource<?>> {
 

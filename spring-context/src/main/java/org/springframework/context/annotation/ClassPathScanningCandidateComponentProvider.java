@@ -111,6 +111,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	@Nullable
 	private ConditionEvaluator conditionEvaluator;
 
+	/**
+	 * 资源路径解析器，能从指定的包路径，根据指定的pattern，加载相应的Resource
+	 */
 	@Nullable
 	private ResourcePatternResolver resourcePatternResolver;
 
@@ -318,6 +321,8 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * Scan the class path for candidate components.
 	 * @param basePackage the package to check for annotated classes
 	 * @return a corresponding Set of autodetected bean definitions
+	 *
+	 * <p>核心任务 : 从指定的某个包内扫描目标bean组件定义
 	 */
 	public Set<BeanDefinition> findCandidateComponents(String basePackage) {
 		if (this.componentsIndex != null && indexSupportsIncludeFilters()) {
@@ -536,8 +541,10 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @param metadataReader the ASM ClassReader for the class
 	 * @return whether the class qualifies as a candidate component
 	 * <p>
-	 * 判断元信息读取器读取的类是否符合容器定义的注解过滤规则
+	 * 判断MetadataReader读取的类是否符合 容器定义的注解过滤规则
 	 * {@code @ComponentScan}的过滤规则支持5种 （注解、类、正则、aop、自定义）
+	 *
+	 * <p>如果excludeFilters和includeFilters同时匹配到，那么excludeFilters有效。
 	 */
 	protected boolean isCandidateComponent(MetadataReader metadataReader) throws IOException {
 		// 如果读取的类的注解在excludeFilters的过滤规则中，返回false
