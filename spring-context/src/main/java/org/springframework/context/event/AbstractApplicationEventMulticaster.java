@@ -166,6 +166,7 @@ public abstract class AbstractApplicationEventMulticaster
 	 * @param eventType the event type
 	 * @return a Collection of ApplicationListeners
 	 * @see org.springframework.context.ApplicationListener
+	 * <p>根据事件和事件类型获得对应的监听器
 	 */
 	protected Collection<ApplicationListener<?>> getApplicationListeners(
 			ApplicationEvent event, ResolvableType eventType) {

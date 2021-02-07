@@ -26,6 +26,8 @@ import java.util.EventObject;
  * @author Juergen Hoeller
  * @see org.springframework.context.ApplicationListener
  * @see org.springframework.context.event.EventListener
+ *
+ * <p>Spring事件：封装了 事件源 和 初始化时间戳
  */
 public abstract class ApplicationEvent extends EventObject {
 
