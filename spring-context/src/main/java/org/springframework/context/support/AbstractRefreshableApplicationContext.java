@@ -130,10 +130,12 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			// spring注册及加载bean就靠它。其实这里还是一个基本的容器
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			beanFactory.setSerializationId(getId());
+			// 设置 是否允许BeanDefinition重复定义
+			// 设置 是否允许循环引用依赖
 			customizeBeanFactory(beanFactory);
 			// 初始化XmlBeanDefinitionReader用来读取xml，并加载解析
 			loadBeanDefinitions(beanFactory);
-			// 设置为全局变量，AbstractRefreshableApplicationContext持有DefaultListableBeanFactory引用
+			// 设置为全局变量（关联新建的BeanFactory到Spring的应用上下文中），AbstractRefreshableApplicationContext持有DefaultListableBeanFactory引用
 			this.beanFactory = beanFactory;
 		}
 		catch (IOException ex) {

@@ -154,11 +154,12 @@ final class PostProcessorRegistrationDelegate {
 			currentRegistryProcessors.clear();
 
 			// Finally, invoke all other BeanDefinitionRegistryPostProcessors until no further ones appear.
-			// 3. 对 Bean形式 BeanDefinitionRegistryPostProcessor , 并且未实现
-			// PriorityOrdered或者Ordered接口进行处理，直到没有未被处理的
+			// 3. 对 Bean形式 BeanDefinitionRegistryPostProcessor , 并且未实现PriorityOrdered或者Ordered接口进行处理，直到没有未被处理的
 			boolean reiterate = true;
 			while (reiterate) {
 				reiterate = false;
+				// 因为这种情况是有可能发生的：在postProcessBeanDefinitionRegistry方法中又向容器中出栈了一个BeanDefinitionRegistryPostProcessor，
+				// 所以这里要再次进行依赖查找BeanDefinitionRegistryPostProcessor，所以这里是个循环
 				postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 				for (String ppName : postProcessorNames) {
 					if (!processedBeans.contains(ppName)) {
@@ -192,12 +193,10 @@ final class PostProcessorRegistrationDelegate {
 		 * 也执行了所有参数传入的BeanFactoryPostProcessor, 但是尚未处理所有以bean定义方式存在的
 		 * BeanFactoryPostProcessor, 下面的逻辑处理这部分 BeanFactoryPostProcessor.
 		 */
-
 		// Do not initialize FactoryBeans here: We need to leave all regular beans
 		// uninitialized to let the bean factory post-processors apply to them!
 		String[] postProcessorNames =
 				beanFactory.getBeanNamesForType(BeanFactoryPostProcessor.class, true, false);
-
 
 		/*
 		 * 将所有目前记录的所有BeanFactoryPostProcessor分成三部分 :

@@ -561,6 +561,10 @@ class ConfigurationClassParser {
 					if (existing instanceof ResourcePropertySource) {
 						existing = ((ResourcePropertySource) existing).withResourceName();
 					}
+					/*
+					 * 因为注解@PropertySource中的name属性是单值，而value属性是数组是多值，而因为一个name不能对应多个property来源，
+					 * 所以在这个地方要用CompositePropertySource将多个property来源合并成一个
+					 */
 					CompositePropertySource composite = new CompositePropertySource(name);
 					composite.addPropertySource(newSource);
 					composite.addPropertySource(existing);
