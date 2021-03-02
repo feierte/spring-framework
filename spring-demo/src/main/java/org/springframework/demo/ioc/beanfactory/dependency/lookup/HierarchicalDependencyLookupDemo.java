@@ -15,9 +15,9 @@ public class HierarchicalDependencyLookupDemo {
 
 	public static void main(String[] args) {
 		// 创建 BeanFactory 容器
-		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
+		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(ObjectProviderDemo.class);
 		// 将当前类 ObjectProviderDemo 作为配置类（Configuration Class）
-		applicationContext.register(ObjectProviderDemo.class);
+		//applicationContext.register(ObjectProviderDemo.class);
 
 		// 1. 获取 HierarchicalBeanFactory <- ConfigurableBeanFactory <- ConfigurableListableBeanFactory
 		ConfigurableListableBeanFactory beanFactory = applicationContext.getBeanFactory();

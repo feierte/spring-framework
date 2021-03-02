@@ -639,6 +639,7 @@ class ConfigurationClassParser {
 		}
 
 		// 在这里检查@Import是否循环import了
+		// checkForCircularImports表示是否需要进行循环import检查，true表示需要，false表示不需要
 		if (checkForCircularImports && isChainedImportOnStack(configClass)) {
 			this.problemReporter.error(new CircularImportProblem(configClass, this.importStack));
 		}
