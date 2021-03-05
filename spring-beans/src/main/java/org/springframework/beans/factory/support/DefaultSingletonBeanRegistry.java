@@ -86,10 +86,15 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 
 	/** Cache of singleton factories: bean name to ObjectFactory. */
 	// “三级缓存”，缓存了bean name和ObjectFactory，因为最终的Bean都是通过ObjectFactory的回调方法来创建的
+	// 一旦bean被创建（通过ObjectFactory#getObject()），那么该ObjectFactory将从 singletonFactories 中删除
 	private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(16);
 
-	/** Cache of early singleton objects: bean name to bean instance. */
-	// “二级缓存”，存放singletonFactory制造出来的 singleton 的缓存早期单例对象缓存
+	/**
+	 * Cache of early singleton objects: bean name to bean instance.
+	 * “二级缓存”，存放singletonFactory制造出来的 singleton 的缓存早期单例对象缓存
+	 * @apiNote
+	 * 用于存储在创建Bean早期对创建的原始bean的一个引用，注意这里是原始bean，即使用工厂方法或构造方法创建出来的对象，一旦对象最终创建好，此引用信息将删除
+	 */
 	private final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>(16);
 
 	/** Set of registered singletons, containing the bean names in registration order. */

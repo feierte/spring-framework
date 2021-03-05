@@ -94,7 +94,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	private int nestingLevel = 1;
 
 	/**
-	 * 标识所包装依赖的包含者类，通常和声明类是同一个
+	 * 标识所包装依赖的包含者类，通常和声明类（declaringClass）是同一个
 	 */
 	@Nullable
 	private Class<?> containingClass;
