@@ -40,6 +40,10 @@ package org.springframework.beans.factory;
  * @author Juergen Hoeller
  * @since 4.1
  * @see org.springframework.beans.factory.config.ConfigurableListableBeanFactory#preInstantiateSingletons()
+ *
+ * @apiNote
+ * <p>实现该接口后，当所有单例 bean 都初始化完成以后， 容器会回调该接口的方法 afterSingletonsInstantiated (AbstractApplicationContext#finishBeanFactoryInitialization)。
+ * 	主要应用场合就是在所有单例 bean 创建完成之后，可以在该回调中做一些事情。
  */
 public interface SmartInitializingSingleton {
 
