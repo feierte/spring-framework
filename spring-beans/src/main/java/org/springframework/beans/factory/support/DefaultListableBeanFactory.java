@@ -1238,6 +1238,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		 * Spring IOC容器支持 Optional、延迟注入、懒加载注入、正常注入 这四种场景的依赖注入
 		 * 其实无论是什么场景，最底层都是调用 doResolveDependency。
 		 */
+		// 1、Optional<T>
 		if (Optional.class == descriptor .getDependencyType()) {
 			return createOptionalDependency(descriptor, requestingBeanName);
 		}
@@ -1252,16 +1253,20 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		 *
 		 * 	如果descriptor的依赖类型是ObjectFactory或者是ObjectProvider
 		 */
+		// 2、ObjectFactory<T>、ObjectProvider<T>
 		else if (ObjectFactory.class == descriptor.getDependencyType() ||
 				ObjectProvider.class == descriptor.getDependencyType()) {
 			return new DependencyObjectProvider(descriptor, requestingBeanName);
 		}
+		// 3、javax.inject.Provider<T>
 		else if (javaxInjectProviderClass == descriptor.getDependencyType()) {
 			return new Jsr330Factory().createDependencyProvider(descriptor, requestingBeanName);
 		}
 		else {
+			// 4、@Lazy
 			Object result = getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary(
 					descriptor, requestingBeanName);
+			// 5、正常情况
 			if (result == null) {
 				result = doResolveDependency(descriptor, requestingBeanName, autowiredBeanNames, typeConverter);
 			}
@@ -2020,6 +2025,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		@Override
 		public Object getObject() throws BeansException {
+			// 用于解决嵌套的情况，像这种：ObjectProvider<Optional<T>>
 			if (this.optional) {
 				return createOptionalDependency(this.descriptor, this.beanName);
 			}
