@@ -43,7 +43,7 @@ import org.springframework.util.ObjectUtils;
 public class InjectionPoint {
 
 	/**
-	 * 包装函数参数时用于保存所包装的函数参数，内含该参数的注解信息
+	 * 包装 函数参数时用于保存所包装的函数参数，内含该参数的注解信息
 	 */
 	@Nullable
 	protected MethodParameter methodParameter;

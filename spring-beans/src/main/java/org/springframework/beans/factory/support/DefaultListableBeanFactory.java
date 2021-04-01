@@ -1239,7 +1239,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		 * 其实无论是什么场景，最底层都是调用 doResolveDependency。
 		 */
 		// 1、Optional<T>
-		if (Optional.class == descriptor .getDependencyType()) {
+		if (Optional.class == descriptor.getDependencyType()) {
 			return createOptionalDependency(descriptor, requestingBeanName);
 		}
 		/*
