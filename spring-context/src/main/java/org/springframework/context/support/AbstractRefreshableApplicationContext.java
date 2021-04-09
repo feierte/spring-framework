@@ -133,7 +133,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			// 设置 是否允许BeanDefinition重复定义
 			// 设置 是否允许循环引用依赖
 			customizeBeanFactory(beanFactory);
-			// 初始化XmlBeanDefinitionReader用来读取xml，并加载解析
+			// 初始化XmlBeanDefinitionReader用来读取xml，加载解析成BeanDefinition，并注册到BeanDefinitionRegistry(DefaultListableBeanFactory)
 			loadBeanDefinitions(beanFactory);
 			// 设置为全局变量（关联新建的BeanFactory到Spring的应用上下文中），AbstractRefreshableApplicationContext持有DefaultListableBeanFactory引用
 			this.beanFactory = beanFactory;
