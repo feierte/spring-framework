@@ -119,7 +119,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
-		// 判断是否已经存在BeanFactory，存在则销毁所有Beans，并且关闭BeanFactory.
+		// 判断是否已经存在BeanFactory，如果存在则销毁所有Beans，并且关闭BeanFactory.
 		// 目的是避免重复加载BeanFactory
 		if (hasBeanFactory()) {
 			destroyBeans();
@@ -133,7 +133,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			// 设置 是否允许BeanDefinition重复定义
 			// 设置 是否允许循环引用依赖
 			customizeBeanFactory(beanFactory);
-			// 初始化XmlBeanDefinitionReader用来读取xml，加载解析成BeanDefinition，并注册到BeanDefinitionRegistry(DefaultListableBeanFactory)
+			// 初始化XmlBeanDefinitionReader用来读取xml的BeanDefinition，并加载解析注册到BeanDefinitionRegistry
 			loadBeanDefinitions(beanFactory);
 			// 设置为全局变量（关联新建的BeanFactory到Spring的应用上下文中），AbstractRefreshableApplicationContext持有DefaultListableBeanFactory引用
 			this.beanFactory = beanFactory;
