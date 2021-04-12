@@ -30,12 +30,16 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.0
  * @see org.springframework.beans.factory.BeanFactory#getBean
+ *
+ * @apiNote 专门为切面创建实例的工厂（因为切面也不一定是单例的，也支持各种多例形式）
  */
 public interface AspectInstanceFactory extends Ordered {
 
 	/**
 	 * Create an instance of this factory's aspect.
 	 * @return the aspect instance (never {@code null})
+	 *
+	 * @apiNote 返回切面实例
 	 */
 	Object getAspectInstance();
 

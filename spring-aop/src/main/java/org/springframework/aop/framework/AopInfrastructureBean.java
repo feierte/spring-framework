@@ -25,6 +25,9 @@ package org.springframework.aop.framework;
  * @since 2.0.3
  * @see org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator
  * @see org.springframework.aop.scope.ScopedProxyFactoryBean
+ *
+ * @apiNote 一个标记接口。
+ * 若Bean实现了此接口，表明它是一个Spring AOP的基础类，那么这个类是不会被AOP给代理的，即使它能被切面切进去~也不会被代理
  */
 public interface AopInfrastructureBean {
 

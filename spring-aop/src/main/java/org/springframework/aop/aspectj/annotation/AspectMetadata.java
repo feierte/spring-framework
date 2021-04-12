@@ -42,6 +42,8 @@ import org.springframework.aop.support.ComposablePointcut;
  * @author Juergen Hoeller
  * @since 2.0
  * @see org.springframework.aop.aspectj.AspectJExpressionPointcut
+ *
+ * @apiNote 切面的元数据类
  */
 @SuppressWarnings("serial")
 public class AspectMetadata implements Serializable {
@@ -62,6 +64,8 @@ public class AspectMetadata implements Serializable {
 	/**
 	 * AspectJ reflection information (AspectJ 5 / Java 5 specific).
 	 * Re-resolved on deserialization since it isn't serializable itself.
+	 *
+	 * AjType这个字段非常的关键，它表示有非常非常多的关于这个切面的一些数据、方法（位于org.aspectj下）
 	 */
 	private transient AjType<?> ajType;
 
@@ -69,6 +73,9 @@ public class AspectMetadata implements Serializable {
 	 * Spring AOP pointcut corresponding to the per clause of the
 	 * aspect. Will be the Pointcut.TRUE canonical instance in the
 	 * case of a singleton, otherwise an AspectJExpressionPointcut.
+	 *
+	 * 解析切入点表达式用的，但是真正的解析工作为委托给`org.aspectj.weaver.tools.PointcutExpression`来解析的
+	 * 若是单例：则是Pointcut.TRUE  否则为AspectJExpressionPointcut
 	 */
 	private final Pointcut perClausePointcut;
 

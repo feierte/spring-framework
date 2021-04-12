@@ -57,6 +57,10 @@ import org.springframework.util.CollectionUtils;
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @see org.springframework.aop.framework.AopProxy
+ *
+ * @apiNote 注册被代理的目标对象、通知（增强）、和需要代理的接口
+ *
+ * <p>Advised的基础实现类。AdvisedSupport本身不会提供创建代理的任何方法，专注于生成拦截器链。委托给ProxyCreatorSupport去创建代理对象
  */
 public class AdvisedSupport extends ProxyConfig implements Advised {
 

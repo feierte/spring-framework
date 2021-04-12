@@ -28,6 +28,13 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @since 2.0.3
  * @see #createAopProxy()
+ *
+ * @apiNote 注册和触发监听器，借助DefaultAopProxyFactory获取代理对象
+ *
+ * <p>ProxyCreatorSupport用于设置和保存下面三大信息：
+ * 		1、设置被代理对象target
+ * 		2、设置代理接口
+ * 		3、设置通知advice
  */
 @SuppressWarnings("serial")
 public class ProxyCreatorSupport extends AdvisedSupport {

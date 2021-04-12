@@ -27,7 +27,7 @@ import org.springframework.util.Assert;
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @see AdvisedSupport
- * <p>为创建代理提供统一的配置项
+ * <p>为创建代理提供统一的配置项，以确保所有代理创建者具有一致的属性。
  */
 public class ProxyConfig implements Serializable {
 
@@ -36,6 +36,7 @@ public class ProxyConfig implements Serializable {
 
 
 	/**
+	 * 标记是否直接对目标类进行代理，而不是通过接口产生代理
 	 * 是否对类进行代理（而不是对接口进行代理）
 	 * 当设置为true时，使用cglib动态代理
 	 */
@@ -45,10 +46,16 @@ public class ProxyConfig implements Serializable {
 	 * 当设置为true时，强制使用cglib动态代理。
 	 * 对于Singleton的代理，推荐使用cglib，因为cglib创建代理比jdk动态代理慢，但是创建出来的代理对象运行效率更高
 	 */
+	// 标记是否对代理进行优化。true：那么在生成代理对象之后，如果对代理配置进行了修改，已经创建的代理对象也不会获取修改之后的代理配置。
+	// 如果exposeProxy设置为true，即使optimize为true也会被忽略。
 	private boolean optimize = false;
 
 	/**
 	 * 代表子类是否能被转换为Advised接口，默认为false，表示可以
+	 *
+	 * 标记是否需要阻止通过该配置创建的代理对象转换为Advised类型，默认值为false，表示代理对象可以被转换为Advised类型
+	 * Advised接口其实就代表了被代理的对象（此接口是Spring AOP提供，它提供了方法可以对代理进行操作，比如移除一个切面之类的），它持有了代理对象的一些属性，通过它可以对生成的代理对象的一些属性进行人为干预
+	 * 默认情况，我们可以这么完 Advised target = (Advised) context.getBean("opaqueTest"); 从而就可以对该代理持有的一些属性进行干预勒   若此值为true，就不能这么玩了
 	 */
 	boolean opaque = false;
 
@@ -59,7 +66,8 @@ public class ProxyConfig implements Serializable {
 	boolean exposeProxy = false;
 
 	/**
-	 * 当前代理配置是否被冻结，如果被冻结，配置将不能被修改
+	 * 标记是否需要冻结代理对象，即在代理对象生成之后，是否允许对其进行修改，默认为false.
+	 * 当我们不希望调用方修改转换成Advised对象之后的代理对象时，就可以设置为true给冻结上即可
 	 */
 	private boolean frozen = false;
 
