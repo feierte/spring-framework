@@ -55,6 +55,16 @@ import org.springframework.transaction.TransactionDefinition;
  * @see org.springframework.transaction.interceptor.TransactionAttribute
  * @see org.springframework.transaction.interceptor.DefaultTransactionAttribute
  * @see org.springframework.transaction.interceptor.RuleBasedTransactionAttribute
+ *
+ * @apiNote 事务注解
+ * 为了保证事务的ACID特性，Spring给事务定义了6个属性，分别对应了@Transactional注解中的属性。
+ * 	事务名称：
+ * 	隔离级别：
+ * 	超时时间：
+ * 	是否只读：
+ * 	传播机制：
+ * 	回滚机制：对应注解中的rollbackFor、rollbackForClassName、noRollbackFor、noRollbackClassName
+ * <p>@Transactional注解本质是对方法前后进行拦截，然后在目标方法开始之前创建或者加入一个事务，在执行完目标方法之后根据情况提交或者回滚事务。
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -79,6 +89,8 @@ public @interface Transactional {
 	 * @see #value
 	 * @see org.springframework.transaction.PlatformTransactionManager
 	 * @see org.springframework.transaction.ReactiveTransactionManager
+	 *
+	 * @apiNote 事务的名称
 	 */
 	@AliasFor("value")
 	String transactionManager() default "";
@@ -87,6 +99,8 @@ public @interface Transactional {
 	 * The transaction propagation type.
 	 * <p>Defaults to {@link Propagation#REQUIRED}.
 	 * @see org.springframework.transaction.interceptor.TransactionAttribute#getPropagationBehavior()
+	 *
+	 * @apiNote 事务的传播机制
 	 */
 	Propagation propagation() default Propagation.REQUIRED;
 
@@ -101,6 +115,8 @@ public @interface Transactional {
 	 * isolation level.
 	 * @see org.springframework.transaction.interceptor.TransactionAttribute#getIsolationLevel()
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#setValidateExistingTransaction
+	 *
+	 * @apiNote 事务的隔离级别
 	 */
 	Isolation isolation() default Isolation.DEFAULT;
 
@@ -111,6 +127,8 @@ public @interface Transactional {
 	 * {@link Propagation#REQUIRES_NEW} since it only applies to newly started
 	 * transactions.
 	 * @see org.springframework.transaction.interceptor.TransactionAttribute#getTimeout()
+	 *
+	 * @apiNote 事务的超时时间，定义了一个事务执行多久算超时，以便超时后回滚。可以防止长期运行的事务占用资源。
 	 */
 	int timeout() default TransactionDefinition.TIMEOUT_DEFAULT;
 
@@ -125,6 +143,8 @@ public @interface Transactional {
 	 * but rather silently ignore the hint.
 	 * @see org.springframework.transaction.interceptor.TransactionAttribute#isReadOnly()
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager#isCurrentTransactionReadOnly()
+	 *
+	 * @apiNote 是否只读，表示这个事务只读取数据但不更新数据，这样可以帮助数据库引擎优化事务
 	 */
 	boolean readOnly() default false;
 
@@ -141,6 +161,8 @@ public @interface Transactional {
 	 * <p>Similar to {@link org.springframework.transaction.interceptor.RollbackRuleAttribute#RollbackRuleAttribute(Class clazz)}.
 	 * @see #rollbackForClassName
 	 * @see org.springframework.transaction.interceptor.DefaultTransactionAttribute#rollbackOn(Throwable)
+	 *
+	 * @apiNote 定义遇到异常时回滚策略。
 	 */
 	Class<? extends Throwable>[] rollbackFor() default {};
 

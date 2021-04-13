@@ -24,6 +24,8 @@ package org.springframework.transaction;
  * @since 5.2
  * @see PlatformTransactionManager
  * @see ReactiveTransactionManager
+ *
+ * @apiNote Spring事务管理的基接口，作为子接口的顶层接口区分，并没有定义实际的事务行为能力
  */
 public interface TransactionManager {
 

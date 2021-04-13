@@ -34,6 +34,8 @@ import org.springframework.util.ClassUtils;
  * @see ProxyTransactionManagementConfiguration
  * @see TransactionManagementConfigUtils#TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME
  * @see TransactionManagementConfigUtils#JTA_TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME
+ *
+ * @apiNote 配置事务启动时（@EnableTransactionManagement），导入注册的配置Bean：包括AutoProxyRegistrar和ProxyTransactionManagementConfiguration。
  */
 public class TransactionManagementConfigurationSelector extends AdviceModeImportSelector<EnableTransactionManagement> {
 

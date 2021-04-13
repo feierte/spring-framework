@@ -694,6 +694,8 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	/**
 	 * Opaque object used to hold transaction information. Subclasses
 	 * must pass it back to methods on this class, but not see its internals.
+	 *
+	 * @apiNote 对当前事务的描述，记录了事务的状态等信息。它没有什么方法，只是对事务相关对象的一个组合。
 	 */
 	protected static final class TransactionInfo {
 
@@ -705,9 +707,15 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 
 		private final String joinpointIdentification;
 
+		/**
+		 * TransactionInfo中最关键的对象，它代表当前正在运行的是哪个事务
+		 */
 		@Nullable
 		private TransactionStatus transactionStatus;
 
+		/**
+		 * 上一个事务的信息
+		 */
 		@Nullable
 		private TransactionInfo oldTransactionInfo;
 

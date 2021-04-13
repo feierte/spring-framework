@@ -34,6 +34,9 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
  * @since 3.1
  * @see EnableTransactionManagement
  * @see TransactionManagementConfigurationSelector
+ *
+ * @apiNote 负责注入事务相关的Bean，包括：事务切面Bean（BeanFactoryTransactionAttributeSourceAdvisor）、
+ * 事务配置属性Bean（TransactionAttributeSource）、事务拦截器Bean（TransactionInterceptor）等等。
  */
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
