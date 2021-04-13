@@ -53,7 +53,8 @@ import org.aopalliance.aop.Advice;
  *
  * @author Rod Johnson
  * @see Joinpoint
- * <p>MethodInterceptor
+ *
+ * @apiNote 继承自Advice接口，表示以拦截器方式去实现增强的效果
  */
 public interface Interceptor extends Advice {
 

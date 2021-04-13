@@ -32,12 +32,19 @@ import org.springframework.lang.Nullable;
  * @since 1.1.3
  * @see org.springframework.aop.framework.ReflectiveMethodInvocation
  * @see org.springframework.aop.support.DelegatingIntroductionInterceptor
+ *
+ * @apiNote 这是Spring对MethodInvocation的一个扩展。
+ * ProxyMethodInvocation允许访问 方法被调用的代理对象以及它的相关信息
+ *
+ * <p>代理执行的入口：内部会把所有的advice 都拿出来递归执行（比如前置增强，就在目标方法之前执行）
  */
 public interface ProxyMethodInvocation extends MethodInvocation {
 
 	/**
 	 * Return the proxy that this method invocation was made through.
 	 * @return the original proxy object
+	 *
+	 * @apiNote 返回代理对象
 	 */
 	Object getProxy();
 
@@ -47,6 +54,8 @@ public interface ProxyMethodInvocation extends MethodInvocation {
 	 * to invoke the joinpoint (and the rest of the advice chain) more than once.
 	 * @return an invocable clone of this invocation.
 	 * {@code proceed()} can be called once per clone.
+	 *
+	 * @apiNote 克隆一个MethodInvocation，使用的是Object的clone()方法
 	 */
 	MethodInvocation invocableClone();
 
@@ -65,6 +74,8 @@ public interface ProxyMethodInvocation extends MethodInvocation {
 	 * Set the arguments to be used on subsequent invocations in the any advice
 	 * in this chain.
 	 * @param arguments the argument array
+	 *
+	 * @apiNote 设置参数，advice执行的时候可能会用到
 	 */
 	void setArguments(Object... arguments);
 
@@ -74,6 +85,8 @@ public interface ProxyMethodInvocation extends MethodInvocation {
 	 * just kept as part of the invocation object, for use in special interceptors.
 	 * @param key the name of the attribute
 	 * @param value the value of the attribute, or {@code null} to reset it
+	 *
+	 * @apiNote 添加一些kv键值对属性，这些kv并不会用于AOP框架内，而是保存下来给特殊的一些拦截器使用
 	 */
 	void setUserAttribute(String key, @Nullable Object value);
 

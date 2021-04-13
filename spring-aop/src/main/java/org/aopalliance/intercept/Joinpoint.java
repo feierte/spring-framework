@@ -47,6 +47,8 @@ public interface Joinpoint {
 	 * on the actual joinpoint type (see the children interfaces).
 	 * @return see the children interfaces' proceed definition
 	 * @throws Throwable if the joinpoint throws an exception
+	 *
+	 * @apiNote 执行此拦截点，并进入到下一个连接点
 	 */
 	Object proceed() throws Throwable;
 
@@ -61,6 +63,8 @@ public interface Joinpoint {
 	 * Return the static part of this joinpoint.
 	 * <p>The static part is an accessible object on which a chain of
 	 * interceptors are installed.
+	 *
+	 * @apiNote 返回此静态连接点，一般就是当前的Method（因为目前Spring只支持方法拦截，所有连接点的静态部分肯定就是本方法）
 	 */
 	AccessibleObject getStaticPart();
 

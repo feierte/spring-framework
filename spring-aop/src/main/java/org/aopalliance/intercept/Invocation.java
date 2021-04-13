@@ -23,6 +23,8 @@ package org.aopalliance.intercept;
  * interceptor.
  *
  * @author Rod Johnson
+ *
+ * @apiNote 表示表示程序中的调用，此调用是一个可以被拦截器拦截的连接点
  */
 public interface Invocation extends Joinpoint {
 

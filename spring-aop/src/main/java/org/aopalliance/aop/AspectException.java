@@ -24,6 +24,8 @@ package org.aopalliance.aop;
  * @author Rod Johnson
  * @author Bob Lee
  * @author Juergen Hoeller
+ *
+ * @apiNote 所有AOP框架中异常的父类
  */
 @SuppressWarnings("serial")
 public class AspectException extends RuntimeException {

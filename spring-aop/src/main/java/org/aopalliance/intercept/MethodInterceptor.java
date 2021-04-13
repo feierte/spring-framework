@@ -39,6 +39,7 @@ package org.aopalliance.intercept;
  *
  * @author Rod Johnson
  *
+ * @apiNote 从名字都可以看得出来，它是通过拦截方法的执行来实现增强的效果
  * <p>方法环绕增强，表示在目标方法执行前后进行增强
  */
 @FunctionalInterface
@@ -53,6 +54,9 @@ public interface MethodInterceptor extends Interceptor {
 	 * might be intercepted by the interceptor
 	 * @throws Throwable if the interceptors or the target object
 	 * throws an exception
+	 *
+	 * @apiNote 可以在此方法内实现增强的逻辑。
+	 * invocation.proceed()表示目标方法的执行，可以在目标方法执行的前后，添加增强的逻辑
 	 */
 	Object invoke(MethodInvocation invocation) throws Throwable;
 

@@ -33,6 +33,9 @@ import org.springframework.util.Assert;
  * @author Rod Johnson
  * @see AfterReturningAdviceInterceptor
  * @see ThrowsAdviceInterceptor
+ *
+ * @apiNote 前置增强的拦截器
+ * 使用了适配器模式，把MethodBeforeAdvice包装成了一个MethodInterceptor
  */
 @SuppressWarnings("serial")
 public class MethodBeforeAdviceInterceptor implements MethodInterceptor, BeforeAdvice, Serializable {
@@ -52,7 +55,9 @@ public class MethodBeforeAdviceInterceptor implements MethodInterceptor, BeforeA
 
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
+		// 在目标方法执行前，先执行advice的before方法
 		this.advice.before(mi.getMethod(), mi.getArguments(), mi.getThis());
+		// 注意此处继续调用了mi.proceed()，相当于去执行下一个advice。类似于递归调用，这样就形成了一个链式调用执行
 		return mi.proceed();
 	}
 

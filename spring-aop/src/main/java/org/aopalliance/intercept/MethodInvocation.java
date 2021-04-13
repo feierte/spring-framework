@@ -27,6 +27,8 @@ import java.lang.reflect.Method;
  *
  * @author Rod Johnson
  * @see MethodInterceptor
+ *
+ * @apiNote 表示方法的调用
  */
 public interface MethodInvocation extends Invocation {
 
@@ -35,6 +37,9 @@ public interface MethodInvocation extends Invocation {
 	 * <p>This method is a friendly implementation of the
 	 * {@link Joinpoint#getStaticPart()} method (same result).
 	 * @return the method being called
+	 *
+	 * @apiNote 返回正在被调用的方法
+	 * 此时，效果同父类{@link Joinpoint#getStaticPart()}一致
 	 */
 	Method getMethod();
 

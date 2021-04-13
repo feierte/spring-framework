@@ -33,6 +33,9 @@ import org.springframework.util.Assert;
  * @author Rod Johnson
  * @see MethodBeforeAdviceInterceptor
  * @see ThrowsAdviceInterceptor
+ *
+ * @apiNote
+ * 使用了适配器模式，把AfterReturningAdvice包装成了一个MethodInterceptor
  */
 @SuppressWarnings("serial")
 public class AfterReturningAdviceInterceptor implements MethodInterceptor, AfterAdvice, Serializable {
@@ -53,6 +56,7 @@ public class AfterReturningAdviceInterceptor implements MethodInterceptor, After
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
 		Object retVal = mi.proceed();
+		// 使用了后置增强，它能对目标方法的返回值进行处理
 		this.advice.afterReturning(retVal, mi.getMethod(), mi.getArguments(), mi.getThis());
 		return retVal;
 	}

@@ -61,12 +61,12 @@ import org.springframework.lang.Nullable;
  */
 public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Cloneable {
 
-	protected final Object proxy;
+	protected final Object proxy; // 代理对象
 
 	@Nullable
-	protected final Object target;
+	protected final Object target; // 目标对象
 
-	protected final Method method;
+	protected final Method method; // 被拦截的方法
 
 	protected Object[] arguments;
 
@@ -112,6 +112,8 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 		this.proxy = proxy;
 		this.target = target;
 		this.targetClass = targetClass;
+		// 找到桥接方法，作为最后执行的方法
+		// 桥接方法是JDK 1.5引入泛型后，为了使Java的泛型方法生成的字节码和1.5版本前的字节码相兼容，由编译器自动生成的方法（子类实现父类的泛型方法时会生成桥接方法）
 		this.method = BridgeMethodResolver.findBridgedMethod(method);
 		this.arguments = AopProxyUtils.adaptArgumentsIfNecessary(method, arguments);
 		this.interceptorsAndDynamicMethodMatchers = interceptorsAndDynamicMethodMatchers;
@@ -155,34 +157,50 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 	}
 
 
+	/**
+	 * 该类的核心，执行方法、执行advice都是在此处搞定的
+	 * @return
+	 * @throws Throwable
+	 */
 	@Override
 	@Nullable
 	public Object proceed() throws Throwable {
 		// We start with an index of -1 and increment early.
+		// currentInterceptorIndex的初始值为-1，如果执行到链条的末尾 则直接调用连接点方法 即直接调用目标方法
 		if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) {
+			// 这个方法相当于调用了目标方法
 			return invokeJoinpoint();
 		}
 
+		// 获取集合中的MethodInterceptor 并且currentInterceptorIndex  +1 了
 		Object interceptorOrInterceptionAdvice =
 				this.interceptorsAndDynamicMethodMatchers.get(++this.currentInterceptorIndex);
+		// InterceptorAndDynamicMethodMatcher它是Spring内部使用的一个类。
+		// 很简单，就是把MethodInterceptor实例和MethodMatcher放在了一起。
+		// 看看在advisor chain里面是否能够匹配上
 		if (interceptorOrInterceptionAdvice instanceof InterceptorAndDynamicMethodMatcher) {
 			// Evaluate dynamic method matcher here: static part will already have
 			// been evaluated and found to match.
 			InterceptorAndDynamicMethodMatcher dm =
 					(InterceptorAndDynamicMethodMatcher) interceptorOrInterceptionAdvice;
 			Class<?> targetClass = (this.targetClass != null ? this.targetClass : this.method.getDeclaringClass());
+			// 去匹配这个拦截器是否适用于这个目标方法  适用就执行拦截器得invoke方法
 			if (dm.methodMatcher.matches(this.method, targetClass, this.arguments)) {
 				return dm.interceptor.invoke(this);
 			}
 			else {
 				// Dynamic matching failed.
 				// Skip this interceptor and invoke the next in the chain.
+				// 如果不匹配。就跳过此拦截器，而继续执行下一个拦截器
+				// 注意：这里是递归调用  并不是循环调用
 				return proceed();
 			}
 		}
 		else {
 			// It's an interceptor, so we just invoke it: The pointcut will have
 			// been evaluated statically before this object was constructed.
+			// 直接执行此拦截器。说明之前已经匹配好了，只有匹配上的方法才会被拦截进来的
+			// 这里传入this就是传入了ReflectiveMethodInvocation，从而形成了一个链条了
 			return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);
 		}
 	}
@@ -192,9 +210,13 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 	 * Subclasses can override this to use custom invocation.
 	 * @return the return value of the joinpoint
 	 * @throws Throwable if invoking the joinpoint resulted in an exception
+	 *
+	 * @apiNote 其实就是简单的一个：method.invoke(obj, args)
+	 * 子类可以复写此方法，去执行。比如它的唯一子类CglibAopProxy内部类  CglibMethodInvocation就复写了这个方法  它对public的方法做了一个处理（public方法调用MethodProxy.invoke）
 	 */
 	@Nullable
 	protected Object invokeJoinpoint() throws Throwable {
+		// 此处传入的是target，而不能是proxy，否则进入死循环
 		return AopUtils.invokeJoinpointUsingReflection(this.target, this.method, this.arguments);
 	}
 
