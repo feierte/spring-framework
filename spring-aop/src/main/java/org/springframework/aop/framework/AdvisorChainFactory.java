@@ -37,6 +37,8 @@ public interface AdvisorChainFactory {
 	 * @param targetClass the target class (may be {@code null} to indicate a proxy without
 	 * target object, in which case the method's declaring class is the next best option)
 	 * @return a List of MethodInterceptors (may also include InterceptorAndDynamicMethodMatchers)
+	 *
+	 * @apiNote 获取拦截链Interceptors chain
 	 */
 	List<Object> getInterceptorsAndDynamicInterceptionAdvice(Advised config, Method method, @Nullable Class<?> targetClass);
 

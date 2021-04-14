@@ -38,7 +38,7 @@ public interface TargetClassAware {
 	 * (typically a proxy configuration or an actual proxy).
 	 * @return the target Class, or {@code null} if not known
 	 *
-	 * @apiNote 返回被代理得目标类型
+	 * @apiNote 返回被代理得目标类型（目标对象类型）
 	 * @see org.springframework.aop.support.AopUtils#getTargetClass(Object)
 	 */
 	@Nullable

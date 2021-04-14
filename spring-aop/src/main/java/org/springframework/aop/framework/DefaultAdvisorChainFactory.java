@@ -47,6 +47,15 @@ import org.springframework.lang.Nullable;
 @SuppressWarnings("serial")
 public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializable {
 
+	/**
+	 * 1、从 Advised 获取 Advisors
+	 * 2、根据 Advisor 的不同类型对目标方法进行匹配，对于匹配上的方法，则通过 DefaultAdvisorAdapterRegistry 将 Advisor 上的 Advice 转换为 Interceptor
+	 * @param config the AOP configuration in the form of an Advised object
+	 * @param method the proxied method
+	 * @param targetClass the target class (may be {@code null} to indicate a proxy without
+	 * target object, in which case the method's declaring class is the next best option)
+	 * @return
+	 */
 	@Override
 	public List<Object> getInterceptorsAndDynamicInterceptionAdvice(
 			Advised config, Method method, @Nullable Class<?> targetClass) {
@@ -57,6 +66,8 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 		Advisor[] advisors = config.getAdvisors();
 		List<Object> interceptorList = new ArrayList<>(advisors.length);
 		Class<?> actualClass = (targetClass != null ? targetClass : method.getDeclaringClass());
+
+		// 是否存在 引介切面
 		Boolean hasIntroductions = null;
 
 		for (Advisor advisor : advisors) {
@@ -90,6 +101,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 					}
 				}
 			}
+			// 如果是“引介切面”，则只检查类匹配
 			else if (advisor instanceof IntroductionAdvisor) {
 				IntroductionAdvisor ia = (IntroductionAdvisor) advisor;
 				if (config.isPreFiltered() || ia.getClassFilter().matches(actualClass)) {

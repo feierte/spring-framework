@@ -36,15 +36,20 @@ import org.springframework.aop.support.DefaultPointcutAdvisor;
  * @author Rod Johnson
  * @author Rob Harrop
  * @author Juergen Hoeller
+ *
+ * @apiNote AdvisorAdapterRegistry接口的默认实现类，
  */
 @SuppressWarnings("serial")
 public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Serializable {
 
+	// 存储了AdvisorAdapter
 	private final List<AdvisorAdapter> adapters = new ArrayList<>(3);
 
 
 	/**
 	 * Create a new DefaultAdvisorAdapterRegistry, registering well-known adapters.
+	 *
+	 * Spring默认帮我们注册了三个AdvisorAdapter
 	 */
 	public DefaultAdvisorAdapterRegistry() {
 		registerAdvisorAdapter(new MethodBeforeAdviceAdapter());

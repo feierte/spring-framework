@@ -58,6 +58,8 @@ public interface Advisor {
 	 * @see BeforeAdvice
 	 * @see ThrowsAdvice
 	 * @see AfterReturningAdvice
+	 *
+	 * @apiNote 获取切面中的advice，该advice也有可能是一个interceptor
 	 */
 	Advice getAdvice();
 

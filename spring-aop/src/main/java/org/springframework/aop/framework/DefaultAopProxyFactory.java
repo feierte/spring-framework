@@ -48,6 +48,7 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 
 	@Override
 	public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException {
+		// 使用 cglib 代理的前提
 		if (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) {
 			Class<?> targetClass = config.getTargetClass();
 			if (targetClass == null) {
@@ -59,7 +60,7 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 			}
 			return new ObjenesisCglibAopProxy(config);
 		}
-		else {
+		else { // 否则使用JDK动态代理
 			return new JdkDynamicAopProxy(config);
 		}
 	}
@@ -68,6 +69,8 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 	 * Determine whether the supplied {@link AdvisedSupport} has only the
 	 * {@link org.springframework.aop.SpringProxy} interface specified
 	 * (or no proxy interfaces specified at all).
+	 *
+	 * @apiNote 代理的接口为空，或者仅包含 SpringProxy 接口
 	 */
 	private boolean hasNoUserSuppliedProxyInterfaces(AdvisedSupport config) {
 		Class<?>[] ifcs = config.getProxiedInterfaces();

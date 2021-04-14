@@ -89,9 +89,9 @@ import org.springframework.util.StringUtils;
  * @see BeanNameAutoProxyCreator
  * @see DefaultAdvisorAutoProxyCreator
  *
- * @apiNote AbstractAutoProxyCreator中实现了代理创建的逻辑
+ * @apiNote AbstractAutoProxyCreator中实现了创建代理的逻辑
  *
- * AbstractAutoProxyCreator的本质是BeanPostProcessor
+ * <p>AbstractAutoProxyCreator的本质是BeanPostProcessor
  */
 @SuppressWarnings("serial")
 public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport

@@ -1909,7 +1909,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected Object initializeBean(String beanName, Object bean, @Nullable RootBeanDefinition mbd) {
 		if (System.getSecurityManager() != null) {
 			AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
-				invokeAwareMethods(beanName, bean);
+				invokeAwareMethods(beanName, bean); // 执行用户自定义的各种 aware 方法
 				return null;
 			}, getAccessControlContext());
 		}

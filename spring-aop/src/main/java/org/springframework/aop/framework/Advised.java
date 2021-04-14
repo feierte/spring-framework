@@ -37,10 +37,10 @@ import org.springframework.aop.TargetSource;
  *
  * @apiNote 该接口用于保存一个代理的相关配置。比如保存了这个代理相关的拦截器、通知、增强器等等。
  * 所有的代理对象都实现了该接口（我们就能够通过一个代理对象获取这个代理对象怎么被代理出来的相关信息）
- * 不管是JDKproxy，还是cglib proxy，代理出来的对象都实现了org.springframework.aop.framework.Advised接口；
+ * 不管是jdk proxy，还是cglib proxy，代理出来的对象都实现了org.springframework.aop.framework.Advised接口；
  *
  * Advice: 通知拦截器（增强）
- * Advisor: 通知 + 切入点的适配器 	（切面）
+ * Advisor: 通知 + 切入点的适配器 =（切面）
  * Advised: 包含所有的Advisor 和 Advice
  */
 public interface Advised extends TargetClassAware {
