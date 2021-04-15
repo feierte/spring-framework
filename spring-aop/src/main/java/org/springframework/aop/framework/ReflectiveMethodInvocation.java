@@ -168,11 +168,12 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 		// We start with an index of -1 and increment early.
 		// currentInterceptorIndex的初始值为-1，如果执行到链条的末尾 则直接调用连接点方法 即直接调用目标方法
 		if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) {
-			// 这个方法相当于调用了目标方法
+			// 这个方法相当于调用了目标方法，即执行完所有advice，会执行该目标方法
 			return invokeJoinpoint();
 		}
 
 		// 获取集合中的MethodInterceptor 并且currentInterceptorIndex  +1 了
+		// 获取下一个要执行的拦截器
 		Object interceptorOrInterceptionAdvice =
 				this.interceptorsAndDynamicMethodMatchers.get(++this.currentInterceptorIndex);
 		// InterceptorAndDynamicMethodMatcher它是Spring内部使用的一个类。

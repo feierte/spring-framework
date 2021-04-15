@@ -112,7 +112,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	private String[] interceptorNames;
 
 	@Nullable
-	private String targetName;
+	private String targetName; // 目标对象名称
 
 	private boolean autodetectInterfaces = true;
 
