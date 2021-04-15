@@ -37,6 +37,8 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @since 2.0.2
  * @see AnnotationAwareAspectJAutoProxyCreator
+ *
+ * @apiNote 该类是一个Spring AOP内部工具类，该工具类从Spring容器中获取所有使用了@AspectJ注解的Bean，最终用于AOP自动代理机制（auto-proxying）
  */
 public class BeanFactoryAspectJAdvisorsBuilder {
 
@@ -44,6 +46,9 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 
 	private final AspectJAdvisorFactory advisorFactory;
 
+	/**
+	 * 缓存了Spring容器中所有被@Aspect注解的Bean
+	 */
 	@Nullable
 	private volatile List<String> aspectBeanNames;
 
@@ -79,6 +84,13 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	 * <p>Creates a Spring Advisor for each AspectJ advice method.
 	 * @return the list of {@link org.springframework.aop.Advisor} beans
 	 * @see #isEligibleBean
+	 *
+	 * @apiNote 该类的核心方法，基本工作流程如下：
+	 * 	1、找到容器中的所有Bean
+	 * 	2、遍历每个Bean，过滤出其中被@Aspect注解了的Bean
+	 * 	3、遍历每个找到的使用了注解@Aspect的Bean中的advice方法，将其封装成一个Advisor。
+	 * 	4、最终返回一个List<Advisor>给调用者。
+	 *
 	 */
 	public List<Advisor> buildAspectJAdvisors() {
 		List<String> aspectNames = this.aspectBeanNames;
@@ -89,10 +101,15 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 				if (aspectNames == null) {
 					List<Advisor> advisors = new ArrayList<>();
 					aspectNames = new ArrayList<>();
+					// 获取所有类型为Object的Bean的名称，基本上也就包括了Spring容器中的所有Bean了
+					// includeNonSingletons:true=>包含单例，非单例bean
+					// allowEagerInit:false=>不要初始化lazy-init singletons和FactoryBean创建的bean
 					String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 							this.beanFactory, Object.class, true, false);
 					for (String beanName : beanNames) {
 						if (!isEligibleBean(beanName)) {
+							// 缺省实现总是返回true
+							// 子类可以覆盖方法，提供自己的实现
 							continue;
 						}
 						// We must be careful not to instantiate beans eagerly as in this case they
@@ -101,12 +118,15 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 						if (beanType == null) {
 							continue;
 						}
+						// 检查该Bean是否使用了@Aspect注解
 						if (this.advisorFactory.isAspect(beanType)) {
 							aspectNames.add(beanName);
 							AspectMetadata amd = new AspectMetadata(beanType, beanName);
 							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
 								MetadataAwareAspectInstanceFactory factory =
 										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
+								// 从@Aspect注解的类，也就是切面类中分析其advice方法，每个advice方法封装成一个Advisor
+								// 该advisor包含了相应的pointcut 和 advice 信息
 								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);
 								if (this.beanFactory.isSingleton(beanName)) {
 									this.advisorsCache.put(beanName, classAdvisors);
@@ -129,7 +149,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 							}
 						}
 					}
-					this.aspectBeanNames = aspectNames;
+					this.aspectBeanNames = aspectNames; // 缓存起来
 					return advisors;
 				}
 			}
