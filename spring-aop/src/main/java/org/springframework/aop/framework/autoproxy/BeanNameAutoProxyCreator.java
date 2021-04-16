@@ -43,7 +43,10 @@ import org.springframework.util.StringUtils;
  * @see #setInterceptorNames
  * @see AbstractAutoProxyCreator
  *
- * <p>基于Bean配置名规则的自动代理创建器：允许为一组特定配置名的Bean自动创建代理实例的代理创建器
+ * @apiNote 基于Bean配置名规则的自动代理创建器：允许为一组特定配置名的Bean自动创建代理实例的代理创建器
+ *
+ * <p>如果采用了 BeanNameAutoProxyCreator，自然就不用再 @EnableAspectJAutoProxy，自然 @Aspect 切面也就不生效了。
+ * 当然，也可以开启的，这样他俩就联合生效了（但不太建议去这么使用）
  */
 @SuppressWarnings("serial")
 public class BeanNameAutoProxyCreator extends AbstractAutoProxyCreator {

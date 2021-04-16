@@ -35,6 +35,8 @@ import org.springframework.lang.Nullable;
  * @since 2.0
  * @see AspectMetadata
  * @see org.aspectj.lang.reflect.AjTypeSystem
+ *
+ * @apiNote 将 被AspectJ注解的切面 解析成一个或多个 Advisor
  */
 public interface AspectJAdvisorFactory {
 
@@ -48,6 +50,8 @@ public interface AspectJAdvisorFactory {
 	 * Use the {@link #validate} method to handle these cases if necessary.
 	 * @param clazz the supposed annotation-style AspectJ class
 	 * @return whether or not this class is recognized by AspectJ as an aspect class
+	 *
+	 * @apiNote 判断给定的Class 是否是切面
 	 */
 	boolean isAspect(Class<?> clazz);
 
@@ -58,6 +62,8 @@ public interface AspectJAdvisorFactory {
 	 * (which can never be legal)
 	 * @throws NotAnAtAspectException if the class is not an aspect at all
 	 * (which may or may not be legal, depending on the context)
+	 *
+	 * @apiNote 判断指定的切面（aspectClass）是否是有效的
 	 */
 	void validate(Class<?> aspectClass) throws AopConfigException;
 

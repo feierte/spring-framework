@@ -54,6 +54,8 @@ public abstract class AopConfigUtils {
 	/**
 	 * Stores the auto proxy creator classes in escalation order.
 	 */
+	// findPriorityForClass 这个方法非常有意思：相当于找到 index 角标，然后
+	// APC_PRIORITY_LIST 的内容是下面这几个，按照顺序排好的
 	private static final List<Class<?>> APC_PRIORITY_LIST = new ArrayList<>(3);
 
 	static {
@@ -119,23 +121,30 @@ public abstract class AopConfigUtils {
 			Class<?> cls, BeanDefinitionRegistry registry, @Nullable Object source) {
 
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
-
+		// 很显然，这里如果我们自己定义了这样一个自动代理创建器，也是可以的
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
+			// 如果我们自定义的并不是 cls 这个 class 类型的 Bean，那就做如下处理一下
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
+				// InfrastructureAdvisorAutoProxyCreator/AspectJAwareAdvisorAutoProxyCreator/AnnotationAwareAspectJAutoProxyCreator 的一个逻辑（防止用户注册错了，做一个容错处理）
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
 				int requiredPriority = findPriorityForClass(cls);
+				// currentPriority < requiredPriority，如果当前用户注册进来的 Aop 代理类的级别，是低于我们要求的级别的，Spring 内部也会对它进行提升成我们要求的那个 class 类型
+				// 这样符合我们的建议：最好不要自己去使用低级别的自动代理创建器
 				if (currentPriority < requiredPriority) {
 					apcDefinition.setBeanClassName(cls.getName());
 				}
 			}
 			return null;
 		}
-
+		// 若用户自己没有定义，那就用系统定义好的：AnnotationAwareAspectJAutoProxyCreator
 		RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);
 		beanDefinition.setSource(source);
+		// 此处注意，增加了一个属性：最高优先级执行
 		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE);
+		// 角色为 Spring 自己使用
 		beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+		// 注册此 Bean 定义信息
 		registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, beanDefinition);
 		return beanDefinition;
 	}

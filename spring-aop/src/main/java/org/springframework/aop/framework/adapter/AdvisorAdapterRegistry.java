@@ -28,7 +28,9 @@ import org.springframework.aop.Advisor;
  * @author Rod Johnson
  * @author Rob Harrop
  *
- * @apiNote 将Advice包装成Advisor，借助AdvisorAdapter，将Advisor包装成MethodInterceptor
+ * @apiNote
+ * 	1、将Advice包装成Advisor
+ * 	2、借助AdvisorAdapter#getInterceptor(Advisor)，将Advisor包装成MethodInterceptor
  */
 public interface AdvisorAdapterRegistry {
 
