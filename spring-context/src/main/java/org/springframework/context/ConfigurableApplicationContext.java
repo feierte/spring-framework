@@ -40,6 +40,8 @@ import org.springframework.lang.Nullable;
  * @author Chris Beams
  * @author Sam Brannen
  * @since 03.11.2003
+ *
+ * @apiNote 配置应用上下文，会根据class路径下的类初始化配置合适的应用上下文，比如是普通的spring应用（非web应用），还是web应用上下文。
  */
 public interface ConfigurableApplicationContext extends ApplicationContext, Lifecycle, Closeable {
 
