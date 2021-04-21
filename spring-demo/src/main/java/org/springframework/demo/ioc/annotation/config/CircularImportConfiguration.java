@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Import;
  * @author jie zhao
  * @date 2021/2/4 10:41
  */
-@Configuration
+//@Configuration
 public class CircularImportConfiguration {
 
 	@Import(B.class)

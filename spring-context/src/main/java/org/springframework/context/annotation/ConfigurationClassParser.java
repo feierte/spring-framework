@@ -108,7 +108,7 @@ import org.springframework.util.StringUtils;
  * @since 3.0
  * @see ConfigurationClassBeanDefinitionReader
  *
- * <p>将配置类解析为ConfigurationClass。
+ * @apiNote 将配置类解析为ConfigurationClass。
  *
  * <p>ConfigurationClassParser用于分析@Configuration注解的配置类，产生一组ConfigurationClass对象，是Spring内置的一个工具类。
  * 一般情况下一个@Configuration注解的类只会产生一个ConfigurationClass对象，但是因为@Configuration注解的类可能会使用注解@Import引入其他配置类，也可能内部嵌套定义配置类，

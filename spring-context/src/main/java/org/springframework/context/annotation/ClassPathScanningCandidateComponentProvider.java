@@ -498,7 +498,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 							}
 						}
 						else {
-							// 不符合 @CompoentScan过滤规则
+							// 不符合 @ComponentScan过滤规则
 							if (traceEnabled) {
 								logger.trace("Ignored because not matching any filter: " + resource);
 							}

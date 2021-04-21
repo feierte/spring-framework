@@ -38,7 +38,7 @@ import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
  * @see org.springframework.core.type.classreading.MetadataReader#getAnnotationMetadata()
  * @see AnnotatedTypeMetadata
  *
- * <p>AnnotationMetadata是ClassMetadata和AnnotatedTypeMetadata的子接口，具有两者的能力，并且新增了访问注解的相关方法。可以简单的理解为塔山对注解的抽象。
+ * @apiNote AnnotationMetadata是ClassMetadata和AnnotatedTypeMetadata的子接口，具有两者的能力，并且新增了访问注解的相关方法。可以简单的理解为塔山对注解的抽象。
  * 经常这么使用得到注解里面所有的属性值：
  * AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(annoMetadata, annType);
  */
@@ -48,10 +48,11 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * Get the fully qualified class names of all annotation types that
 	 * are <em>present</em> on the underlying class.
 	 * @return the annotation type names
-	 * <p>获取当前类上所有的注解的全类名 （注意是全类名）
+	 *
+	 * @apiNote 获取当前类上所有的注解的全类名 （注意是全类名）
 	 * <p>为什么该方法的返回值类型是String，而不是{@code Class<? extends Annotation>} ?
 	 * 因为该类有两种实现方式：标准反射方式（StandardAnnotationMetadata） 和 ASM字节码方式（SimpleAnnotationMetadata）方式，
-	 * 这两种方式的主要区别是：反射需要加载类，需要获取到类的Class对象，而 asm方式不需要加载类，直接从字节码就可以获取注解信息，不需要获取Class对象，而是用字符串类名就可以获取。
+	 * 这两种方式的主要区别是：反射需要加载类，需要获取到类的Class对象，而 asm方式不需要加载类，直接从字节码就可以获取注解信息，不需要获取Class对象，而是用字符串全类名就可以获取。
 	 */
 	default Set<String> getAnnotationTypes() {
 		return getAnnotations().stream()
@@ -66,7 +67,8 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * @param annotationName the fully qualified class name of the meta-annotation
 	 * type to look for
 	 * @return the meta-annotation type names, or an empty set if none found
-	 * <p>获取指定的注解类型的全类名
+	 *
+	 * @apiNote 获取指定的注解类型的全类名
 	 */
 	default Set<String> getMetaAnnotationTypes(String annotationName) {
 		MergedAnnotation<?> annotation = getAnnotations().get(annotationName, MergedAnnotation::isDirectlyPresent);

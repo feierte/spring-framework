@@ -42,7 +42,8 @@ import org.springframework.util.MultiValueMap;
  * @since 4.0
  * @see AnnotationMetadata
  * @see MethodMetadata
- * <p>能够被注解类型的元数据，即对注解元素（{@link java.lang.reflect.AnnotatedElement}）的封装和适配。
+ *
+ * @apiNote 能够被注解类型的元数据，即对注解元素（{@link java.lang.reflect.AnnotatedElement}）的封装和适配。
  * Spring 4.0新增的这个接口提供了对注解统一的、便捷的访问，使用起来更加的方便高效了。
  * <p>AnnotatedTypeMetadata有两个子接口：MethodMetadata和AnnotationMetadata。
  * 这两个子接口都相应的提供了标准（反射）实现以及基于ASM的Visitor模式实现
