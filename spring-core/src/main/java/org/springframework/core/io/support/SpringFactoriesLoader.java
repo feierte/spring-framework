@@ -64,12 +64,15 @@ public final class SpringFactoriesLoader {
 	/**
 	 * The location to look for factories.
 	 * <p>Can be present in multiple JAR files.
+	 *
+	 * @apiNote 文件位置，可以存在多个JAR文件中
 	 */
 	public static final String FACTORIES_RESOURCE_LOCATION = "META-INF/spring.factories";
 
 
 	private static final Log logger = LogFactory.getLog(SpringFactoriesLoader.class);
 
+	// <classLoader, <factoryTypeName, List<factoryImplementationName>>>
 	private static final Map<ClassLoader, MultiValueMap<String, String>> cache = new ConcurrentReferenceHashMap<>();
 
 
@@ -88,6 +91,8 @@ public final class SpringFactoriesLoader {
 	 * @throws IllegalArgumentException if any factory implementation class cannot
 	 * be loaded or if an error occurs while instantiating any factory
 	 * @see #loadFactoryNames
+	 *
+	 * @apiNote 根据给定的类型加载并实例化工厂的实现类
 	 */
 	public static <T> List<T> loadFactories(Class<T> factoryType, @Nullable ClassLoader classLoader) {
 		Assert.notNull(factoryType, "'factoryType' must not be null");

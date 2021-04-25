@@ -66,7 +66,8 @@ public interface AnnotatedTypeMetadata {
 	 * @param annotationName the fully qualified class name of the annotation
 	 * type to look for 注解的全类名
 	 * @return whether a matching annotation is defined
-	 * <p>此元素是否标注有此注解
+	 *
+	 * @apiNote 此元素是否标注有此注解
 	 */
 	default boolean isAnnotated(String annotationName) {
 		return getAnnotations().isPresent(annotationName);
@@ -127,6 +128,8 @@ public interface AnnotatedTypeMetadata {
 	 * and a list of the defined attribute values as Map value. This return value will
 	 * be {@code null} if no matching annotation is defined.
 	 * @see #getAllAnnotationAttributes(String, boolean)
+	 *
+	 * @apiNote 取得指定类型注解的所有的属性 - 值（k-v）
 	 */
 	@Nullable
 	default MultiValueMap<String, Object> getAllAnnotationAttributes(String annotationName) {

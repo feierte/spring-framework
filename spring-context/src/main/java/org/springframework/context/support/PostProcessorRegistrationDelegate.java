@@ -121,7 +121,7 @@ final class PostProcessorRegistrationDelegate {
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
-			// 1. 对 Bean形式 BeanDefinitionRegistryPostProcessor + PriorityOrdered 的调用
+			// 1. 对 Bean形式 BeanDefinitionRegistryPostProcessor + PriorityOrdered 的调用 (实例化并执行实现了PriorityOrdered接口的BeanDefinitionRegistryPostProcessors )
 			// 找出所有注册到容器中的BeanDefinitionRegistryPostProcessor
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
@@ -140,7 +140,7 @@ final class PostProcessorRegistrationDelegate {
 			currentRegistryProcessors.clear();
 
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.
-			// 2. 对 Bean形式 BeanDefinitionRegistryPostProcessor + Ordered的调用
+			// 2. 对 Bean形式 BeanDefinitionRegistryPostProcessor + Ordered的调用 (实例化并执行实现了Ordered接口的BeanDefinitionRegistryPostProcessors )
 			postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
 				if (!processedBeans.contains(ppName) && beanFactory.isTypeMatch(ppName, Ordered.class)) {

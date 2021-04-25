@@ -41,6 +41,8 @@ import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
  * @apiNote AnnotationMetadata是ClassMetadata和AnnotatedTypeMetadata的子接口，具有两者的能力，并且新增了访问注解的相关方法。可以简单的理解为塔山对注解的抽象。
  * 经常这么使用得到注解里面所有的属性值：
  * AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(annoMetadata, annType);
+ *
+ * <p>表示注解标注注的元信息中包含了使用了哪些注解，相应的注解作用在哪个类上等信息
  */
 public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata {
 
@@ -127,7 +129,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * @return a set of {@link MethodMetadata} for methods that have a matching
 	 * annotation. The return value will be an empty set if no methods match
 	 * the annotation type.
-	 * <p>获取所有 标注有指定注解的方法元信息。
+	 * @apiNote 返回所有的标注有指定注解的 方法的元数据
 	 */
 	Set<MethodMetadata> getAnnotatedMethods(String annotationName);
 

@@ -50,6 +50,9 @@ public class StandardAnnotationMetadata extends StandardClassMetadata implements
 
 	private final boolean nestedAnnotationsAsMap;
 
+	/**
+	 * 缓存着 当前类上所有注解的全类名
+	 */
 	@Nullable
 	private Set<String> annotationTypes;
 
