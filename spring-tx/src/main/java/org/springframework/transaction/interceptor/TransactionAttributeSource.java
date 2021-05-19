@@ -32,6 +32,8 @@ import org.springframework.lang.Nullable;
  * @see TransactionInterceptor#setTransactionAttributeSource
  * @see TransactionProxyFactoryBean#setTransactionAttributeSource
  * @see org.springframework.transaction.annotation.AnnotationTransactionAttributeSource
+ *
+ * @apiNote 该接口用来获取事务相关的配置
  */
 public interface TransactionAttributeSource {
 

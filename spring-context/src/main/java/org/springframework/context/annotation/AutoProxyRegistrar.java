@@ -31,6 +31,9 @@ import org.springframework.core.type.AnnotationMetadata;
  * as appropriate based on an {@code @Enable*} annotation having {@code mode} and
  * {@code proxyTargetClass} attributes set to the correct values.
  *
+ * @apiNote 给容器中注册一个 InfrastructureAdvisorAutoProxyCreator 组件；
+ *        利用后置处理器机制在对象创建以后，包装对象，返回一个代理对象（增强器），代理对象执行方法利用拦截器链进行调用；
+ *
  * @author Chris Beams
  * @since 3.1
  * @see org.springframework.cache.annotation.EnableCaching

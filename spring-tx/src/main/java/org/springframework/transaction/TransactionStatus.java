@@ -35,6 +35,8 @@ import java.io.Flushable;
  * @see PlatformTransactionManager#getTransaction
  * @see org.springframework.transaction.support.TransactionCallback#doInTransaction
  * @see org.springframework.transaction.interceptor.TransactionInterceptor#currentTransactionStatus()
+ *
+ * @apiNote 该接口用于控制事务执行，即设置事务结果、检查事务是否完成或是否为新事务。（可以让事务管理器控制事务的执行，可以检查事务是不是一个新事务，或者是否只读）
  */
 public interface TransactionStatus extends TransactionExecution, SavepointManager, Flushable {
 

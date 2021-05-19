@@ -155,6 +155,8 @@ import org.springframework.core.Ordered;
  * @see TransactionManagementConfigurationSelector
  * @see ProxyTransactionManagementConfiguration
  * @see org.springframework.transaction.aspectj.AspectJTransactionManagementConfiguration
+ *
+ * @apiNote 利用TransactionManagementConfigurationSelector给容器中导入两个组件：AutoProxyRegistrar 和 ProxyTransactionManagementConfiguration
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

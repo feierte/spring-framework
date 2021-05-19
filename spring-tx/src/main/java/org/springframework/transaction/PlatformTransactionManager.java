@@ -43,7 +43,10 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.transaction.interceptor.TransactionInterceptor
  * @see org.springframework.transaction.ReactiveTransactionManager
  *
- * @apiNote
+ * @apiNote PlatformTransactionManager接口使用TransactionDefinition和TransactionStatus接口，创建并管理事务。
+ *
+ * <p>该接口的实现必须对事务管理器有深入理解。DataSourceTransactionManager控制着从DataSource中获得的JDBC Connection上的事务的执行；
+ * HibernateTransactionManager控制着Hibernate session上的事务的执行；JdoTransactionManager管理着JDO事务；JtaTransactionManager将事务管理委托给JTA。
  */
 public interface PlatformTransactionManager extends TransactionManager {
 

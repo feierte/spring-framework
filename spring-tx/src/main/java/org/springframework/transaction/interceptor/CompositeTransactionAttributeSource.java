@@ -28,6 +28,11 @@ import org.springframework.util.Assert;
  *
  * @author Juergen Hoeller
  * @since 2.0
+ *
+ * @apiNote TransactionAttributeSource的实现类，使用了组合模式
+ *
+ * 注意事项：组合模式，spring的常用模式，
+ * 比如A implements M接口，B implements M接口，C也implements M接口，但是最后C中会将A与B都添加到自己类的一个属性中，然后在自己的实现方法中轮询调用A和B的实现方法
  */
 @SuppressWarnings("serial")
 public class CompositeTransactionAttributeSource implements TransactionAttributeSource, Serializable {

@@ -29,6 +29,13 @@ import org.springframework.transaction.TransactionDefinition;
  * @since 16.03.2003
  * @see DefaultTransactionAttribute
  * @see RuleBasedTransactionAttribute
+ *
+ * @apiNote 事务属性接口，该接口是TransactionDefinition的实现接口
+ *
+ * <p>获取TransactionAttribute
+ * 在执行目标方法之前，获取事务之前，执行的目标增强。spring是从事务来源中获取事务的属性TransactionAttribute
+ * spring 基于注解事务和声明事务的事务来源为： AnnotationTransactionAttributeSource、NameMatchTransactionAttributeSource
+ * spring 基于注解事务和声明事务的TransactionDefinition默认实现都为是 RuleBasedTransactionAttribute
  */
 public interface TransactionAttribute extends TransactionDefinition {
 
@@ -37,6 +44,8 @@ public interface TransactionAttribute extends TransactionDefinition {
 	 * <p>This may be used for choosing a corresponding transaction manager
 	 * to process this specific transaction.
 	 * @since 3.0
+	 *
+	 * @apiNote 事务的目标方法的完整限定方法名称
 	 */
 	@Nullable
 	String getQualifier();
@@ -45,6 +54,8 @@ public interface TransactionAttribute extends TransactionDefinition {
 	 * Should we roll back on the given exception?
 	 * @param ex the exception to evaluate
 	 * @return whether to perform a rollback or not
+	 *
+	 * @apiNote 对于给定的异常信息，是否回滚
 	 */
 	boolean rollbackOn(Throwable ex);
 

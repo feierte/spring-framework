@@ -37,6 +37,10 @@ public interface TransactionExecution {
 	 * Set the transaction rollback-only. This instructs the transaction manager
 	 * that the only possible outcome of the transaction may be a rollback, as
 	 * alternative to throwing an exception which would in turn trigger a rollback.
+	 *
+	 * @apiNote 将一个事务标识为不可提交的。
+	 * 换句话说，在调用完setRollbackOnly()后你所能执行的唯一操作就是回滚。
+	 * 在大多数情况下，事务管理器会检测到这一点，在它发现事务要提交时会立刻结束事务
 	 */
 	void setRollbackOnly();
 

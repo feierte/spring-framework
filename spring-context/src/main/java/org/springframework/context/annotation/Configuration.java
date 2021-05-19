@@ -464,8 +464,9 @@ public @interface Configuration {
 	 * a.k.a. "@Bean Lite Mode" (see {@link Bean @Bean's javadoc}). It is therefore
 	 * behaviorally equivalent to removing the {@code @Configuration} stereotype.
 	 * @since 5.2
-	 * <p>proxyBeanMethods属性是用来指定@Bean注解标注的方法是否使用代理，默认是true使用CGLIB生成代理，直接从IOC容器之中取得对象；
-	 * 如果设置为false,也就是不使用注解，每次调用@Bean标注的方法获取到的对象和IOC容器中的都不一样，是一个新的对象，
+	 *
+	 * @apiNote proxyBeanMethods属性是用来指定@Bean注解标注的方法是否使用代理，默认是true使用CGLIB生成代理，直接从IOC容器之中取得对象；
+	 * 如果设置为false，也就是不使用注解，每次调用@Bean标注的方法获取到的对象和IOC容器中的都不一样，是一个新的对象，
 	 *
 	 * 所以我们可以将此属性设置为false来提高性能；
 	 */

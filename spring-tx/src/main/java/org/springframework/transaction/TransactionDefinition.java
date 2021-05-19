@@ -41,7 +41,7 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.transaction.support.DefaultTransactionDefinition
  * @see org.springframework.transaction.interceptor.TransactionAttribute
  *
- * @apiNote 事务定义接口
+ * @apiNote 事务定义接口，事务属性通过TransactionDefinition接口实现定义，主要有事务隔离级别、事务传播行为、事务超时时间、事务是否只读。
  */
 public interface TransactionDefinition {
 
@@ -152,6 +152,8 @@ public interface TransactionDefinition {
 	 * Use the default isolation level of the underlying datastore.
 	 * All other levels correspond to the JDBC isolation levels.
 	 * @see java.sql.Connection
+	 *
+	 * @apiNote 隔离级别：默认的隔离级别（对mysql数据库来说就是ISOLATION_ READ_COMMITTED，可以重复读）
 	 */
 	int ISOLATION_DEFAULT = -1;
 
@@ -163,6 +165,8 @@ public interface TransactionDefinition {
 	 * If any of the changes are rolled back, the second transaction will have
 	 * retrieved an invalid row.
 	 * @see java.sql.Connection#TRANSACTION_READ_UNCOMMITTED
+	 *
+	 * @apiNote 隔离级别：读未提交(最低)
 	 */
 	int ISOLATION_READ_UNCOMMITTED = 1;  // same as java.sql.Connection.TRANSACTION_READ_UNCOMMITTED;
 
@@ -172,6 +176,8 @@ public interface TransactionDefinition {
 	 * <p>This level only prohibits a transaction from reading a row
 	 * with uncommitted changes in it.
 	 * @see java.sql.Connection#TRANSACTION_READ_COMMITTED
+	 *
+	 * @apiNote 隔离级别：读已提交
 	 */
 	int ISOLATION_READ_COMMITTED = 2;  // same as java.sql.Connection.TRANSACTION_READ_COMMITTED;
 
@@ -183,6 +189,8 @@ public interface TransactionDefinition {
 	 * a second transaction alters the row, and the first transaction re-reads the row,
 	 * getting different values the second time (a "non-repeatable read").
 	 * @see java.sql.Connection#TRANSACTION_REPEATABLE_READ
+	 *
+	 * @apiNote 隔离级别：可重复读
 	 */
 	int ISOLATION_REPEATABLE_READ = 4;  // same as java.sql.Connection.TRANSACTION_REPEATABLE_READ;
 
@@ -196,6 +204,8 @@ public interface TransactionDefinition {
 	 * re-reads for the same condition, retrieving the additional "phantom" row
 	 * in the second read.
 	 * @see java.sql.Connection#TRANSACTION_SERIALIZABLE
+	 *
+	 * @apiNote 隔离级别：序列化操作（最高）
 	 */
 	int ISOLATION_SERIALIZABLE = 8;  // same as java.sql.Connection.TRANSACTION_SERIALIZABLE;
 
@@ -203,6 +213,8 @@ public interface TransactionDefinition {
 	/**
 	 * Use the default timeout of the underlying transaction system,
 	 * or none if timeouts are not supported.
+	 *
+	 * @apiNote 默认事务的超时时间
 	 */
 	int TIMEOUT_DEFAULT = -1;
 
@@ -215,6 +227,8 @@ public interface TransactionDefinition {
 	 * @return the propagation behavior
 	 * @see #PROPAGATION_REQUIRED
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager#isActualTransactionActive()
+	 *
+	 * @apiNote 获取事务的传播行为
 	 */
 	default int getPropagationBehavior() {
 		return PROPAGATION_REQUIRED;
@@ -287,6 +301,8 @@ public interface TransactionDefinition {
 	 * @return the name of this transaction ({@code null} by default}
 	 * @see org.springframework.transaction.interceptor.TransactionAspectSupport
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager#getCurrentTransactionName()
+	 *
+	 * @apiNote 获取事务名称
 	 */
 	@Nullable
 	default String getName() {
