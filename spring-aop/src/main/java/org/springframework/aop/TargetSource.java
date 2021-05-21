@@ -35,6 +35,14 @@ import org.springframework.lang.Nullable;
  *
  * @apiNote 该接口代表一个目标对象，在aop调用目标对象的时候，使用该接口返回真实的对象。
  * 比如它有其中两个实现SingletonTargetSource和PrototypeTargetSource代表着每次调用返回同一个实例，和每次调用返回一个新的实例
+ *
+ * <p>TargetSource被用于获取当前MethodInvocation（方法调用）所需要的target（目标对象），这个target通过反射的方式被调用（如：method.invoke(target,args)）。
+ * 换句话说，proxy（代理对象）代理的不是target，而是TargetSource，这点非常重要！！！
+ *
+ * <p>那么问题来了：为什么SpringAOP代理不直接代理target，而需要通过代理TargetSource（target的来源，其内部持有target），间接代理target呢？
+ * 通常情况下，一个proxy（代理对象）只能代理一个target，每次方法调用的目标也是唯一固定的target。
+ * 但是，如果让proxy代理TargetSource，可以使得每次方法调用的target实例都不同（当然也可以相同，这取决于TargetSource实现）。
+ * 这种机制使得方法调用变得灵活，可以扩展出很多高级功能，如：target pool（目标对象池）、hot swap（运行时目标对象热替换），等等。
  */
 public interface TargetSource extends TargetClassAware {
 
@@ -43,6 +51,8 @@ public interface TargetSource extends TargetClassAware {
 	 * <p>Can return {@code null}, although certain usages of a {@code TargetSource}
 	 * might just work with a predetermined target class.
 	 * @return the type of targets returned by this {@link TargetSource}
+	 *
+	 * @apiNote 返回被代理得目标类型（目标对象类型）
 	 */
 	@Override
 	@Nullable
@@ -54,6 +64,10 @@ public interface TargetSource extends TargetClassAware {
 	 * and the AOP framework can cache the return value of {@link #getTarget()}.
 	 * @return {@code true} if the target is immutable
 	 * @see #getTarget
+	 *
+	 * @apiNote 返回当前bean是否为静态的，比如常见的单例bean就是静态的，而prototype就是动态的，
+	 * 这里这个方法的主要作用是，对于静态的bean，spring是会对其进行缓存的，在多次使用TargetSource获取目标bean对象的时候，
+	 * 其获取的总是同一个对象，通过这种方式提高效率
 	 */
 	boolean isStatic();
 
@@ -63,6 +77,8 @@ public interface TargetSource extends TargetClassAware {
 	 * @return the target object which contains the joinpoint,
 	 * or {@code null} if there is no actual target instance
 	 * @throws Exception if the target object can't be resolved
+	 *
+	 * @apiNote 获取目标bean对象，这里可以根据业务需要进行自行定制
 	 */
 	@Nullable
 	Object getTarget() throws Exception;
@@ -72,6 +88,8 @@ public interface TargetSource extends TargetClassAware {
 	 * {@link #getTarget()} method, if any.
 	 * @param target object obtained from a call to {@link #getTarget()}
 	 * @throws Exception if the object can't be released
+	 *
+	 * @apiNote Spring在完目标bean之后会调用这个方法释放目标bean对象，对于一些需要池化的对象，这个方法是必须要实现的，这个方法默认不进行任何处理
 	 */
 	void releaseTarget(Object target) throws Exception;
 

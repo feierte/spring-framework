@@ -183,6 +183,8 @@ public @interface Transactional {
 	 * <p>Similar to {@link org.springframework.transaction.interceptor.RollbackRuleAttribute#RollbackRuleAttribute(String exceptionName)}.
 	 * @see #rollbackFor
 	 * @see org.springframework.transaction.interceptor.DefaultTransactionAttribute#rollbackOn(Throwable)
+	 *
+	 * @apiNote 定义遇到异常时回滚策略。
 	 */
 	String[] rollbackForClassName() default {};
 
@@ -196,6 +198,8 @@ public @interface Transactional {
 	 * <p>Similar to {@link org.springframework.transaction.interceptor.NoRollbackRuleAttribute#NoRollbackRuleAttribute(Class clazz)}.
 	 * @see #noRollbackForClassName
 	 * @see org.springframework.transaction.interceptor.DefaultTransactionAttribute#rollbackOn(Throwable)
+	 *
+	 * @apiNote 设置出现哪些异常不进行事务回滚
 	 */
 	Class<? extends Throwable>[] noRollbackFor() default {};
 
@@ -208,6 +212,8 @@ public @interface Transactional {
 	 * <p>Similar to {@link org.springframework.transaction.interceptor.NoRollbackRuleAttribute#NoRollbackRuleAttribute(String exceptionName)}.
 	 * @see #noRollbackFor
 	 * @see org.springframework.transaction.interceptor.DefaultTransactionAttribute#rollbackOn(Throwable)
+	 *
+	 * @apiNote 设置出现哪些异常不进行事务回滚
 	 */
 	String[] noRollbackForClassName() default {};
 

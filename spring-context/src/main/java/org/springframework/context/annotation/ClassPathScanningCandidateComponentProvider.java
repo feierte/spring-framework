@@ -101,8 +101,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 */
 	private String resourcePattern = DEFAULT_RESOURCE_PATTERN;
 
+	// 过滤器列表。过滤后的类被认为是候选组件
 	private final List<TypeFilter> includeFilters = new LinkedList<>();
-
+	// 过滤器列表。排除在候选组件之外
 	private final List<TypeFilter> excludeFilters = new LinkedList<>();
 
 	@Nullable
@@ -322,7 +323,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @param basePackage the package to check for annotated classes
 	 * @return a corresponding Set of autodetected bean definitions
 	 *
-	 * <p>核心任务 : 从指定的某个包内扫描目标bean组件定义
+	 * <p>核心任务 : 从指定的某个包内扫描目标bean组件定义（扫描指定的包路径，获取相应的BeanDefinition。扫描后的类可以通过过滤器进行排除。）
 	 */
 	public Set<BeanDefinition> findCandidateComponents(String basePackage) {
 		if (this.componentsIndex != null && indexSupportsIncludeFilters()) {
@@ -588,6 +589,10 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 *
 	 * <p>
 	 * 是否是独立的类、具体的类
+	 *
+	 * @apiNote 判断通过filter筛选后的class是否是候选组件，默认实现是一个具体类。
+	 * 这是一个 protected 的方法，可以通过子类重写它。有些框架只需要扫描接口，并注册FactoryBean到bd，
+	 * 然后通过动态代理实现该接口得到目标bean，比如feign
 	 */
 	protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
 		AnnotationMetadata metadata = beanDefinition.getMetadata();
