@@ -30,6 +30,8 @@ import org.springframework.core.type.AnnotationMetadata;
  * @author Juergen Hoeller
  * @since 3.1
  * @see EnableAspectJAutoProxy
+ *
+ * @apiNote 为容器注册自动代理创建器
  */
 class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
 

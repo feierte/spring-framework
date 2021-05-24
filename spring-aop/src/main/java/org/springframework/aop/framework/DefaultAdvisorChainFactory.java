@@ -86,17 +86,20 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 					else {
 						match = mm.matches(method, actualClass);
 					}
+					// 如果切点的MethodMatcher都匹配这个method
 					if (match) {
 						MethodInterceptor[] interceptors = registry.getInterceptors(advisor);
 						if (mm.isRuntime()) {
 							// Creating a new object instance in the getInterceptors() method
 							// isn't a problem as we normally cache created chains.
+							// 如果是动态MethodMatcher,就会对每一个interceptor创建一个新的InterceptorAndDynamicMethodMatcher拦截器,并加入到interceptorList.
 							for (MethodInterceptor interceptor : interceptors) {
 								// 创建InterceptorAndDynamicMethodMatcher包装对象，并添加到interceptorList中
 								interceptorList.add(new InterceptorAndDynamicMethodMatcher(interceptor, mm));
 							}
 						}
 						else {
+							// 不是动态的MethodMatcher,将所有的拦截器加入到返回List
 							interceptorList.addAll(Arrays.asList(interceptors));
 						}
 					}
@@ -106,11 +109,17 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 			else if (advisor instanceof IntroductionAdvisor) {
 				IntroductionAdvisor ia = (IntroductionAdvisor) advisor;
 				if (config.isPreFiltered() || ia.getClassFilter().matches(actualClass)) {
+					// 通过 AdvisorAdapterRegistry 获取 MethodInterceptor 数组
 					Interceptor[] interceptors = registry.getInterceptors(advisor);
 					interceptorList.addAll(Arrays.asList(interceptors));
 				}
 			}
 			else {
+				/*
+				 * 如果不是 PointcutAdvisor 和 IntroductionAdvisor 即是普通的 Advisor。
+				 * 通过 AdvisorAdapterRegistry 获取 MethodInterceptor 数组
+				 */
+				// 将Advisor转换为Interceptor
 				Interceptor[] interceptors = registry.getInterceptors(advisor);
 				interceptorList.addAll(Arrays.asList(interceptors));
 			}

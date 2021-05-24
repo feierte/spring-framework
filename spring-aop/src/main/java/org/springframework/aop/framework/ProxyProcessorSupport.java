@@ -105,7 +105,7 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 	 * @param beanClass the class of the bean
 	 * @param proxyFactory the ProxyFactory for the bean
 	 *
-	 * @apiNote 这是它提供的一个最为核心的方法：这里决定了如果目标类没有实现接口直接就使用Cglib代理
+	 * @apiNote 这是它提供的一个最为核心的方法：这里决定了如果目标类没有实现接口直接就使用Cglib代理。
 	 * 检查给定beanClass上的接口们，并交给proxyFactory处理
 	 */
 	protected void evaluateProxyInterfaces(Class<?> beanClass, ProxyFactory proxyFactory) {

@@ -23,7 +23,7 @@ package org.aopalliance.aop;
  * @author Rod Johnson
  * @version $Id: Advice.java,v 1.1 2004/03/19 17:02:16 johnsonr Exp $
  *
- * @apiNote advice：翻译为增强，是织入目标类连接点上的一段程序代码
+ * @apiNote advice：翻译为增强，是织入目标类连接点上的一段程序代码（在连接点的处理逻辑）
  * 是具体做事情的类，也就是说你需要如何做或者做什么，都在Advice里面实现
  */
 public interface Advice {

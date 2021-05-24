@@ -30,7 +30,7 @@ package org.springframework.aop;
  * @see org.springframework.aop.support.ClassFilters
  * @see org.springframework.aop.support.MethodMatchers
  *
- * <p>切点：用于定位连接点（Joinpoint）
+ * @apiNote 切点：用于定位连接点（Joinpoint）
  * Pointcut由ClassFilter和MethodMatcher构成，它通过ClassFilter定位到某些特定类上，
  * 通过MethodMatcher定位到某些特定方法上，这样Pointcut就拥有了描述某些类
  *
@@ -40,10 +40,11 @@ package org.springframework.aop;
  * 	AbstractRegexpMethodPointcut:使用正则表达式匹配方法签名。
  * 2、动态方法切点（DynamicMethodMatcherPointcut）：是动态方法切点的抽象基类，默认情况下它匹配所有的类。
  * 3、注解切点（AnnotationMatchingPointcut）：支持在Bean中直接通过Java 5.0注解标签定义的切点
- * 4、表达式切点（ExpressionPointcut）：支持AspectJ切点表达式语法而定义的接口。
+ * 4、表达式切点（ExpressionPointcut）：支持AspectJ切点表达式语法而定义的接口。主要是为了支持AspectJ切点表达式语法而定义的接口。
+ *  这个是最强大的，Spring支持11种切点表达式
  * 5、流程切点（ControlFlowPointcut）：这是一种特殊的切点，它根据程序执行堆栈的信息查看目标方法是否由一个方法直接或间接发起调用，
  * 	以此判断是否为匹配的连接点。
- * 6、符合切点（ComposablePointcut）：为创建多个切点而提供的方便操作类。
+ * 6、复合切点（ComposablePointcut）：为创建多个切点而提供的方便操作类。
  *
  * <p>Spring中既有静态切点，又有动态切点。Spring采用这样的机制：在创建代理时对目标类的每个连接点使用静态切点检查，
  * 如果仅通过静态切点检查就可以知道连接点是不匹配的，则在运行时就不在进行动态检查；如果静态切点检查是匹配的，则在运行时才进行动态切点检查。

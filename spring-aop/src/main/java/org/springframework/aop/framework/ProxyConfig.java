@@ -27,7 +27,8 @@ import org.springframework.util.Assert;
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @see AdvisedSupport
- * <p>为创建代理提供统一的配置项，以确保所有代理创建者具有一致的属性。
+ *
+ * @apiNote 为创建代理提供统一的配置项，以确保所有代理创建者具有一致的属性。
  */
 public class ProxyConfig implements Serializable {
 

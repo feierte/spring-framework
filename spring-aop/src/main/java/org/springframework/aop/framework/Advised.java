@@ -40,7 +40,7 @@ import org.springframework.aop.TargetSource;
  * 不管是jdk proxy，还是cglib proxy，代理出来的对象都实现了org.springframework.aop.framework.Advised接口；
  *
  * Advice: 通知拦截器（增强）
- * Advisor: 通知 + 切入点的适配器 =（切面）
+ * Advisor: 通知 + 切入点的适配器 = 通知者（切面）
  * Advised: 包含所有的Advisor 和 Advice
  */
 public interface Advised extends TargetClassAware {
