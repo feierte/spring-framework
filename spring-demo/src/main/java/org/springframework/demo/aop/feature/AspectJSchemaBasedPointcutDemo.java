@@ -1,7 +1,7 @@
 package org.springframework.demo.aop.feature;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.demo.aop.feature.targetclass.EchoService;
+import org.springframework.demo.aop.feature.target.EchoService;
 
 /**
  * @author Jie Zhao

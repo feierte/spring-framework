@@ -27,7 +27,7 @@
 		</aop:aspect>
 	</aop:config>
 
-	<bean id="echoService" class="org.springframework.demo.aop.feature.targetclass.DefaultEchoService"/>
+	<bean id="echoService" class="org.springframework.demo.aop.feature.target.DefaultEchoService"/>
 
 	<bean id="echoServiceMethodInterceptor"
 		  class="org.springframework.demo.aop.feature.interceptor.EchoServiceMethodInterceptor"/>

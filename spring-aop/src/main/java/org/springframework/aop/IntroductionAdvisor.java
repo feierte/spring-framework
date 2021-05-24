@@ -29,7 +29,7 @@ package org.springframework.aop;
  * @since 04.04.2003
  * @see IntroductionInterceptor
  *
- * <p>引介切面：是引介增强的封装器，通过引介切面，可以更容易地为现有对象添加任何接口的实现。
+ * @apiNote 引介切面：是引介增强的封装器，通过引介切面，可以更容易地为现有对象添加任何接口的实现。
  *
  * <p>IntroductionAdvisor和PointcutAdvisor接口不同，它仅有一个类过滤器ClassFilter，而没有MethodMatcher，
  * 这是因为引介切面的切点是类级别的，而Pointcut的切点是方法级别的。
