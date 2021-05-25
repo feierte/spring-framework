@@ -258,8 +258,11 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	@Override
 	@Nullable
 	public Object getObject() throws BeansException {
+		// 就是根据我们配置的interceptorNames来获取对应的bean，并却转化成Advisor。
 		initializeAdvisorChain();
+		// 生成代理对象时,因为Spring中有singleton类型和prototype类型这两种不同的Bean,所以要对代理对象的生成做一个区分
 		if (isSingleton()) {
+			// 生成singleton的代理对象,这个方法是ProxyFactoryBean生成AopProxy代理对象的调用入口
 			return getSingletonInstance();
 		}
 		else {
@@ -267,6 +270,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 				logger.info("Using non-singleton proxies with singleton targets is often undesirable. " +
 						"Enable prototype proxies by setting the 'targetName' property.");
 			}
+			// 生成prototype原型的代理对象
 			return newPrototypeInstance();
 		}
 	}
@@ -324,8 +328,11 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	 * @return the shared singleton proxy
 	 */
 	private synchronized Object getSingletonInstance() {
+		// 如果是单例的，现在这里持有这个缓存，就不会再创建了
 		if (this.singletonInstance == null) {
+			// 根据设置的targetName，去工厂里拿到这个bean对象（普通Bean被包装成SingletonTargetSource）
 			this.targetSource = freshTargetSource();
+			// 这一步是如果你手动没有去设置需要被代理的接口，Spring还是会去帮你找看你有没有实现啥接口，然后全部给你代理上。可见Spring的容错性是很强的
 			if (this.autodetectInterfaces && getProxiedInterfaces().length == 0 && !isProxyTargetClass()) {
 				// Rely on AOP infrastructure to tell us what interfaces to proxy.
 				Class<?> targetClass = getTargetClass();
@@ -336,6 +343,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 			}
 			// Initialize the shared singleton instance.
 			super.setFrozen(this.freezeProxy);
+			// createAopProxy()方法就是父类ProxyCreatorSupport的方法
 			this.singletonInstance = getProxy(createAopProxy());
 		}
 		return this.singletonInstance;
@@ -432,6 +440,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	 * are unaffected by such changes.
 	 */
 	private synchronized void initializeAdvisorChain() throws AopConfigException, BeansException {
+		// this.advisorChainInitialized：标示是否已进行过初始化，若已初始化则不再进行初始化。
 		if (this.advisorChainInitialized) {
 			return;
 		}
@@ -450,6 +459,9 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 
 			// Materialize interceptor chain from bean names.
 			for (String name : this.interceptorNames) {
+				// 如国拦截器的名称是以*结尾的，说明它要去全局里面都搜索出来
+				// 全局：去自己容器以及父容器中找，类型为Advisor.class以及Interceptor.class所有的，名称是以这个名称为开头的prefix的Bean.
+				// 最终也一样交给addAdvisorOnChainCreation(bean, name);   相当于一个批量处理吧  在特殊场景还是很有用处的
 				if (name.endsWith(GLOBAL_SUFFIX)) {
 					if (!(this.beanFactory instanceof ListableBeanFactory)) {
 						throw new AopConfigException(
@@ -458,20 +470,23 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 					addGlobalAdvisors((ListableBeanFactory) this.beanFactory,
 							name.substring(0, name.length() - GLOBAL_SUFFIX.length()));
 				}
-
+				// 绝大部分情况肯定都走这里：精确匹配
 				else {
 					// If we get here, we need to add a named interceptor.
 					// We must check if it's a singleton or prototype.
 					Object advice;
 					if (this.singleton || this.beanFactory.isSingleton(name)) {
 						// Add the real Advisor/Advice to the chain.
+						// 从容器里把这个Bean拿出来~
 						advice = this.beanFactory.getBean(name);
 					}
-					else {
+					else { // 多例的情况，这里每次都是new一个新的
 						// It's a prototype Advice or Advisor: replace with a prototype.
 						// Avoid unnecessary creation of prototype bean just for advisor chain initialization.
 						advice = new PrototypePlaceholderAdvisor(name);
 					}
+					// 这个方法的作用还挺大的：将advice对象添加到通知器链中
+					// 方法中首先会调用namedBeanToAdvisor(next)方法，将从ioc容器获取的普通对象转换成通知器Advisor对象。  详细如下：
 					addAdvisorOnChainCreation(advice);
 				}
 			}

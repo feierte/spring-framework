@@ -85,6 +85,8 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	AdvisorChainFactory advisorChainFactory = new DefaultAdvisorChainFactory();
 
 	/** Cache with Method as key and advisor chain List as value. */
+	// key:用目标对象方法封装的MethodCacheKey对象
+	// value:拦截该目标对象方法的 拦截链
 	private transient Map<MethodCacheKey, List<Object>> methodCache;
 
 	/**
@@ -487,6 +489,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		if (cached == null) {
 			cached = this.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(
 					this, method, targetClass);
+			// 缓存，为了执行效率
 			this.methodCache.put(cacheKey, cached);
 		}
 		return cached;

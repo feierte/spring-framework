@@ -63,6 +63,8 @@ public class ProxyConfig implements Serializable {
 	/**
 	 * 是否暴露代理，也就是是否把当前代理对象绑定到AopContext的ThreadLocal属性currentProxy上去，
 	 * 常用于代理类里面的代理方法需要调用同类里面另外一个代理方法的场景。
+	 *
+	 * @see @EnableAspectJAutoProxy#exposeProxy()
 	 */
 	boolean exposeProxy = false;
 

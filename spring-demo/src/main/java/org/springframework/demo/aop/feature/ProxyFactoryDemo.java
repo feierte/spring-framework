@@ -1,6 +1,7 @@
 package org.springframework.demo.aop.feature;
 
 import org.springframework.aop.SpringProxy;
+import org.springframework.aop.framework.Advised;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.demo.aop.feature.interceptor.EchoServiceMethodInterceptor;
 import org.springframework.demo.aop.feature.target.DefaultEchoService;
@@ -23,5 +24,7 @@ public class ProxyFactoryDemo {
 		EchoService echoService = (EchoService) proxyFactory.getProxy();
 		System.out.println(SpringProxy.class.isAssignableFrom(echoService.getClass()));
 		System.out.println(echoService.echo("Hello,World"));
+		// 不管是jdk proxy，还是cglib proxy，代理出来的对象都实现了org.springframework.aop.framework.Advised接口；
+		System.out.println(echoService instanceof Advised);
 	}
 }

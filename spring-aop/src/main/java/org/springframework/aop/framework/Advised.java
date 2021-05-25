@@ -60,12 +60,16 @@ public interface Advised extends TargetClassAware {
 	/**
 	 * Return the interfaces proxied by the AOP proxy.
 	 * <p>Will not include the target class, which may also be proxied.
+	 *
+	 * @apiNote 返回被代理了的接口们
 	 */
 	Class<?>[] getProxiedInterfaces();
 
 	/**
 	 * Determine whether the given interface is proxied.
 	 * @param intf the interface to check
+	 *
+	 * @apiNote 检查这个指定的接口是否被代理了
 	 */
 	boolean isInterfaceProxied(Class<?> intf);
 

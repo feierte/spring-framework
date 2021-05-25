@@ -14,7 +14,9 @@ import org.springframework.demo.aop.feature.target.EchoService;
 public class ProxyFactoryBeanDemo {
 
 	public static void main(String[] args) {
-		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:/META-INF/aop/feature/spring-aop-context.xml");
+
+		String location = "classpath:/META-INF/aop/feature/spring-aop-context.xml";
+		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(location);
 
 		EchoService echoService = context.getBean("echoServiceProxyFactoryBean", EchoService.class);
 

@@ -31,7 +31,8 @@ import org.springframework.lang.Nullable;
  * @since 2.0
  * @see org.springframework.beans.factory.BeanFactory#getBean
  *
- * @apiNote 专门为切面创建实例的工厂（因为切面也不一定是单例的，也支持各种多例形式）
+ * @apiNote 专门为切面创建实例的工厂（因为切面也不一定是单例的，也支持各种多例形式）。
+ * AspectInstanceFactory实现了Ordered接口，支持排序。
  */
 public interface AspectInstanceFactory extends Ordered {
 
