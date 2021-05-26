@@ -4,8 +4,8 @@ import org.springframework.aop.SpringProxy;
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.demo.aop.feature.interceptor.EchoServiceMethodInterceptor;
-import org.springframework.demo.aop.feature.target.DefaultEchoService;
-import org.springframework.demo.aop.feature.target.EchoService;
+import org.springframework.demo.aop.feature.targetclass.DefaultEchoService;
+import org.springframework.demo.aop.feature.targetclass.EchoService;
 
 /**
  * @author Jie Zhao

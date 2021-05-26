@@ -5,8 +5,8 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.demo.aop.feature.aspect.AspectConfiguration;
-import org.springframework.demo.aop.feature.target.DefaultEchoService;
-import org.springframework.demo.aop.feature.target.EchoService;
+import org.springframework.demo.aop.feature.targetclass.DefaultEchoService;
+import org.springframework.demo.aop.feature.targetclass.EchoService;
 
 /**
  * AspectJProxyFactory示例
