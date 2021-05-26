@@ -16,8 +16,6 @@
 
 package org.springframework.aop.framework.autoproxy;
 
-import java.util.List;
-
 import org.springframework.aop.Advisor;
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.support.AopUtils;
@@ -26,6 +24,8 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.util.List;
 
 /**
  * Generic auto proxy creator that builds AOP proxies for specific beans
@@ -47,6 +47,11 @@ import org.springframework.util.Assert;
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @see #findCandidateAdvisors
+ *
+ * <p>相对BeanNameAutoProxyCreator而言，它更为强大，它会自动获取spring容器中注册的所有的Advisor类（除了子类中isEligibleAdvisorBean（）方法指定的不满足条件的Advisor除外。），
+ * 然后自动给spring容器中满足Advisor中pointCut创建代理。
+ * <p>DefaultAdvisorAutoProxyCreator是默认实现，默认会自动代理所有的Advisor，当然也可以通过设置usePrefix和advisorBeanNamePrefix来过滤部分advisor.
+ * AspectJAwareAdvisorAutoProxyCreator用于支持AspectJ方式的自动代理。
  */
 @SuppressWarnings("serial")
 public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyCreator {

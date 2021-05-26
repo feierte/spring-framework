@@ -16,19 +16,18 @@
 
 package org.springframework.aop.aspectj.annotation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.aspectj.lang.reflect.PerClauseKind;
-
 import org.springframework.aop.Advisor;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Helper for retrieving @AspectJ beans from a BeanFactory and building
@@ -104,6 +103,8 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 					// 获取所有类型为Object的Bean的名称，基本上也就包括了Spring容器中的所有Bean了
 					// includeNonSingletons:true=>包含单例，非单例bean
 					// allowEagerInit:false=>不要初始化lazy-init singletons和FactoryBean创建的bean
+					// AOP功能中在这里传入的是Object对象，代表去容器中获取到所有的组件的名称，然后再
+					// 进行遍历，这个过程是十分的消耗性能的，所以说Spring会再这里加入了保存切面信息的缓存。
 					String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 							this.beanFactory, Object.class, true, false);
 					for (String beanName : beanNames) {
@@ -129,9 +130,11 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 								// 该advisor包含了相应的pointcut 和 advice 信息
 								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);
 								if (this.beanFactory.isSingleton(beanName)) {
+									// 单例则直接将Advisor类存到缓存
 									this.advisorsCache.put(beanName, classAdvisors);
 								}
 								else {
+									// 否则将其对应的工厂缓存
 									this.aspectFactoryCache.put(beanName, factory);
 								}
 								advisors.addAll(classAdvisors);

@@ -16,15 +16,6 @@
 
 package org.springframework.beans.factory.support;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Supplier;
-
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -32,6 +23,11 @@ import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.lang.reflect.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * A root bean definition represents the merged bean definition that backs
@@ -116,6 +112,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	boolean postProcessed = false;
 
 	/** Package-visible field that indicates a before-instantiation post-processor having kicked in. */
+	// 表示在Bean创建的生命周期实例化阶段之前 就已经被实例化了（通常是AOP创建了代理对象导致Bean被提前实例化了）
 	@Nullable
 	volatile Boolean beforeInstantiationResolved;
 

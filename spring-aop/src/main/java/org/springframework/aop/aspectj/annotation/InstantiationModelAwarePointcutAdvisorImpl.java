@@ -16,14 +16,8 @@
 
 package org.springframework.aop.aspectj.annotation;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.lang.reflect.Method;
-
 import org.aopalliance.aop.Advice;
 import org.aspectj.lang.reflect.PerClauseKind;
-
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.aspectj.AspectJPrecedenceInformation;
@@ -32,6 +26,11 @@ import org.springframework.aop.aspectj.annotation.AbstractAspectJAdvisorFactory.
 import org.springframework.aop.support.DynamicMethodMatcherPointcut;
 import org.springframework.aop.support.Pointcuts;
 import org.springframework.lang.Nullable;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.lang.reflect.Method;
 
 /**
  * Internal implementation of AspectJPointcutAdvisor.
@@ -47,23 +46,23 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 
 	private static final Advice EMPTY_ADVICE = new Advice() {};
 
-
+	// 当前的Pointcut表达式
 	private final AspectJExpressionPointcut declaredPointcut;
-
+	// 切面的class对象
 	private final Class<?> declaringClass;
-
+	// 切面方法的名称
 	private final String methodName;
-
+	// 切面方法的参数类型
 	private final Class<?>[] parameterTypes;
-
+	// 切面方法对象
 	private transient Method aspectJAdviceMethod;
-
+	// aspectj的Advisor工厂
 	private final AspectJAdvisorFactory aspectJAdvisorFactory;
-
+	// aspect的实例工厂
 	private final MetadataAwareAspectInstanceFactory aspectInstanceFactory;
-
+	// 切面的顺序
 	private final int declarationOrder;
-
+	// 切面的名称
 	private final String aspectName;
 
 	private final Pointcut pointcut;
@@ -93,7 +92,7 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 		this.aspectInstanceFactory = aspectInstanceFactory;
 		this.declarationOrder = declarationOrder;
 		this.aspectName = aspectName;
-
+		// 判断当前的切面对象是否需要延时加载
 		if (aspectInstanceFactory.getAspectMetadata().isLazilyInstantiated()) {
 			// Static part of the pointcut is a lazy type.
 			Pointcut preInstantiationPointcut = Pointcuts.union(
@@ -110,6 +109,7 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 			// A singleton aspect.
 			this.pointcut = this.declaredPointcut;
 			this.lazy = false;
+			// 将切面中的通知构造为advice通知对象
 			this.instantiatedAdvice = instantiateAdvice(this.declaredPointcut);
 		}
 	}
