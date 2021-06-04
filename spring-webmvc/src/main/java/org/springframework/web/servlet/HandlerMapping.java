@@ -16,9 +16,9 @@
 
 package org.springframework.web.servlet;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.lang.Nullable;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Interface to be implemented by objects that define a mapping between
@@ -52,6 +52,8 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.web.servlet.handler.AbstractHandlerMapping
  * @see org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping
  * @see org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
+ *
+ * @apiNote HanlerMapping是SpringMVC中完成url到Controller映射的组件。DispatcherServlet接收request,然后从HandlerMapping查找处理request的controller.
  */
 public interface HandlerMapping {
 
