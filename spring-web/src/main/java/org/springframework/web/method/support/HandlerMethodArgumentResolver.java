@@ -29,6 +29,8 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @author Arjen Poutsma
  * @since 3.1
  * @see HandlerMethodReturnValueHandler
+ *
+ * @apiNote 用于将请求上下文中的方法参数解析为参数值的策略接口
  */
 public interface HandlerMethodArgumentResolver {
 
@@ -55,6 +57,9 @@ public interface HandlerMethodArgumentResolver {
 	 * @param binderFactory a factory for creating {@link WebDataBinder} instances
 	 * @return the resolved argument value, or {@code null} if not resolvable
 	 * @throws Exception in case of errors with the preparation of argument values
+	 *
+	 * @apiNote 将给定请求接口中的参数解析为请求方法中的参数。
+	 * 从ModelAndViewContainer（被@ModelAttribute注解）、NativeWebRequest（其实就是HttpServletRequest）中获取数据，解析成为方法中的参数。
 	 */
 	@Nullable
 	Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
