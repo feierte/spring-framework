@@ -16,18 +16,16 @@
 
 package org.springframework.web.servlet;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handler execution chain, consisting of handler object and any handler interceptors.
@@ -41,13 +39,13 @@ public class HandlerExecutionChain {
 
 	private static final Log logger = LogFactory.getLog(HandlerExecutionChain.class);
 
-	private final Object handler;
+	private final Object handler; // 存储的是HandlerMethod
 
 	@Nullable
-	private HandlerInterceptor[] interceptors;
+	private HandlerInterceptor[] interceptors; // 所有的HandlerInterceptor，数组形式存储
 
 	@Nullable
-	private List<HandlerInterceptor> interceptorList;
+	private List<HandlerInterceptor> interceptorList; // 所有的HandlerInterceptor，链表形式存储
 
 	private int interceptorIndex = -1;
 
@@ -144,11 +142,14 @@ public class HandlerExecutionChain {
 	 * that this interceptor has already dealt with the response itself.
 	 */
 	boolean applyPreHandle(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// 获取所有初始化的拦截器
 		HandlerInterceptor[] interceptors = getInterceptors();
 		if (!ObjectUtils.isEmpty(interceptors)) {
 			for (int i = 0; i < interceptors.length; i++) {
+				// 遍历执行每个拦截器中的preHandle方法（即对某一个handler，要遍历执行所有的拦截器preHandle方法）
 				HandlerInterceptor interceptor = interceptors[i];
 				if (!interceptor.preHandle(request, response, this.handler)) {
+					// 最终调用interceptor.afterCompletion(req, res, handler, ex)
 					triggerAfterCompletion(request, response, null);
 					return false;
 				}

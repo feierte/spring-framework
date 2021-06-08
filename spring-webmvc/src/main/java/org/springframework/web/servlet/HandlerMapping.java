@@ -53,7 +53,13 @@ import javax.servlet.http.HttpServletRequest;
  * @see org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping
  * @see org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
  *
- * @apiNote HanlerMapping是SpringMVC中完成url到Controller映射的组件。DispatcherServlet接收request,然后从HandlerMapping查找处理request的controller.
+ * @apiNote HandlerMapping是SpringMVC中完成url到Controller映射的组件。
+ * DispatcherServlet接收request,然后从HandlerMapping查找处理request的controller.
+ *
+ * <p> HandlerMapping主要作用：
+ * 1、HandlerMapping的任务就是建立url与Bean（Controller）的对应关系，并将对应关系保存在handlerMap（AbstractUrlHandlerMapping）中
+ * 2、对应关系在HandlerMapping初始化的时候就已经建立好了
+ * 3、当请求到来时，会通过DispatcherServlet找到HandlerMapping，然后通过请求的url在handlerMap中找到对应的Controller，至此HandlerMapping的任务完成了，下一步就是HandlerAdapter出场了
  */
 public interface HandlerMapping {
 
@@ -145,6 +151,9 @@ public interface HandlerMapping {
 	 * @return a HandlerExecutionChain instance containing handler object and
 	 * any interceptors, or {@code null} if no mapping found
 	 * @throws Exception if there is an internal error
+	 *
+	 * @apiNote 该方法是HandlerMapping接口中的唯一方法，此方法可以利用用户请求request中的信息来生成HandlerExecutionChain对象,
+	 * 并且HandlerExecutionChain只能通过HandlerMapping接口中的唯一方法来获得
 	 */
 	@Nullable
 	HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception;

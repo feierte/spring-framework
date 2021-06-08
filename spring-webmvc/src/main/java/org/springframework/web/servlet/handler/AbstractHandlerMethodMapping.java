@@ -270,6 +270,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 		if (handlerType != null) {
 			Class<?> userType = ClassUtils.getUserClass(handlerType);
+			// Key是Method, Value是RequestMappingInfo
 			Map<Method, T> methods = MethodIntrospector.selectMethods(userType,
 					(MethodIntrospector.MetadataLookup<T>) method -> {
 						try {
@@ -380,6 +381,8 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 * @return the best-matching handler method, or {@code null} if no match
 	 * @see #handleMatch(Object, String, HttpServletRequest)
 	 * @see #handleNoMatch(Set, String, HttpServletRequest)
+	 *
+	 * @apiNote SpringMVC的请求处理过程中的路径匹配过程
 	 */
 	@Nullable
 	protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
@@ -390,6 +393,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		}
 		if (matches.isEmpty()) {
 			// No choice but to go through all mappings...
+			// 如正则匹配、RESTFUL路径/list/{cityId}等，这里可以改进，No choice but to go through all mappings...
 			addMatchingMappings(this.mappingRegistry.getMappings().keySet(), matches, request);
 		}
 
@@ -485,6 +489,8 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 * Whether the given type is a handler with handler methods.
 	 * @param beanType the type of the bean being checked
 	 * @return "true" if this a handler type, "false" otherwise.
+	 *
+	 * @apiNote 判断该类是否是一个控制器（Controller、Handler）
 	 */
 	protected abstract boolean isHandler(Class<?> beanType);
 

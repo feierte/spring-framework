@@ -16,16 +16,6 @@
 
 package org.springframework.web.servlet.handler;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.BeanNameAware;
@@ -39,16 +29,20 @@ import org.springframework.web.context.request.WebRequestInterceptor;
 import org.springframework.web.context.request.async.WebAsyncManager;
 import org.springframework.web.context.request.async.WebAsyncUtils;
 import org.springframework.web.context.support.WebApplicationObjectSupport;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.CorsProcessor;
-import org.springframework.web.cors.CorsUtils;
-import org.springframework.web.cors.DefaultCorsProcessor;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.*;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.util.UrlPathHelper;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Abstract base class for {@link org.springframework.web.servlet.HandlerMapping}
@@ -284,7 +278,9 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	@Override
 	protected void initApplicationContext() throws BeansException {
 		extendInterceptors(this.interceptors);
+		// 探测容器中所有拦截器
 		detectMappedInterceptors(this.adaptedInterceptors);
+		// 初始配置这些拦截器
 		initInterceptors();
 	}
 
@@ -393,7 +389,10 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	@Override
 	@Nullable
 	public final HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
+		// 该方法在本类中有定义，是一个protected型的抽象方法，
+		// 根据给定的request查找handler，如果没有找到handler,则返回一个null (通过请求中的url拿到之前初始化时handlerMap中的bean，并返回handler)
 		Object handler = getHandlerInternal(request);
+		// 如果经过上步没有获取到handler实例，则通过本类中setDefaultHandler(Object defaultHandler)设置默认handler，然后使用getDefaultHandler获得。
 		if (handler == null) {
 			handler = getDefaultHandler();
 		}
@@ -465,6 +464,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * @see #getAdaptedInterceptors()
 	 */
 	protected HandlerExecutionChain getHandlerExecutionChain(Object handler, HttpServletRequest request) {
+		// 如果已经是HandlerExecutionChain，则直接使用，否则创建新的
 		HandlerExecutionChain chain = (handler instanceof HandlerExecutionChain ?
 				(HandlerExecutionChain) handler : new HandlerExecutionChain(handler));
 
@@ -473,10 +473,12 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 			if (interceptor instanceof MappedInterceptor) {
 				MappedInterceptor mappedInterceptor = (MappedInterceptor) interceptor;
 				if (mappedInterceptor.matches(lookupPath, this.pathMatcher)) {
+					// 向chain中加入MappedInterceptor类型的拦截器
 					chain.addInterceptor(mappedInterceptor.getInterceptor());
 				}
 			}
 			else {
+				// 向chain中加入拦截器
 				chain.addInterceptor(interceptor);
 			}
 		}
