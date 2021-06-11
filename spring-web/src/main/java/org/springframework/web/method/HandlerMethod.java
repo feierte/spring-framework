@@ -16,18 +16,8 @@
 
 package org.springframework.web.method;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.MethodParameter;
@@ -41,6 +31,15 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Encapsulates information about a handler method consisting of a
@@ -58,12 +57,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Juergen Hoeller
  * @author Sam Brannen
  * @since 3.1
+ *
+ * @apiNote 控制器方法
  */
 public class HandlerMethod {
 
 	/** Logger that is available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	// 方法所在的类,如果是String类型,可以去容器中获取
 	private final Object bean;
 
 	@Nullable
@@ -73,8 +75,10 @@ public class HandlerMethod {
 
 	private final Method method;
 
+	// 如果方法是bridged方法,则对应原始方法
 	private final Method bridgedMethod;
 
+	// 方法的参数
 	private final MethodParameter[] parameters;
 
 	@Nullable

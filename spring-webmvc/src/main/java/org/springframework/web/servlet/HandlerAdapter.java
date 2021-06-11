@@ -16,10 +16,10 @@
 
 package org.springframework.web.servlet;
 
+import org.springframework.lang.Nullable;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.lang.Nullable;
 
 /**
  * MVC framework SPI, allowing parameterization of the core MVC workflow.
@@ -46,6 +46,9 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @see org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter
  * @see org.springframework.web.servlet.handler.SimpleServletHandlerAdapter
+ *
+ * @apiNote HandlerAdapter 接口根据类名来理解就是 处理器适配器，每一款 Handler 都有其唯一对应的 HandlerAdapter，
+ * 当我们在处理请求时调用的也是 HandlerAdapter 的 handle 方法，典型的 适配器设计模式。
  */
 public interface HandlerAdapter {
 
@@ -59,6 +62,8 @@ public interface HandlerAdapter {
 	 * }
 	 * @param handler the handler object to check
 	 * @return whether or not this object can use the given handler
+	 *
+	 * @apiNote 判断当前 HandlerAdapter 是否支持给定的 Handler 实例
 	 */
 	boolean supports(Object handler);
 
@@ -73,6 +78,8 @@ public interface HandlerAdapter {
 	 * @throws Exception in case of errors
 	 * @return a ModelAndView object with the name of the view and the required
 	 * model data, or {@code null} if the request has been handled directly
+	 *
+	 * @apiNote 使用给定的处理器处理请求
 	 */
 	@Nullable
 	ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception;
@@ -85,6 +92,8 @@ public interface HandlerAdapter {
 	 * @return the lastModified value for the given handler
 	 * @see javax.servlet.http.HttpServlet#getLastModified
 	 * @see org.springframework.web.servlet.mvc.LastModified#getLastModified
+	 *
+	 * @apiNote  给定处理器的 lastModified 值
 	 */
 	long getLastModified(HttpServletRequest request, Object handler);
 

@@ -153,7 +153,7 @@ public interface HandlerMapping {
 	 * @throws Exception if there is an internal error
 	 *
 	 * @apiNote 该方法是HandlerMapping接口中的唯一方法，此方法可以利用用户请求request中的信息来生成HandlerExecutionChain对象,
-	 * 并且HandlerExecutionChain只能通过HandlerMapping接口中的唯一方法来获得
+	 * 并且HandlerExecutionChain只能通过HandlerMapping接口中的唯一方法来获得。
 	 */
 	@Nullable
 	HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception;
