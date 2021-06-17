@@ -33,6 +33,17 @@ import javax.servlet.ServletContextListener;
  * @since 17.02.2003
  * @see #setContextInitializers
  * @see org.springframework.web.WebApplicationInitializer
+ *
+ * @apiNote
+ *
+ * <p>ContextLoaderListener 创建的 WebApplicationContext 我们称之为 根上下文 ，在 DispatcherServlet 中也会创建一个 WebApplicationContext 我们称之为 子上下文，
+ * 子上下文可以获得父上下文的 bean，对于子上下文 getBean 首先会去父上下文获取，得不到就去子上下文找，父上下文得不到子上下文的 bean，子上下文之间互相也访问不到。
+ *
+ * 根上下文的配置文件默认是 WEB-INF/appilicationContext.xml ，我们一般将除 Controller 之外的类在该文件中声明；
+ * DispatcherServlet 创建的子上下文的配置文件默认在 WEB-INF/xxx-servlet.xml (xxx指的是标签 <servlet-name> 的值），我们在该配置文件中声明 Controller bean。
+ *
+ * 根上下文 与 子上下文 都被存储在 ServletContext 中，如根上下文在ServletContext 中的key 为 WebApplicationContext.class.getName() + ".ROOT"，
+ * 想访问根上下文可以通过 WebApplicationContext.getWebApplicationContext (ServletContext sc) 获取。
  */
 public class ContextLoaderListener extends ContextLoader implements ServletContextListener {
 
@@ -100,6 +111,7 @@ public class ContextLoaderListener extends ContextLoader implements ServletConte
 	 */
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
+		// 创建根上下文（Root WebApplicationContext）
 		initWebApplicationContext(event.getServletContext());
 	}
 

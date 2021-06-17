@@ -16,7 +16,7 @@ import javax.servlet.ServletException;
 public class SpringServletInitializerConfiguration extends AbstractDispatcherServletInitializer {
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
-		// 出发父类的onStartup方法
+		// 触发父类的onStartup方法
 		super.onStartup(servletContext);
 		/*
 		 * 注册字符集过滤器

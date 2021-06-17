@@ -57,7 +57,7 @@ public interface SingletonBeanRegistry {
 	 * <p>以指定的名称 把Object放入到 SingletonBeanRegistry中
 	 * 1、给定的Object必须是被完全初始化了的（比如new出来的）。
 	 * 2、此注册单例的接口不会提供任何用以初始化的回调函数（比如：InitializingBean#afterPropertiesSet等都是不会被执行的）
-	 * 3、如果侧接口的实现类是一个BeanFactory，最好最好最好将你的类注册成BeanDefinition，而不是直接注册成单例对象（这样可以使你定义的bean收到InitializingBean和DisposableBean的回调）
+	 * 3、如果此接口的实现类是一个BeanFactory，最好最好最好将你的类注册成BeanDefinition，而不是直接注册成单例对象（这样可以使你定义的bean收到InitializingBean和DisposableBean的回调）
 	 */
 	void registerSingleton(String beanName, Object singletonObject);
 

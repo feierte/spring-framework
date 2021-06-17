@@ -521,7 +521,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		long startTime = System.currentTimeMillis();
 
 		try {
-			// 初始化webApplicationContext应用上下文，
+			// 初始化webApplicationContext应用上下文（子应用上下文）
 			this.webApplicationContext = initWebApplicationContext();
 			// 该方法默认不做任何处理，留给子类覆盖并做一些特殊处理，不过DispatcherServlet并未覆盖该方法
 			initFrameworkServlet();
@@ -585,6 +585,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 		if (wac == null) {
 			// No context instance is defined for this servlet -> create a local one
+			// 这边是重点，创建Spring子上下文，并将设置其父类上下文
 			wac = createWebApplicationContext(rootContext);
 		}
 
@@ -599,6 +600,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 		if (this.publishContext) {
 			// Publish the context as a servlet context attribute.
+			// 将子应用上下文存入ServletContext
 			String attrName = getServletContextAttributeName();
 			getServletContext().setAttribute(attrName, wac);
 		}
