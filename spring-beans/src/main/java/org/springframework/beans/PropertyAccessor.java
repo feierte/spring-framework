@@ -16,10 +16,10 @@
 
 package org.springframework.beans;
 
-import java.util.Map;
-
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.Nullable;
+
+import java.util.Map;
 
 /**
  * Common interface for classes that can access named properties
@@ -79,6 +79,8 @@ public interface PropertyAccessor {
 	 * @param propertyName the property to check
 	 * (may be a nested path and/or an indexed/mapped property)
 	 * @return whether the property is readable
+	 *
+	 * @apiNote 查看属性是否是可读的，如果该属性不存在，则返回false
 	 */
 	boolean isReadableProperty(String propertyName);
 
@@ -88,6 +90,8 @@ public interface PropertyAccessor {
 	 * @param propertyName the property to check
 	 * (may be a nested path and/or an indexed/mapped property)
 	 * @return whether the property is writable
+	 *
+	 * @apiNote 查看属性是否是可写的，如果该属性不存在，则返回false
 	 */
 	boolean isWritableProperty(String propertyName);
 

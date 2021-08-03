@@ -16,25 +16,8 @@
 
 package org.springframework.beans;
 
-import java.beans.PropertyChangeEvent;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.security.PrivilegedActionException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.core.CollectionFactory;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.convert.ConversionException;
@@ -44,6 +27,11 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+
+import java.beans.PropertyChangeEvent;
+import java.lang.reflect.*;
+import java.security.PrivilegedActionException;
+import java.util.*;
 
 /**
  * A basic {@link ConfigurablePropertyAccessor} that provides the necessary
@@ -1056,6 +1044,15 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	/**
 	 * Holder class used to store property tokens.
 	 */
+	// 这个类的作用是对属性访问表达式的细化和归类，比如这样的代码，
+	//
+	//     beanWrapper.setPropertyValue("listMap[0][0]", "aaa");     代码的含义是要为Apple的成员变量listMap的第0个元素即Map，然后要为该Map置入键值对0(key)和aaa(value)，
+	//     listMap[0][0]就是一个属性访问表达式，它对应的PropertyTokenHolder对象各成员变量值如下，
+	//
+	//  canonicalName:listMap[0][0]    ----   代表整个属性访问表达式
+	//  actualName:listMap                  ----   仅包含最外层的属性名称
+	//  keys:[0, 0]                                  ----    数组的长度代表索引深度，各元素代表索引值
+	//     由于每个部分各有各的作用，所以就事先分解好，包装成对象，避免重复分解。
 	protected static class PropertyTokenHolder {
 
 		public PropertyTokenHolder(String name) {
@@ -1063,12 +1060,12 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 			this.canonicalName = name;
 		}
 
-		public String actualName;
+		public String actualName; // 仅包含最外层的属性名称
 
-		public String canonicalName;
+		public String canonicalName; // 代表整个属性访问表达式
 
 		@Nullable
-		public String[] keys;
+		public String[] keys; // 数组的长度代表索引深度，各元素代表索引值
 	}
 
 }
