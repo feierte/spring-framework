@@ -84,6 +84,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	 * Registers default editors.
 	 * @see #setWrappedInstance
 	 */
+	// 注册默认的属性编辑器的：defaultEditors  它几乎处理了所有的Java内置类型  包括基本类型、包装类型以及对应数组类型~~~
 	protected AbstractNestablePropertyAccessor() {
 		this(true);
 	}

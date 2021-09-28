@@ -38,6 +38,8 @@ public abstract class AbstractPropertyAccessor extends TypeConverterSupport impl
 
 	private boolean extractOldValueForEditor = false;
 
+	// 当Spring遇到对象属性为null时，是否实例化
+	// true：实例化  false：不实例化
 	private boolean autoGrowNestedPaths = false;
 
 

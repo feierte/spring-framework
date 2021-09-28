@@ -41,6 +41,10 @@ import org.springframework.util.CollectionUtils;
  * @see ClientHttpRequestInterceptor
  * @see InterceptingClientHttpRequestFactory
  * @see org.springframework.web.client.RestTemplate
+ *
+ * @apiNote HttpAccessor 的抽象子类，增加了请求拦截相关的属性（interceptors）。
+ *
+ * <p>InterceptingHttpAccessor 类中的 interceptors 属性是 Spring Cloud 中各种服务治理的关键，如客户端负载均衡，链路追踪等。
  */
 public abstract class InterceptingHttpAccessor extends HttpAccessor {
 

@@ -31,6 +31,8 @@ import java.util.Map;
  * @see BeanWrapper
  * @see PropertyAccessorFactory#forBeanPropertyAccess
  * @see PropertyAccessorFactory#forDirectFieldAccess
+ *
+ * @apiNote 属性访问器
  */
 public interface PropertyAccessor {
 

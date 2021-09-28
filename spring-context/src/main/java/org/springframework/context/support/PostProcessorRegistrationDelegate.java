@@ -90,7 +90,7 @@ final class PostProcessorRegistrationDelegate {
 
 		if (beanFactory instanceof BeanDefinitionRegistry) {
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
-			// 用于存放常规的BeanFactoroyPostProcessor
+			// 用于存放常规的BeanFactoroyPostProcessor（非BeanDefinitionRegistryPostProcessor）
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
 			// 用于存放BeanDefinitionRegistryPostProcessor
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
@@ -127,6 +127,7 @@ final class PostProcessorRegistrationDelegate {
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
 				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
+					// 先实例化 BeanDefinitionRegistryPostProcessor 这些后置处理器类，所以这些后置处理器类先比 普通 Bean 实例化
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
 				}
@@ -252,7 +253,7 @@ final class PostProcessorRegistrationDelegate {
 	public static void registerBeanPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, AbstractApplicationContext applicationContext) {
 
-		// 找到所有注册到容器的 BeanPostProcessor 的名字
+		// 找到所有注册到容器的 BeanPostProcessor 的 name
 		String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false);
 
 		// Register BeanPostProcessorChecker that logs an info message when

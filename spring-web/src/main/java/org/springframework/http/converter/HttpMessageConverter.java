@@ -31,6 +31,16 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 3.0
  * @param <T> the converted object type
+ *
+ * @apiNote Http 请求和响应消息转换器
+ *
+ *          | <-------- Java 对象 ---------| <-------- HttpInputMessage ---------| <-------- 请求报文 ---------|
+ *			|							  |
+ *			|							  |
+ * Spring MVC/Spring Boot			HttpMessageConverter
+ * 			|							  |
+ * 			|							  |
+ * 			| --------- Java 对象 -------->|	--------- HttpOutputMessage -------->| --------- 响应报文 -------->|
  */
 public interface HttpMessageConverter<T> {
 

@@ -334,7 +334,6 @@ public class RestTemplate extends InterceptingHttpAccessor implements RestOperat
 	@Override
 	public <T> ResponseEntity<T> getForEntity(String url, Class<T> responseType, Object... uriVariables)
 			throws RestClientException {
-
 		RequestCallback requestCallback = acceptHeaderRequestCallback(responseType);
 		ResponseExtractor<ResponseEntity<T>> responseExtractor = responseEntityExtractor(responseType);
 		return nonNull(execute(url, HttpMethod.GET, requestCallback, responseExtractor, uriVariables));

@@ -179,6 +179,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	private ConfigurableEnvironment environment;
 
 	/** BeanFactoryPostProcessors to apply on refresh. */
+	// 存放BeanFactoryPostProcessor，这些BeanFactory后置处理器是通过 addBeanFactoryPostProcessor(...) 这个方法添加进来的
 	private final List<BeanFactoryPostProcessor> beanFactoryPostProcessors = new ArrayList<>();
 
 	/** System time in milliseconds when this context started. */
@@ -221,7 +222,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 	/**
 	 * ApplicationEvents published before the multicaster setup.
-	 * 有可能在ApplicationEventMulticaster初始化之前，有可能发生了事件
+	 * 有可能在 ApplicationEventMulticaster 初始化之前，有可能发生了事件
 	 */
 	@Nullable
 	private Set<ApplicationEvent> earlyApplicationEvents;
@@ -543,7 +544,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				postProcessBeanFactory(beanFactory);
 
 				// Invoke factory processors registered as beans in the context.
-				// 在Singleton的bean对象初始化前，对bean工厂进行一些处理
+				// 调用BeanFactory的后置处理器，在Singleton的bean对象初始化前，对bean工厂进行一些处理
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.

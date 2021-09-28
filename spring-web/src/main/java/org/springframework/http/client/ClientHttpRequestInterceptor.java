@@ -32,6 +32,8 @@ import org.springframework.http.HttpRequest;
  *
  * @author Arjen Poutsma
  * @since 3.1
+ *
+ * @apiNote ClientHttpRequestInterceptor 是 Spring Cloud 中各种服务治理的关键，如客户端负载均衡，链路追踪等。
  */
 @FunctionalInterface
 public interface ClientHttpRequestInterceptor {

@@ -273,6 +273,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
 		// 用于存放解析出来的配置类
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
+		// 获取Spring IOC容器中目前所有 BeanDefinition 的名称
 		String[] candidateNames = registry.getBeanDefinitionNames();
 
 		for (String beanName : candidateNames) {
