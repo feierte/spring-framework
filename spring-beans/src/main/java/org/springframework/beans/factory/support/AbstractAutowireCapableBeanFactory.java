@@ -1156,7 +1156,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				// 该方法可以返回一个构造完成的Bean实例，从而不会继续执行创建Bean实例的"正规流程"
 				Object result = ibp.postProcessBeforeInstantiation(beanClass, beanName);
 				if (result != null) {
-					// 4.如果result不为null，也就是有后置处理器返回了bean实例对象，则会跳过Spring默认的实例化过程。
+					// 4.如果result不为null，也就是有 InstantiationAwareBeanPostProcessor 后置处理器返回了bean实例对象，则会跳过Spring默认的实例化过程。
 					return result;
 				}
 			}
@@ -1210,6 +1210,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// 2.通过factory-method实例化这个bean
+		/*
+		 * 需要注意的是，如果一个类中中的方法被 @Bean注解修饰，那么Spring则会将其封装成一个 ConfigurationClassBeanDefinition。
+		 * 此时 factoryMethodName 也被赋值。所以也会调用instantiateUsingFactoryMethod 方法通过反射完成方法的调用，并将结果注入Spring容器中。
+		 */
 		if (mbd.getFactoryMethodName() != null) {
 			return instantiateUsingFactoryMethod(beanName, mbd, args);
 		}
@@ -1242,6 +1246,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Candidate constructors for autowiring?
 		// 解析构造方法，从bean的后置处理器中为自动装配寻找构造方法
+		// 根据参数解析构造函数，并将解析出来的构造函数缓存到 mdb 的 resolvedConstructorOrFactoryMethod 属性中
+		// 到这一步，说明 bean 是第一次加载，所以没有对构造函数进行相关缓存(resolved 为 false)
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
 		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
 				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
@@ -1394,9 +1400,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * dependency resolution.
 	 * @param beanName the name of the bean
 	 * @param mbd the bean definition for the bean
-	 * @param ctors the chosen candidate constructors
+	 * @param ctors the chosen candidate constructors 候选的构造方法列表，没有则为null
 	 * @param explicitArgs argument values passed in programmatically via the getBean method,
-	 * or {@code null} if none (-> use constructor argument values from bean definition)
+	 * or {@code null} if none (-> use constructor argument values from bean definition) 通过 getBean 方法以编程方式传递的参数值。
 	 * @return a BeanWrapper for the new instance
 	 */
 	protected BeanWrapper autowireConstructor(

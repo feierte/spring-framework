@@ -333,7 +333,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				checkMergedBeanDefinition(mbd, beanName, args);
 
 				// Guarantee initialization of beans that the current bean depends on.
-				// 处理dependsOn配置(@DepondOn注解)
+				// 处理dependsOn配置(@DependOn注解)
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
 					// 如果存在依赖，则递归地实例化依赖的bean
@@ -1373,7 +1373,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			if (containingBd == null) {
 				mbd = this.mergedBeanDefinitions.get(beanName);// containingBd传进来是null的话,检测在这之间是否已经被合并过
 			}
-			// 没有合并过，或者合并过但是需要重新合并（mbd.stale）
+			// 没有合并过，或者合并过但是需要重新合并（mbd.stale = true）
 			if (mbd == null || mbd.stale) {
 				previous = mbd;
 				// 这个if else 是判断是否有父类

@@ -396,6 +396,9 @@ class ConfigurationClassBeanDefinitionReader {
 	 * was created from a configuration class as opposed to any other configuration source.
 	 * Used in bean overriding cases where it's necessary to determine whether the bean
 	 * definition was created externally.
+	 *
+	 * @apiNote 在 ConfigurationClassPostProcessor 后处理器中，会对被 @Bean 注解修饰的方法进行解析，生成一个 ConfigurationClassBeanDefinition的 BeanDefinition。
+	 * 此时BeanDefinition 的 factoryMethodName 正是 @Bean修饰的方法本身。所以使用 @Bean 注解定义的 Bean，会在创建实例阶段（createBeanInstance）调用 instantiateUsingFactoryMethod 方法进行创建。
 	 */
 	@SuppressWarnings("serial")
 	private static class ConfigurationClassBeanDefinition extends RootBeanDefinition implements AnnotatedBeanDefinition {

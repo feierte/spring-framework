@@ -70,6 +70,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	volatile ResolvableType targetType;
 
 	/** Package-visible field for caching the determined Class of a given bean definition. */
+	// 缓存解析过得 Bean 的类型
 	@Nullable
 	volatile Class<?> resolvedTargetType;
 
@@ -90,14 +91,17 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 
 	/** Package-visible field for caching the resolved constructor or factory method. */
 	// 一个类有多个构造方法，带有不同的参数，所以调用前，需要根据参数解析出需要调用的构造方法或工厂方法
-	// 该变量就是存储 根据参数解析出来的 构造函数或工厂方法
+	// 该变量就是缓存 根据参数解析出来的 构造函数或工厂方法
 	@Nullable
 	Executable resolvedConstructorOrFactoryMethod;
 
 	/** Package-visible field that marks the constructor arguments as resolved. */
+	// 这个字段有两层含义： 一，标记构造函数是否已经完成解析。
+	// 二，标志这个bean的加载是否 需要通过构造注入(autowireConstructor) 的方式加载。因为只有在 autowireConstructor 方法中才会将其置为 true。
 	boolean constructorArgumentsResolved = false;
 
 	/** Package-visible field for caching fully resolved constructor arguments. */
+	// 缓存解析好的构造函数的入参
 	@Nullable
 	Object[] resolvedConstructorArguments;
 
