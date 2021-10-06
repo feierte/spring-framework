@@ -126,6 +126,8 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 	/**
 	 * Find and return the first AspectJ annotation on the given method
 	 * (there <i>should</i> only be one anyway...).
+	 *
+	 * @apiNote 获取指定方法上的注解并使用  AspectJAnnotation 封装
 	 */
 	@SuppressWarnings("unchecked")
 	@Nullable

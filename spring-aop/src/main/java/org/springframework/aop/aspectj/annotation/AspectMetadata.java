@@ -43,7 +43,7 @@ import org.springframework.aop.support.ComposablePointcut;
  * @since 2.0
  * @see org.springframework.aop.aspectj.AspectJExpressionPointcut
  *
- * @apiNote 切面的元数据类
+ * @apiNote 切面的元数据类，主要包含了aspectName、aspectClass（即标注 @Aspect 注解的类）等信息
  */
 @SuppressWarnings("serial")
 public class AspectMetadata implements Serializable {

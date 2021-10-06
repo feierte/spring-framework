@@ -78,6 +78,7 @@ public class BeanFactoryAdvisorRetrievalHelper {
 			// 获取bean容器及其父容器中所有Spring Advisor bean的名称
 			// includeNonSingletons:true=>也包含 prototype,scoped bean,不光是 singleton bean
 			// allowEagerInit:false=>不要初始化lazy-init 单例 bean和通过FactoryBean创建的bean
+			// 这里是为了兼容以前老的Spring版本，事务模块的功能就是直接去容器中获取 Advisor 类型的Bean
 			advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 					this.beanFactory, Advisor.class, true, false);
 			// 将获取到的Advisor bean 的名称缓存到 this.cachedAdvisorBeanNames

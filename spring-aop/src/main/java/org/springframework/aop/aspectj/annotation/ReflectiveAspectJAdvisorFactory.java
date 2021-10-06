@@ -103,18 +103,19 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 	@Override
 	public List<Advisor> getAdvisors(MetadataAwareAspectInstanceFactory aspectInstanceFactory) {
+		// 获取被 @Aspect 注解的类
 		Class<?> aspectClass = aspectInstanceFactory.getAspectMetadata().getAspectClass();
 		String aspectName = aspectInstanceFactory.getAspectMetadata().getAspectName();
 		validate(aspectClass);
 
 		// We need to wrap the MetadataAwareAspectInstanceFactory with a decorator
 		// so that it will only instantiate once.
-		// 使用包装模式来包装我们的MetadataAwareAspectInstanceFactory构建为MetadataAwareAspectInstanceFactory
+		// 使用包装模式来包装我们的 MetadataAwareAspectInstanceFactory 构建为 MetadataAwareAspectInstanceFactory
 		MetadataAwareAspectInstanceFactory lazySingletonAspectInstanceFactory =
 				new LazySingletonAspectInstanceFactoryDecorator(aspectInstanceFactory);
 
 		List<Advisor> advisors = new ArrayList<>();
-		// 获取到切面类中的所有方法，但是该方法不会解析到标注了@PointCut注解的方法
+		// 获取到切面类中的所有方法，但是该方法不会解析到标注了 @PointCut 注解的方法
 		for (Method method : getAdvisorMethods(aspectClass)) {
 			// Prior to Spring Framework 5.2.7, advisors.size() was supplied as the declarationOrderInAspect
 			// to getAdvisor(...) to represent the "current position" in the declared methods list.
@@ -124,7 +125,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 			// discovered via reflection in order to support reliable advice ordering across JVM launches.
 			// Specifically, a value of 0 aligns with the default value used in
 			// AspectJPrecedenceComparator.getAspectDeclarationOrder(Advisor).
-			// 循环解析切面中的方法
+			// 循环解析切面中的方法。将方法封装成 Advisor 。如果找不到@PointCut 的信息，则会返回 null。
 			Advisor advisor = getAdvisor(method, lazySingletonAspectInstanceFactory, 0, aspectName);
 			if (advisor != null) {
 				advisors.add(advisor);
@@ -133,12 +134,14 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 		// If it's a per target aspect, emit the dummy instantiating aspect.
 		if (!advisors.isEmpty() && lazySingletonAspectInstanceFactory.getAspectMetadata().isLazilyInstantiated()) {
+			// 如果寻找的增强器不为空而且有配置了增强延迟初始化，则需要在首位加入同步实例化增强器
 			Advisor instantiationAdvisor = new SyntheticInstantiationAdvisor(lazySingletonAspectInstanceFactory);
 			advisors.add(0, instantiationAdvisor);
 		}
 
 		// Find introduction fields.
 		// 处理Introduction相关的Advice
+		// 获取 @DeclaredParents 注解并处理。@DeclaredParents 注解可以实现指定某些代理类是某些接口的实现。
 		for (Field field : aspectClass.getDeclaredFields()) {
 			Advisor advisor = getDeclareParentsAdvisor(field);
 			if (advisor != null) {
@@ -193,28 +196,43 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 			int declarationOrderInAspect, String aspectName) {
 
 		validate(aspectInstanceFactory.getAspectMetadata().getAspectClass());
-		// 切面的方法上构建切点表达式
+		// 1. 切点信息的获取。这里如果没有被 Aspect 系列注解(@Pointcut、@Around、@Before等)修饰会返回 null
 		AspectJExpressionPointcut expressionPointcut = getPointcut(
 				candidateAdviceMethod, aspectInstanceFactory.getAspectMetadata().getAspectClass());
+		// 如果获取不到相关信息直接返回null
 		if (expressionPointcut == null) {
 			return null;
 		}
 
-		// 实例化我们的切面Advisor对象
+		// 2. 根据切点信息封装成增强器，实例化我们的切面Advisor对象
+		// ReflectiveAspectJAdvisorFactory#getAdvisor 最终封装成了一个InstantiationModelAwarePointcutAdvisorImpl 返回。
+		// 实际上，在 Aop 中所有的增强都由 Advisor 的实现类InstantiationModelAwarePointcutAdvisorImpl 统一封装。
 		return new InstantiationModelAwarePointcutAdvisorImpl(expressionPointcut, candidateAdviceMethod,
 				this, aspectInstanceFactory, declarationOrderInAspect, aspectName);
 	}
 
+	/**
+	 * getPointcut 方法的实现很简单，就是判断方法上是否有 AspectJ系列的注解，有则封装。
+	 * @param candidateAdviceMethod
+	 * @param candidateAspectClass
+	 * @return
+	 */
 	@Nullable
 	private AspectJExpressionPointcut getPointcut(Method candidateAdviceMethod, Class<?> candidateAspectClass) {
+		// 获取方法上的注解，包括 Pointcut.class, Around.class, Before.class, After.class, AfterReturning.class, AfterThrowing.class
 		AspectJAnnotation<?> aspectJAnnotation =
 				AbstractAspectJAdvisorFactory.findAspectJAnnotationOnMethod(candidateAdviceMethod);
 		if (aspectJAnnotation == null) {
 			return null;
 		}
 
+		// 到这里必然有 AspectJ系列的注解了
+		// 使用 AspectJExpressionPointcut 实例封装获取的信息
 		AspectJExpressionPointcut ajexp =
 				new AspectJExpressionPointcut(candidateAspectClass, new String[0], new Class<?>[0]);
+		// 提取出的得到的注解中的表达式
+		// 如  @Pointcut("execution(* com.kingfish.aopdemo.controller.AopController.hello(String))") 中的 execution(* com.kingfish.aopdemo.controller.AopController.hello(String))
+		// 对于 @Before("pointCut()") 获取的则是 pointCut()
 		ajexp.setExpression(aspectJAnnotation.getPointcutExpression());
 		if (this.beanFactory != null) {
 			ajexp.setBeanFactory(this.beanFactory);
@@ -250,7 +268,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 		}
 
 		AbstractAspectJAdvice springAdvice;
-		// 判断标注在方法上的注解类型
+		// 判断标注在方法上的注解类型，根据不同的注解生成不同的 增强（Advice）
 		switch (aspectJAnnotation.getAnnotationType()) {
 			// 是PointCut注解 那么就抛出异常 因为在外面传递进来的方法已经排除了Pointcut的方法
 			case AtPointcut:

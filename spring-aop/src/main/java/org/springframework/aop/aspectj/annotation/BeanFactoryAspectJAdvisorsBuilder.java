@@ -51,8 +51,14 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	@Nullable
 	private volatile List<String> aspectBeanNames;
 
+	/**
+	 * 缓存了单例 Bean 的 beanName 和其对应的 Advisor 集合
+	 */
 	private final Map<String, List<Advisor>> advisorsCache = new ConcurrentHashMap<>();
 
+	/**
+	 * 缓存了非单例 Bean 的 beanName 和其对应的 AspectInstanceFactory 集合
+	 */
 	private final Map<String, MetadataAwareAspectInstanceFactory> aspectFactoryCache = new ConcurrentHashMap<>();
 
 
@@ -89,22 +95,22 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	 * 	2、遍历每个Bean，过滤出其中被@Aspect注解了的Bean
 	 * 	3、遍历每个找到的使用了注解@Aspect的Bean中的advice方法，将其封装成一个Advisor。
 	 * 	4、最终返回一个List<Advisor>给调用者。
-	 *
 	 */
 	public List<Advisor> buildAspectJAdvisors() {
 		List<String> aspectNames = this.aspectBeanNames;
 
 		if (aspectNames == null) {
+			// 加锁。防止多个线程同时加载 Aspect
 			synchronized (this) {
 				aspectNames = this.aspectBeanNames;
 				if (aspectNames == null) {
 					List<Advisor> advisors = new ArrayList<>();
 					aspectNames = new ArrayList<>();
-					// 获取所有类型为Object的Bean的名称，基本上也就包括了Spring容器中的所有Bean了
+					// 1.获取所有类型为Object的Bean的名称，基本上也就包括了Spring容器中的所有Bean了
 					// includeNonSingletons:true=>包含单例，非单例bean
 					// allowEagerInit:false=>不要初始化lazy-init singletons和FactoryBean创建的bean
-					// AOP功能中在这里传入的是Object对象，代表去容器中获取到所有的组件的名称，然后再
-					// 进行遍历，这个过程是十分的消耗性能的，所以说Spring会再这里加入了保存切面信息的缓存。
+					// AOP功能中在这里传入的是Object对象，代表去容器中获取到所有的组件的名称，然后再进行遍历，这个过程是十分的消耗性能的，所以说Spring会再这里加入了保存切面信息的缓存。
+					// 但是事务功能不一样，事务模块的功能是直接去容器中获取Advisor类型的，选择范围小，且不消耗性能。所以spring在事务模块中没有加入缓存来保存我们的事务相关的advisor
 					String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 							this.beanFactory, Object.class, true, false);
 					for (String beanName : beanNames) {
@@ -119,15 +125,18 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 						if (beanType == null) {
 							continue;
 						}
-						// 检查该Bean是否使用了@Aspect注解
+						// 2. 如果该 Bean 被 @Aspect 注解修饰 且不是Ajc 编译, 则进一步处理
 						if (this.advisorFactory.isAspect(beanType)) {
+							// 添加到缓存中
 							aspectNames.add(beanName);
+							// 封装成 AspectMetadata
 							AspectMetadata amd = new AspectMetadata(beanType, beanName);
 							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
 								MetadataAwareAspectInstanceFactory factory =
 										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
-								// 从@Aspect注解的类，也就是切面类中分析其advice方法，每个advice方法封装成一个Advisor
-								// 该advisor包含了相应的pointcut 和 advice 信息
+								// 3. 解析标记AspectJ注解中的增强方法，也就是被 @Before、@Around 等注解修饰的方法，并将其封装成 Advisor
+								// 从 @Aspect 注解的类，也就是切面类中分析其 advice 方法，每个 advice 方法封装成一个 Advisor
+								// 该 advisor 包含了相应的 pointcut 和 advice 信息
 								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);
 								if (this.beanFactory.isSingleton(beanName)) {
 									// 单例则直接将Advisor类存到缓存
@@ -141,6 +150,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 							}
 							else {
 								// Per target or per this.
+								// 如果当前Bean是单例，但是 Aspect 不是单例则抛出异常
 								if (this.beanFactory.isSingleton(beanName)) {
 									throw new IllegalArgumentException("Bean with name '" + beanName +
 											"' is a singleton, but aspect instantiation model is not singleton");
@@ -161,6 +171,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 		if (aspectNames.isEmpty()) {
 			return Collections.emptyList();
 		}
+		// 4. 将所有的增强方法保存到缓存中。
 		List<Advisor> advisors = new ArrayList<>();
 		for (String aspectName : aspectNames) {
 			List<Advisor> cachedAdvisors = this.advisorsCache.get(aspectName);

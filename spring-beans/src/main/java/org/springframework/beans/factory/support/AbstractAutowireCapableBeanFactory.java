@@ -1463,7 +1463,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// pvs是一个MutablePropertyValues实例，里面实现了PropertyValues接口，提供属性的读写操作实现，同时可以通过调用构造函数实现深拷贝
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
 
+
+		/*
+		 * XML的自动装配模式与注解驱动的模式在代码上是不同的分岔.
+		 */
 		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
+
+		// xml配置方式会走下面这个分支
 		// 如果一个类设置了AUTOWIRE_BY_NAME或AUTOWIRE_BY_TYPE，那么类中的属性会根据该规则自动注入，而不需要使用@Autowired或@Resource
 		// 默认情况下，是AUTOWIRE_NO，所以这里默认是不执行的
 		if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) {

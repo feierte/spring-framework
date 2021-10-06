@@ -46,7 +46,9 @@ import org.springframework.util.Assert;
  * @since 2.0
  * @see org.springframework.aop.aspectj.annotation.AspectJAdvisorFactory
  *
- * <p>基于Bean中AspectJ注解标签的自动代理创建器：为包含AspectJ注解的Bean自动创建代理实例
+ * @apiNote 基于Bean中AspectJ注解标签的自动代理创建器：为包含AspectJ注解的Bean自动创建代理实例
+ *
+ * <p>AnnotationAwareAspectJAutoProxyCreator 本身的逻辑并不多，核心逻辑在其父类 AbstractAutoProxyCreator 中。
  */
 @SuppressWarnings("serial")
 public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorAutoProxyCreator {
@@ -91,9 +93,11 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 	@Override
 	protected List<Advisor> findCandidateAdvisors() {
 		// Add all the Spring advisors found according to superclass rules.
+		// 1. 这里是从BeanFactory 中找出来所有 Advisor 类型的bean。即找到所有配置的Advisor。
 		List<Advisor> advisors = super.findCandidateAdvisors();
 		// Build Advisors for all AspectJ aspects in the bean factory.
 		if (this.aspectJAdvisorsBuilder != null) {
+			// 2. buildAspectJAdvisors() 从代码中动态找到了需要的增强点
 			advisors.addAll(this.aspectJAdvisorsBuilder.buildAspectJAdvisors());
 		}
 		return advisors;

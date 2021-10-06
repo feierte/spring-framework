@@ -39,6 +39,16 @@ import java.lang.reflect.Method;
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @since 2.0
+ *
+ * @apiNote Advisor 的实现类。
+ *
+ * <p> 可以看到，InstantiationModelAwarePointcutAdvisorImpl 在封装过程中只是简单的将信息封装在类的实例中，所有的信息只是单纯的赋值。
+ * 但是需要注意的是，在信息赋值结束后调用了 instantiateAdvice(this.declaredPointcut) 方法，这个方法完成了对于增强器的处理。
+ *
+ * 因为不同的增强体现的逻辑是不同的，简单来说就是不同的切点信息的动作是不同的，比如 @Before 和 @After 注解的动作就不同， @Before 需要在切点方法前调用， @After 需要在切点方法后调用。
+ * 这里根据不同的注解封装成了不同的 Advice，用以区分在适当的时候调用适当的方法。
+ *
+ * 而根据注解中的信息初始化对应的增强器就是在instantiateAdvice 中实现。而instantiateAdvice 中主要还是调用了 this.aspectJAdvisorFactory.getAdvice
  */
 @SuppressWarnings("serial")
 final class InstantiationModelAwarePointcutAdvisorImpl

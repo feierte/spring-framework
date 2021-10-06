@@ -54,14 +54,24 @@ public abstract class AopConfigUtils {
 	/**
 	 * Stores the auto proxy creator classes in escalation order.
 	 */
+	// 保存候选的自动代理创建器集合
 	// findPriorityForClass 这个方法非常有意思：相当于找到 index 角标，然后
 	// APC_PRIORITY_LIST 的内容是下面这几个，按照顺序排好的
 	private static final List<Class<?>> APC_PRIORITY_LIST = new ArrayList<>(3);
 
 	static {
 		// Set up the escalation list...
+		/**
+		 * 这里面三种都是 自动代理创建器，会根据情况选择一个自动代理创建器加载。
+		 * 需要注意的是，自动代理创建器只能加载一种，若已经加载一种，则会根据优先级选择优先级高的重新加载
+		 *
+		 * <p>关于优先级的问题，我们可以看到APC_PRIORITY_LIST 集合的顺序，下标越大，优先级越高。因此可以得知优先级的顺序应该是
+		 * InfrastructureAdvisorAutoProxyCreator < AspectJAwareAdvisorAutoProxyCreator < AnnotationAwareAspectJAutoProxyCreator
+		 */
+		// 事务使用
 		APC_PRIORITY_LIST.add(InfrastructureAdvisorAutoProxyCreator.class);
 		APC_PRIORITY_LIST.add(AspectJAwareAdvisorAutoProxyCreator.class);
+		// Spring AOP 使用
 		APC_PRIORITY_LIST.add(AnnotationAwareAspectJAutoProxyCreator.class);
 	}
 
@@ -125,6 +135,10 @@ public abstract class AopConfigUtils {
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			// 如果我们自定义的并不是 cls 这个 class 类型的 Bean，那就做如下处理一下
+			// 这里之所以 beanName (AUTO_PROXY_CREATOR_BEAN_NAME) 和 bean的类型并不相同，是因为这个beanName 特指内部的自动代理创建器，
+			// 但是自动创建代理器会对应多种不同的实现方式。比如在默认的事务中，注入的bean类型却为InfrastructureAdvisorAutoProxyCreator，
+			// 而AOP的实现却是 AnnotationAwareAspectJAutoProxyCreator。之所以注册不同是因为实现功能上的区别。对于事务的自动代理创建器来说，
+			// 他只需要扫描被事务注解修饰的方法，并进行代理。而Spring Aop 则需要根据 @PointCut 注解 来动态的解析代理哪些方法。
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
 				// InfrastructureAdvisorAutoProxyCreator/AspectJAwareAdvisorAutoProxyCreator/AnnotationAwareAspectJAutoProxyCreator 的一个逻辑（防止用户注册错了，做一个容错处理）
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
@@ -132,9 +146,11 @@ public abstract class AopConfigUtils {
 				// currentPriority < requiredPriority，如果当前用户注册进来的 Aop 代理类的级别，是低于我们要求的级别的，Spring 内部也会对它进行提升成我们要求的那个 class 类型
 				// 这样符合我们的建议：最好不要自己去使用低级别的自动代理创建器
 				if (currentPriority < requiredPriority) {
+					// 改变bean所对应的 className 属性
 					apcDefinition.setBeanClassName(cls.getName());
 				}
 			}
+			// 如果已经存在自动代理创建器，并且与将要创建的一致，那么无需再次创建
 			return null;
 		}
 		// 若用户自己没有定义，那就用系统定义好的：AnnotationAwareAspectJAutoProxyCreator

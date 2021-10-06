@@ -399,6 +399,9 @@ class ConfigurationClassBeanDefinitionReader {
 	 *
 	 * @apiNote 在 ConfigurationClassPostProcessor 后处理器中，会对被 @Bean 注解修饰的方法进行解析，生成一个 ConfigurationClassBeanDefinition的 BeanDefinition。
 	 * 此时BeanDefinition 的 factoryMethodName 正是 @Bean修饰的方法本身。所以使用 @Bean 注解定义的 Bean，会在创建实例阶段（createBeanInstance）调用 instantiateUsingFactoryMethod 方法进行创建。
+	 *
+	 * <p> 如果 @Bean 注解没有指定bean的名字，默认会用方法的名字命名 bean。
+	 * <p> @Configuration注解的类会成为一个工厂类，而所有的@Bean注解的方法会成为工厂方法，通过工厂方法实例化Bean，而不是直接通过构造函数初始化。
 	 */
 	@SuppressWarnings("serial")
 	private static class ConfigurationClassBeanDefinition extends RootBeanDefinition implements AnnotatedBeanDefinition {

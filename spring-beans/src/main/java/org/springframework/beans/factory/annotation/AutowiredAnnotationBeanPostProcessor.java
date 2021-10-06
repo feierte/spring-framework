@@ -411,6 +411,8 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 	 * 在MergedBeanDefinitionPostProcessor的postProcessMergedBeanDefinition（）方法执行之后，下一步就是执行postProcessProperties()方法，
 	 * AutowiredAnnotationBeanPostProcessor的postProcessPropertyValues（）方法就是从Spring IOC容器从找到合适的Bean，注入属性。
 	 * 找到合适的Bean，注入@Autowired标识方法的参数，然后执行此方法。
+	 *
+	 * <p> 注解驱动的Bean执行属性填充并不在autowireByName和autowireByType中，而是在AutowiredAnnotationBeanPostProcessor这个后置处理器的postProcessProperties中。
 	 * @param pvs
 	 * @param bean
 	 * @param beanName

@@ -51,7 +51,7 @@ public interface AspectJAdvisorFactory {
 	 * @param clazz the supposed annotation-style AspectJ class
 	 * @return whether or not this class is recognized by AspectJ as an aspect class
 	 *
-	 * @apiNote 判断给定的Class 是否是切面
+	 * @apiNote 判断给定的 Class 是否是切面
 	 */
 	boolean isAspect(Class<?> clazz);
 

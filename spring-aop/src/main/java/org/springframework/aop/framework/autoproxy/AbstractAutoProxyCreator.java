@@ -83,9 +83,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see BeanNameAutoProxyCreator
  * @see DefaultAdvisorAutoProxyCreator
  *
- * @apiNote AbstractAutoProxyCreator中实现了创建代理的逻辑
+ * @apiNote AbstractAutoProxyCreator 中实现了创建代理的逻辑
  *
- * <p>AbstractAutoProxyCreator的本质是BeanPostProcessor
+ * <p>AbstractAutoProxyCreator 的本质是 BeanPostProcessor。AbstractAutoProxyCreator 实现了 SmartInstantiationAwareBeanPostProcessor接口的方法，
+ * SmartInstantiationAwareBeanPostProcessor 接口方法穿插在 Bean初始化的过程中，转念一想，Spring Aop的核心思想就是动态代理，那么必然会在bean初始化的时候"做手脚"。
  */
 @SuppressWarnings("serial")
 public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
@@ -141,7 +142,8 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	private final Map<Object, Class<?>> proxyTypes = new ConcurrentHashMap<>(16);
 
 	/**
-	 * 保存了所有已经被动态代理过的Bean
+	 * 当 advisedBeans 中的值是 Boolean.FALSE， 表示对应的 Bean 不需要被动态代理。
+	 * 当 advisedBeans 中的值是 Boolean.TRUE， 表示对应的 Bean 已经被动态代理过了。
 	 */
 	private final Map<Object, Boolean> advisedBeans = new ConcurrentHashMap<>(256);
 
@@ -258,6 +260,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		Object cacheKey = getCacheKey(beanClass, beanName);
 
 		if (!StringUtils.hasLength(beanName) || !this.targetSourcedBeans.contains(beanName)) {
+			// 表示切面已经被解析过了，直接返回
 			if (this.advisedBeans.containsKey(cacheKey)) {
 				return null;
 			}
@@ -273,6 +276,8 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		// Suppresses unnecessary default instantiation of the target bean:
 		// The TargetSource will handle target instances in a custom fashion.
 		// 获取targetSource, 如果存在则直接在对象初始化之前进行创建代理, 避免了目标对象不必要的实例化
+		// 正常来说 Aop 的代理创建应当在 Bean 创建后再进行代理类，但是这里在 Bean 创建前就可能进行了代理：
+		// 对此，官方注释解释：如果我们有自定义的 TargetSource，请在此处创建代理。抑制目标 Bean 的不必要的默认实例化：TargetSource 将以自定义方式处理目标实例。
 		TargetSource targetSource = getCustomTargetSource(beanClass, beanName);
 		// 如果有自定义targetSource就要这里创建代理对象
 		// 这样做的好处是被代理的对象可以动态改变，而不是只针对一个target对象(可以对对象池中对象进行代理，可以每次创建代理都创建新对象)
@@ -284,6 +289,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(beanClass, beanName, targetSource);
 			// 创建代理对象
 			Object proxy = createProxy(beanClass, beanName, specificInterceptors, targetSource);
+			// 缓存起来
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			// 返回代理的对象
 			return proxy;
@@ -368,9 +374,10 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		// Create proxy if we have advice.
 		// 查找出和当前bean匹配的advisor（切面）
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
+		// DO_NOT_PROXY = null。很明显，即使当前 Bean 需要进行代理，如果没有增强方法也没必要进行代理
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
-			// 创建代理类
+			// 创建代理对象
 			Object proxy = createProxy(
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
 			this.proxyTypes.put(cacheKey, proxy.getClass());
