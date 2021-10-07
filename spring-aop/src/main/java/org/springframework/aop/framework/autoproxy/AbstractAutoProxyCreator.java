@@ -132,7 +132,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 	/**
 	 * 当在实例化前置方法 postProcessBeforeInstantiation 中创建了代理类,则在 targetSourcedBeans 中将添加 beanName,
-	 * 也就是 targetSourcedBeans 中含有 beanName则说明这个类被动态代理了
+	 * 也就是 targetSourcedBeans 中含有 beanName 则说明这个类被动态代理了
 	 */
 	private final Set<String> targetSourcedBeans = Collections.newSetFromMap(new ConcurrentHashMap<>(16));
 

@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 2.0.2
  * @see AnnotationAwareAspectJAutoProxyCreator
  *
- * @apiNote 该类是一个Spring AOP内部工具类，该工具类从Spring容器中获取所有使用了@AspectJ注解的Bean，最终用于AOP自动代理机制（auto-proxying）
+ * @apiNote 该类是一个Spring AOP内部工具类，该工具类从Spring容器中获取所有使用了 @Aspect 注解的Bean，最终用于AOP自动代理机制（auto-proxying）
  */
 public class BeanFactoryAspectJAdvisorsBuilder {
 
@@ -46,7 +46,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	private final AspectJAdvisorFactory advisorFactory;
 
 	/**
-	 * 缓存了Spring容器中所有被@Aspect注解的Bean
+	 * 缓存了Spring容器中所有被@Aspect注解的 Bean 的名称
 	 */
 	@Nullable
 	private volatile List<String> aspectBeanNames;
@@ -134,7 +134,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
 								MetadataAwareAspectInstanceFactory factory =
 										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
-								// 3. 解析标记AspectJ注解中的增强方法，也就是被 @Before、@Around 等注解修饰的方法，并将其封装成 Advisor
+								// 3. 解析标记 @Aspect 注解中的增强方法，也就是被 @Before、@Around 等注解修饰的方法，并将其封装成 Advisor
 								// 从 @Aspect 注解的类，也就是切面类中分析其 advice 方法，每个 advice 方法封装成一个 Advisor
 								// 该 advisor 包含了相应的 pointcut 和 advice 信息
 								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);
