@@ -27,10 +27,11 @@ public class JdbcConfig {
 
 	/**
 	 * 创建数据源并存入Ioc容器
+	 *
 	 * @return
 	 */
 	@Bean
-	public DataSource createDataSource(){
+	public DataSource createDataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(driver);
 		dataSource.setUrl(url);
@@ -41,21 +42,22 @@ public class JdbcConfig {
 
 	/**
 	 * 创建JdbcTemplate对象
+	 *
 	 * @param dataSource
 	 * @return
 	 */
 	@Bean
-	public JdbcTemplate createJdbcTemplate(DataSource dataSource){
+	public JdbcTemplate createJdbcTemplate(DataSource dataSource) {
 		return new JdbcTemplate(dataSource);
 	}
 
 	@Bean
-	public LobHandler createLobHandler(){
+	public LobHandler createLobHandler() {
 		return new DefaultLobHandler();
 	}
 
 	@Bean
-	public NamedParameterJdbcTemplate createNamedParameterJdbcTemplate(JdbcTemplate jdbcTemplate){
+	public NamedParameterJdbcTemplate createNamedParameterJdbcTemplate(JdbcTemplate jdbcTemplate) {
 		return new NamedParameterJdbcTemplate(jdbcTemplate);
 	}
 
