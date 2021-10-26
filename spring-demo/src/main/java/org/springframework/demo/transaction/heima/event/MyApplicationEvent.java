@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationEvent;
  */
 public class MyApplicationEvent extends ApplicationEvent {
 
+	private static final long serialVersionUID = -6989924624262238793L;
 	private Object source;
 
 	public MyApplicationEvent(Object source) {

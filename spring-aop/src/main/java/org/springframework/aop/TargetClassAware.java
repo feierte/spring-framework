@@ -29,7 +29,7 @@ import org.springframework.lang.Nullable;
  * @since 2.0.3
  * @see org.springframework.aop.support.AopUtils#getTargetClass(Object)
  *
- * @apiNote 所有的Aop代理对象或者代理工厂（proxy factory)都要实现的接口，该接口用于暴露出被代理目标对象的类型
+ * @apiNote 所有的Aop代理对象或者代理工厂（proxy factory）都要实现的接口，该接口用于暴露出被代理目标对象的类型
  */
 public interface TargetClassAware {
 
@@ -38,8 +38,9 @@ public interface TargetClassAware {
 	 * (typically a proxy configuration or an actual proxy).
 	 * @return the target Class, or {@code null} if not known
 	 *
-	 * @apiNote 返回被代理得目标类型（目标对象类型）
 	 * @see org.springframework.aop.support.AopUtils#getTargetClass(Object)
+	 *
+	 * @apiNote 返回被代理得目标类型（目标对象类型）
 	 */
 	@Nullable
 	Class<?> getTargetClass();

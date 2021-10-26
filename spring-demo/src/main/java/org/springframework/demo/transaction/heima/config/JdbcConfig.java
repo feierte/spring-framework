@@ -2,6 +2,8 @@ package org.springframework.demo.transaction.heima.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -31,7 +33,7 @@ public class JdbcConfig {
 	 * @return
 	 */
 	@Bean
-	public DataSource createDataSource() {
+	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(driver);
 		dataSource.setUrl(url);
@@ -47,7 +49,7 @@ public class JdbcConfig {
 	 * @return
 	 */
 	@Bean
-	public JdbcTemplate createJdbcTemplate(DataSource dataSource) {
+	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
 		return new JdbcTemplate(dataSource);
 	}
 

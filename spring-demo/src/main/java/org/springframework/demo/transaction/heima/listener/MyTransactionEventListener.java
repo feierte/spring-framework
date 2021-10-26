@@ -24,9 +24,12 @@ public class MyTransactionEventListener {
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void doSomething(MyApplicationEvent event) {
 		//1.从事件对象中获取事件源
-		Map map = (Map) event.getSource();
-		//2.输出
-		System.out.println("事务提交了，" + map.get("sourceName") + "给" + map.get("targetName") + "转了" + String.valueOf(map.get("money")) + "钱！转账成功");
+		if (event.getSource() instanceof Map) {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> map = (Map<String, Object>) event.getSource();
+			//2.输出
+			System.out.println("事务提交了，" + map.get("sourceName") + "给" + map.get("targetName") + "转了" + String.valueOf(map.get("money")) + "钱！转账成功");
+		}
 	}
 
 	/**
@@ -37,7 +40,8 @@ public class MyTransactionEventListener {
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
 	public void otherSomething(MyApplicationEvent event) {
 		//1.从事件对象中获取事件源
-		Map map = (Map) event.getSource();
+		@SuppressWarnings("unchecked")
+		Map<String, Object> map = (Map<String, Object>) event.getSource();
 		//2.输出
 		System.out.println("事务回滚了，" + map.get("sourceName") + "给" + map.get("targetName") + "转了" + String.valueOf(map.get("money")) + "钱！转账失败");
 	}

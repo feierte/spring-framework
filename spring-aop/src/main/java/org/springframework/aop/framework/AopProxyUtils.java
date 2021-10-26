@@ -52,6 +52,8 @@ public abstract class AopProxyUtils {
 	 * @since 4.3.8
 	 * @see Advised#getTargetSource()
 	 * @see SingletonTargetSource#getTarget()
+	 *
+	 * @apiNote 从代理对象中获取 单例目标对象
 	 */
 	@Nullable
 	public static Object getSingletonTarget(Object candidate) {
@@ -73,6 +75,8 @@ public abstract class AopProxyUtils {
 	 * object as fallback; never {@code null})
 	 * @see org.springframework.aop.TargetClassAware#getTargetClass()
 	 * @see Advised#getTargetSource()
+	 *
+	 * @apiNote 从实例对象中 获取最终的目标类的类型
 	 */
 	public static Class<?> ultimateTargetClass(Object candidate) {
 		Assert.notNull(candidate, "Candidate object must not be null");
@@ -97,6 +101,8 @@ public abstract class AopProxyUtils {
 	 * @return the complete set of interfaces to proxy
 	 * @see SpringProxy
 	 * @see Advised
+	 *
+	 * @apiNote 获取 AdvisedSupport 配置中所有被代理的接口
 	 */
 	public static Class<?>[] completeProxiedInterfaces(AdvisedSupport advised) {
 		return completeProxiedInterfaces(advised, false);
@@ -167,6 +173,8 @@ public abstract class AopProxyUtils {
 	 * @return all user-specified interfaces that the proxy implements,
 	 * in the original order (never {@code null} or empty)
 	 * @see Advised
+	 *
+	 * @apiNote 从代理对象中获取 代理的接口
 	 */
 	public static Class<?>[] proxiedUserInterfaces(Object proxy) {
 		Class<?>[] proxyInterfaces = proxy.getClass().getInterfaces();

@@ -46,7 +46,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	private final AspectJAdvisorFactory advisorFactory;
 
 	/**
-	 * 缓存了Spring容器中所有被@Aspect注解的 Bean 的名称
+	 * 缓存了Spring容器中所有被 @Aspect 注解的 Bean 的名称
 	 */
 	@Nullable
 	private volatile List<String> aspectBeanNames;

@@ -59,6 +59,7 @@ public class AccountServiceImpl implements AccountService {
 					accountDao.update(source);
 
 					//模拟转账异常
+					@SuppressWarnings("divzero")
 					int i = 1 / 0;
 
 					//6.更新转入账户
@@ -66,7 +67,7 @@ public class AccountServiceImpl implements AccountService {
 
 					//发布事件（转账完成了）
 				} finally {
-					Map map = new HashMap<>();
+					Map<String, Object> map = new HashMap<>();
 					map.put("sourceName", sourceName);
 					map.put("targetName", targetName);
 					map.put("money", money);

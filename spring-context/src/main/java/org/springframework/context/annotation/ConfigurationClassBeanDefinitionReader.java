@@ -116,7 +116,7 @@ class ConfigurationClassBeanDefinitionReader {
 	 * Read {@code configurationModel}, registering bean definitions
 	 * with the registry based on its contents.
 	 *
-	 * <p>这是该类对外提供的唯一的服务方法入口
+	 * @apiNote 这是该类对外提供的唯一的服务方法入口
 	 * configurationModel这个参数 通常来自 ConfigurationClassParser
 	 */
 	public void loadBeanDefinitions(Set<ConfigurationClass> configurationModel) {

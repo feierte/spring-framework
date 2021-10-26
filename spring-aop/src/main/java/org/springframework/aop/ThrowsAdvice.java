@@ -48,7 +48,7 @@ package org.springframework.aop;
  * @see AfterReturningAdvice
  * @see MethodBeforeAdvice
  *
- * <p>抛出异常增强，表示在目标方法抛出异常后实施增强
+ * @apiNote 抛出异常增强，表示在目标方法抛出异常后实施增强
  * <p>异常抛出增强接口没有定义任何方法，它是一个标签接口，在运行期Spring使用反射机制自行判断，必须采用以下签名形式定义异常抛出的增强方法：
  * 		void afterThrowing([Method method, Object[] args, Object target], Throwable);
  * 方法名必须为afterThrowing，方法入参规定如下：前三个参数Method method, Object[] args, Object target是可选的（3个参数要么都提供，要么都不提供），
