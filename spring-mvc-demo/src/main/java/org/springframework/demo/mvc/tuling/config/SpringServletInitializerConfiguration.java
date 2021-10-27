@@ -1,4 +1,4 @@
-package org.springframework.demo.mvc.config;
+package org.springframework.demo.mvc.tuling.config;
 
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;

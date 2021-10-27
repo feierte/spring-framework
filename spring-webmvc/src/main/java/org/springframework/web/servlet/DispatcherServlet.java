@@ -1008,7 +1008,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				multipartRequestParsed = (processedRequest != request);
 
 				// Determine handler for the current request.
-				// 2.取得处理当前请求的controller,这里也称为hanlder,处理器,
+				// 2.取得处理当前请求的controller,这里也称为 handler 处理器,
 				// 第一个步骤的意义就在这里体现了.这里并不是直接返回controller,而是返回的HandlerExecutionChain请求处理器链对象,该对象封装了handler和interceptors.
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) {

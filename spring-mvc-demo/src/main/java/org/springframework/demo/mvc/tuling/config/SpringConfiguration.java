@@ -1,8 +1,10 @@
-package org.springframework.demo.mvc.config;
+package org.springframework.demo.mvc.tuling.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.demo.mvc.tuling.controller.HelloController;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -11,7 +13,8 @@ import org.springframework.stereotype.Controller;
  * @date 2020/12/1 20:22
  */
 @Configuration
-@ComponentScan(basePackages = "org.springframework.demo.mvc",
+@ComponentScan(basePackages = "org.springframework.demo.mvc.tuling",
 		excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Controller.class))
 public class SpringConfiguration {
+
 }

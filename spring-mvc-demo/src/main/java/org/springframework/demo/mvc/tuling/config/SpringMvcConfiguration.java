@@ -1,8 +1,9 @@
-package org.springframework.demo.mvc.config;
+package org.springframework.demo.mvc.tuling.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.demo.mvc.tuling.controller.HelloController;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -12,7 +13,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
  * @date 2020/12/1 20:27
  */
 @Configuration
-@ComponentScan(basePackages = "org.springframework.demo.mvc")
+@ComponentScan(basePackages = "org.springframework.demo.mvc.tuling")
 public class SpringMvcConfiguration {
 
 	/**
@@ -22,8 +23,15 @@ public class SpringMvcConfiguration {
 	@Bean
 	public ViewResolver viewResolver() {
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-		viewResolver.setPrefix("/WEB-INF/pages");
+		// viewResolver.setPrefix("/WEB-INF/pages");
+		viewResolver.setPrefix("/WEB-INF/views");
 		viewResolver.setSuffix(".jsp");
 		return viewResolver;
+	}
+
+
+	@Bean
+	public HelloController helloController() {
+		return new HelloController();
 	}
 }

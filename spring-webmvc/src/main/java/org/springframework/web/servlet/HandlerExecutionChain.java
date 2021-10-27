@@ -42,7 +42,7 @@ public class HandlerExecutionChain {
 	private static final Log logger = LogFactory.getLog(HandlerExecutionChain.class);
 
 	/**
-	 * 实际的请求处理器，用来控制我们的请求到达哪个对象的哪个方法
+	 * 实际的请求处理器（即 Controller），用来控制我们的请求到达哪个对象的哪个方法
 	 */
 	private final Object handler; // 存储的是HandlerMethod
 
