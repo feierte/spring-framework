@@ -86,12 +86,16 @@ abstract class TransactionAttributeSourcePointcut extends StaticMethodMatcherPoi
 
 		@Override
 		public boolean matches(Class<?> clazz) {
+			// 过滤一些框架内部使用的类
 			if (TransactionalProxy.class.isAssignableFrom(clazz) ||
 					TransactionManager.class.isAssignableFrom(clazz) ||
 					PersistenceExceptionTranslator.class.isAssignableFrom(clazz)) {
 				return false;
 			}
+			// 返回的是 BeanFactoryTransactionAttributeSourceAdvisor 的域 AnnotationTransactionAttributeSource
 			TransactionAttributeSource tas = getTransactionAttributeSource();
+			// 因为tas为 AnnotationTransactionAttributeSource，所以这里通过tas.getTransactionAttribute查看该方法是否有事务相关注解
+			// 如果有的话，就需要通过AOP进行事务处理
 			return (tas == null || tas.isCandidateClass(clazz));
 		}
 	}

@@ -41,7 +41,7 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.transaction.support.DefaultTransactionDefinition
  * @see org.springframework.transaction.interceptor.TransactionAttribute
  *
- * @apiNote 事务定义接口，事务属性通过TransactionDefinition接口实现定义，主要有事务隔离级别、事务传播行为、事务超时时间、事务是否只读。
+ * @apiNote 事务定义接口，事务属性通过TransactionDefinition接口实现定义，主要定义了事务隔离级别、事务传播行为、事务超时时间、事务是否只读。
  */
 public interface TransactionDefinition {
 

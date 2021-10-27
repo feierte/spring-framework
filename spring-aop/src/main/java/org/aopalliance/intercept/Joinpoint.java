@@ -49,7 +49,7 @@ public interface Joinpoint {
 	 * @return see the children interfaces' proceed definition
 	 * @throws Throwable if the joinpoint throws an exception
 	 *
-	 * @apiNote 执行此拦截点，并进入到下一个连接点
+	 * @apiNote 执行此拦截点，并进入到下一个 拦截点
 	 */
 	Object proceed() throws Throwable;
 

@@ -33,6 +33,9 @@ public class LazySingletonAspectInstanceFactoryDecorator implements MetadataAwar
 
 	private final MetadataAwareAspectInstanceFactory maaif;
 
+	/**
+	 * 缓存 aspectInstance 实例，使 AspectInstance 只实例化一次
+	 */
 	@Nullable
 	private volatile Object materialized;
 
