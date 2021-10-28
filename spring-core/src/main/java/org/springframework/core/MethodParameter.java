@@ -62,6 +62,10 @@ public class MethodParameter {
 	private final Executable executable;
 
 
+	/**
+	 * Method 或 Constructor 中的参数索引，即第几个参数
+	 * 0 for the first method parameter; 1 for the second method parameter, etc.
+	 */
 	private final int parameterIndex;
 
 	/**

@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -29,6 +30,13 @@ public class User implements BeanNameAware {
 	private City[] workCities;
 
 	private List<City> lifeCities;
+
+	/**
+	 * 为了测试BeanWrapper的getPropertyValue方法
+	 * @see org.springframework.beans.BeanWrapper#getPropertyType(String) 
+	 * @see org.springframework.beans.PropertyAccessor#getPropertyValue(String)
+	 */
+	private List<Map<String, Object>> cities;
 
 	private Resource configFileLocation;
 
@@ -155,6 +163,14 @@ public class User implements BeanNameAware {
 
 	public void setContextAsText(String contextAsText) {
 		this.contextAsText = contextAsText;
+	}
+
+	public List<Map<String, Object>> getCities() {
+		return cities;
+	}
+
+	public void setCities(List<Map<String, Object>> cities) {
+		this.cities = cities;
 	}
 
 	@Override
