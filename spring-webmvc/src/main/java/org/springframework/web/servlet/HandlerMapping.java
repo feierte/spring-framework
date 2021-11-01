@@ -152,8 +152,8 @@ public interface HandlerMapping {
 	 * any interceptors, or {@code null} if no mapping found
 	 * @throws Exception if there is an internal error
 	 *
-	 * @apiNote 该方法是HandlerMapping接口中的唯一方法，此方法可以利用用户请求request中的信息来生成HandlerExecutionChain对象,
-	 * 并且HandlerExecutionChain只能通过HandlerMapping接口中的唯一方法来获得。
+	 * @apiNote 该方法是 HandlerMapping 接口中的唯一方法，此方法可以利用用户请求 request 中的信息来生成 HandlerExecutionChain 对象,
+	 * 并且 HandlerExecutionChain 只能通过 HandlerMapping 接口中的唯一方法来获得。
 	 */
 	@Nullable
 	HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception;

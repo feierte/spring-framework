@@ -96,12 +96,10 @@ public class ContextLoader {
 	 * default otherwise.
 	 * @see org.springframework.web.context.support.XmlWebApplicationContext#DEFAULT_CONFIG_LOCATION
 	 *
-	 * @apiNote 对应web.xml中的<context-param>一个配置项
+	 * @apiNote 对应web.xml中的 <context-param> 一个配置项
 	 * 	   <context-param>
 	 *         <param-name>contextConfigLocation</param-name>
-	 *         <param-value>
-	 *             classpath:applicationContext.xml
-	 *         </param-value>
+	 *         <param-value>classpath:applicationContext.xml</param-value>
 	 *     </context-param>
 	 */
 	public static final String CONFIG_LOCATION_PARAM = "contextConfigLocation";
@@ -110,7 +108,7 @@ public class ContextLoader {
 	 * Config param for the root WebApplicationContext implementation class to use: {@value}.
 	 * @see #determineContextClass(ServletContext)
 	 *
-	 * @apiNote 对应web.xml中的<context-param>一个配置项
+	 * @apiNote 对应web.xml中的 <context-param> 一个配置项
 	 * <context-param>
 	 *     <param-name>contextClass</param-name>
 	 *     <param-value>xxx</param-value>
@@ -290,7 +288,7 @@ public class ContextLoader {
 			// it is available on ServletContext shutdown.
 			if (this.context == null) {
 				// 创建WebApplicationContext，默认创建的是XmlWebApplicationContext
-				// 如果想要自定义实现类，可以在web.xml的<context-param>中配置contextClass这个参数
+				// 如果想要自定义实现类，可以在web.xml的 <context-param> 中配置 contextClass 这个参数
 				// 此时的Context还没进行配置，相当于只是个"空壳"
 				this.context = createWebApplicationContext(servletContext);
 			}
@@ -310,7 +308,7 @@ public class ContextLoader {
 					configureAndRefreshWebApplicationContext(cwac, servletContext);
 				}
 			}
-			// 将根上下文存储进servletContext中， key为 WebApplicationContext.class.getName() + ".ROOT
+			// 将根上下文（Spring容器）存储进servletContext中， key为 WebApplicationContext.class.getName() + ".ROOT
 			servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, this.context);
 
 			ClassLoader ccl = Thread.currentThread().getContextClassLoader();
@@ -367,7 +365,7 @@ public class ContextLoader {
 	 * @see org.springframework.web.context.support.XmlWebApplicationContext
 	 */
 	protected Class<?> determineContextClass(ServletContext servletContext) {
-		// 若你在web.xml中设置的<context-param>里声明了contextClass的值，则直接利用反射得到其Class
+		// 若你在web.xml中设置的 <context-param> 里声明了 contextClass 的值，则直接利用反射得到其Class
 		String contextClassName = servletContext.getInitParameter(CONTEXT_CLASS_PARAM);
 		if (contextClassName != null) {
 			try {
@@ -408,7 +406,7 @@ public class ContextLoader {
 		}
 
 		wac.setServletContext(sc);
-		// 从web.xml中读取名为 contextConfigLocation的配置
+		// 从web.xml中读取名为 contextConfigLocation 的配置
 		String configLocationParam = sc.getInitParameter(CONFIG_LOCATION_PARAM);
 		if (configLocationParam != null) {
 			wac.setConfigLocation(configLocationParam);

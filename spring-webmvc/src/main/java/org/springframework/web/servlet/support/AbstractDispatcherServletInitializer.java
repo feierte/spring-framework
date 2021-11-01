@@ -80,7 +80,7 @@ public abstract class AbstractDispatcherServletInitializer extends AbstractConte
 		Assert.notNull(dispatcherServlet, "createDispatcherServlet(WebApplicationContext) must not return null");
 		dispatcherServlet.setContextInitializers(getServletApplicationContextInitializers());
 
-		// 注册DispatcherServlet到ServletContext
+		// 注册 DispatcherServlet 到 ServletContext 中
 		ServletRegistration.Dynamic registration = servletContext.addServlet(servletName, dispatcherServlet);
 		if (registration == null) {
 			throw new IllegalStateException("Failed to register servlet with name '" + servletName + "'. " +
@@ -148,7 +148,7 @@ public abstract class AbstractDispatcherServletInitializer extends AbstractConte
 	 * for example {@code "/"}, {@code "/app"}, etc.
 	 * @see #registerDispatcherServlet(ServletContext)
 	 *
-	 * @apiNote 指定DispatcherServlet的请求映射
+	 * @apiNote 指定 DispatcherServlet 的请求映射
 	 */
 	protected abstract String[] getServletMappings();
 

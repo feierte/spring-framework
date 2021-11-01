@@ -2,6 +2,7 @@ package org.springframework.demo.mvc.tuling.config;
 
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractDispatcherServletInitializer;
 
@@ -37,6 +38,8 @@ public class SpringServletInitializerConfiguration extends AbstractDispatcherSer
 	protected WebApplicationContext createServletApplicationContext() {
 		AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
 		applicationContext.register(SpringMvcConfiguration.class);
+		// XmlWebApplicationContext applicationContext = new XmlWebApplicationContext();
+		// applicationContext.setConfigLocation("classpath:META-INF/mvc/springmvc.xml");
 		return applicationContext;
 	}
 

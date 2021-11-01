@@ -585,7 +585,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 		if (wac == null) {
 			// No context instance is defined for this servlet -> create a local one
-			// 这边是重点，创建Spring子上下文，并将设置其父类上下文
+			// 这边是重点，创建Spring子上下文，并将设置其父类上下文（如果没特别设置，一般为 XmlWebApplicationContext）
 			wac = createWebApplicationContext(rootContext);
 		}
 

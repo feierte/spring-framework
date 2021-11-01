@@ -63,7 +63,7 @@ public interface HandlerAdapter {
 	 * @param handler the handler object to check
 	 * @return whether or not this object can use the given handler
 	 *
-	 * @apiNote 判断当前 HandlerAdapter 是否支持给定的 Handler 实例
+	 * @apiNote 判断当前 HandlerAdapter 是否支持给定的 Handler（Controller） 实例
 	 */
 	boolean supports(Object handler);
 

@@ -585,7 +585,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		if (this.detectAllHandlerMappings) {
 			// Find all HandlerMappings in the ApplicationContext, including ancestor contexts.
-			// 从ApplicationContext(包括继承来的上下文)中获取所有的HandlerMapping
+			// 从ApplicationContext(包括继承来的上下文)中获取所有类型为 HandlerMapping 的bean
 			Map<String, HandlerMapping> matchingBeans =
 					BeanFactoryUtils.beansOfTypeIncludingAncestors(context, HandlerMapping.class, true, false);
 			if (!matchingBeans.isEmpty()) {
@@ -596,7 +596,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 		else {
 			try {
-				// 从ApplicationContext中获取HandlerMapping
+				// 从ApplicationContext(包括继承来的上下文)中获取名称为 handlerMapping 的bean
 				HandlerMapping hm = context.getBean(HANDLER_MAPPING_BEAN_NAME, HandlerMapping.class);
 				this.handlerMappings = Collections.singletonList(hm);
 			}
@@ -607,8 +607,9 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		// Ensure we have at least one HandlerMapping, by registering
 		// a default HandlerMapping if no other mappings are found.
+		// 如果上面步骤从容器获取 HandlerMapping 失败，则使用缺省策略创建 HandlerMapping 对象记录到 handlerMappings
 		if (this.handlerMappings == null) {
-			// 若上下文中没有handlerMapping，就使用Spring默认的handlerMapping
+			// 若上下文中没有 handlerMapping，就使用Spring默认的handlerMapping
 			this.handlerMappings = getDefaultStrategies(context, HandlerMapping.class);
 			if (logger.isTraceEnabled()) {
 				logger.trace("No HandlerMappings declared for servlet '" + getServletName() +
@@ -1037,7 +1038,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 
 				// Actually invoke the handler.
-				// 5.实际的处理器处理请求,返回结果视图对象（核心逻辑，处理handler，返回ModerAndView对象）
+				// 5.实际的处理器处理请求，返回结果视图对象（核心逻辑，处理handler，返回ModerAndView对象）
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
 				if (asyncManager.isConcurrentHandlingStarted()) {

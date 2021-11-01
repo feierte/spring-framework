@@ -6,7 +6,7 @@
          version="2.5">
 
 
-	<servlet>
+	<!--<servlet>
 		<servlet-name>dispatcherServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
@@ -19,7 +19,7 @@
 	<servlet-mapping>
 		<servlet-name>dispatcherServlet</servlet-name>
 		<url-pattern>/</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping>-->
 
 
     <!-- 配置解决中文乱码的过滤器 -->
