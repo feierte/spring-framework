@@ -231,8 +231,8 @@ public class PropertyPlaceholderHelper {
 		 * Resolve the supplied placeholder name to the replacement value.
 		 * @param placeholderName the name of the placeholder to resolve
 		 * @return the replacement value, or {@code null} if no replacement is to be made
-		 * <p></>
-		 * 将占位符中的key，解析成配置文件中对应的value
+		 *
+		 * @apiNote 将占位符中的key，解析成配置文件中对应的value
 		 */
 		@Nullable
 		String resolvePlaceholder(String placeholderName);

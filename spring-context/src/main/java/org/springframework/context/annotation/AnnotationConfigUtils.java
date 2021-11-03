@@ -219,6 +219,8 @@ public abstract class AnnotationConfigUtils {
 		/*
 		 * 注册用于处理监听器方法的 后置处理器 {@link EventListenerMethodProcessor}
 		 * org.springframework.context.event.internalEventListenerProcessor
+		 *
+		 * 用于解析 基于@EventListener注解的事件监听器
 		 */
 		if (!registry.containsBeanDefinition(EVENT_LISTENER_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(EventListenerMethodProcessor.class);
@@ -228,6 +230,7 @@ public abstract class AnnotationConfigUtils {
 
 		/*
 		 * 注册用于处理事件监听器工厂的 后置处理器 {@link org.springframework.context.event.EventListenerFactory}
+		 * 用于解析 基于@EventListener注解的事件监听器
 		 */
 		if (!registry.containsBeanDefinition(EVENT_LISTENER_FACTORY_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(DefaultEventListenerFactory.class);

@@ -52,6 +52,7 @@ public abstract class PropertiesLoaderSupport {
 	@Nullable
 	private Resource[] locations;
 
+	// 是否忽略找不到的属性文件
 	private boolean ignoreResourceNotFound = false;
 
 	@Nullable

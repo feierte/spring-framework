@@ -390,8 +390,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		Assert.notNull(event, "Event must not be null");
 
 		// Decorate event as an ApplicationEvent if necessary
-		// 支持两种事件1、直接继承ApplicationEvent，2、其他时间，会被包装为PayloadApplicationEvent，可以使用getPayload获取真实的通知内容
-		// 判断事件类型是否为ApplicationEvent，如果不是则封装成PayloadApplicationEvent
+		// 支持两种事件 1、直接继承 ApplicationEvent，2、其他事件，会被包装为 PayloadApplicationEvent，可以使用 getPayload 获取真实的通知内容
+		// 判断事件类型是否为 ApplicationEvent，如果不是则封装成 PayloadApplicationEvent
 		ApplicationEvent applicationEvent;
 		if (event instanceof ApplicationEvent) {
 			applicationEvent = (ApplicationEvent) event;
@@ -409,7 +409,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 		else {
 			// 真正进行事件发布，由此可见：
-			// ApplicationEventPublisher的发布事件底层实现是通过ApplicationEventMulticaster实现的，ApplicationContext是它们之间的桥梁。
+			// ApplicationEventPublisher 的发布事件底层实现是通过 ApplicationEventMulticaster 实现的，ApplicationContext 是它们之间的桥梁。
 			getApplicationEventMulticaster().multicastEvent(applicationEvent, eventType);
 		}
 
@@ -621,6 +621,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Initialize any placeholder property sources in the context environment.
+		// 初始化一个 Environment 并注入数据源
 		initPropertySources();
 
 		// Validate that all properties marked as required are resolvable:
@@ -696,6 +697,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.registerResolvableDependency(ApplicationContext.class, this);
 
 		// Register early post-processor for detecting inner beans as ApplicationListeners.
+		// 向Spring容器中注册一个用于发现事件监听器的 BeanPostProcessor
+		// ApplicationListenerDetector 是用于解析实现 ApplicationListener 接口的 Spring 监听器 的 BeanPostProcessor
 		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found.

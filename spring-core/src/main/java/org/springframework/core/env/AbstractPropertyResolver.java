@@ -38,6 +38,8 @@ import org.springframework.util.SystemPropertyUtils;
  * @author Chris Beams
  * @author Juergen Hoeller
  * @since 3.1
+ *
+ * @apiNote 封装了解析占位符的具体实现。
  */
 public abstract class AbstractPropertyResolver implements ConfigurablePropertyResolver {
 

@@ -29,8 +29,12 @@ import org.springframework.lang.Nullable;
  * @since 3.1
  * @see PropertySource
  *
- * <p>该类相当于一个"门面"，将多个属性来源（PropertySource）封装到一起了，不用在关心来源是系统环境、系统属性、配置文件等。
+ * @apiNote 该类相当于一个"门面“，将多个属性来源（PropertySource）封装到一起了，不用在关心来源是系统环境、系统属性、配置文件等。
  * 在所有来源前面加一个“门面”，只把它暴露出去，用户看到的只是“单一来源”，就从这里取值，其它的啥也不用知道。
+ *
+ * <p>PropertySources 和 PropertySource 属性源是Spring里一个非常重要的概念设计，涉及到Spring属性配置的非常重要的优先级关系、以及它支持的配置类型。
+ *
+ * <p>PropertySource 的顺序非常重要，因为 Spring 只要读到属性值就返回。
  */
 public interface PropertySources extends Iterable<PropertySource<?>> {
 

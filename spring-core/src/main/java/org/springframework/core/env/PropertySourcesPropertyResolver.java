@@ -28,6 +28,9 @@ import org.springframework.lang.Nullable;
  * @see PropertySource
  * @see PropertySources
  * @see AbstractEnvironment
+ *
+ * @apiNote AbstractPropertyResolver 封装了解析占位符的具体实现。PropertySourcesPropertyResolver 作为它的子类只需要提供数据源即可。
+ * 所以它的主要功能就是提供数据源。
  */
 public class PropertySourcesPropertyResolver extends AbstractPropertyResolver {
 

@@ -68,10 +68,14 @@ package org.springframework.core.env;
  * @see org.springframework.context.ConfigurableApplicationContext#setEnvironment
  * @see org.springframework.context.support.AbstractApplicationContext#createEnvironment
  *
- * <p>用来表示整个应用运行时的环境，为了更形象地理解Environment，你可以把Spring应用的运行时简单地想象成两个部分：
- * 	一个是Spring应用本身，一个是Spring应用所处的环境。
+ * @apiNote 用来表示整个应用运行时的环境，为了更形象地理解 Environment，你可以把Spring应用的运行时简单地想象成两个部分：一个是Spring应用本身，一个是Spring应用所处的环境。
  *
- * <p>Environment在容器中是一个抽象的集合，是指应用环境的两个方面：profiles和properties。
+ * <p>Environment在容器中是一个抽象的集合，是指应用环境的两个方面：profiles 和 properties。这个接口代表了当前应用正在运行的环境，为应用的两个重要方面建立抽象模型 【profiles】和【properties】。
+ * 关于属性访问的方法通过父接口 PropertyResolver 暴露给客户端使用，本接口主要是扩展出访问【profiles】相关的接口。
+ *
+ * 对于他俩，我愿意这么来翻译：
+ * 		profiles：配置。它代表应用在一启动时注册到context中bean definitions的命名的逻辑分组。
+ * 		properties：属性。几乎在所有应用中都扮演着重要角色，他可能源自多种源头。例如属性文件，JVM系统属性，系统环境变量，JNDI，servlet上下文参数，Map等等，Environment对象和其相关的对象一起提供给用户一个方便用来配置和解析属性的服务。
  */
 public interface Environment extends PropertyResolver {
 
@@ -87,6 +91,8 @@ public interface Environment extends PropertyResolver {
 	 * @see #getDefaultProfiles
 	 * @see ConfigurableEnvironment#setActiveProfiles
 	 * @see AbstractEnvironment#ACTIVE_PROFILES_PROPERTY_NAME
+	 *
+	 * @apiNote 表示激活的 profiles，支持同时激活多个 profiles。
 	 */
 	String[] getActiveProfiles();
 
@@ -96,6 +102,8 @@ public interface Environment extends PropertyResolver {
 	 * @see #getActiveProfiles
 	 * @see ConfigurableEnvironment#setDefaultProfiles
 	 * @see AbstractEnvironment#DEFAULT_PROFILES_PROPERTY_NAME
+	 *
+	 * @apiNote 默认的 profiles，支持多个默认的 profiles。
 	 */
 	String[] getDefaultProfiles();
 
@@ -112,6 +120,8 @@ public interface Environment extends PropertyResolver {
 	 * @see #getDefaultProfiles
 	 * @see #acceptsProfiles(Profiles)
 	 * @deprecated as of 5.1 in favor of {@link #acceptsProfiles(Profiles)}
+	 *
+	 * @apiNote 查看传入的 profiles 是否是激活的。
 	 */
 	@Deprecated
 	boolean acceptsProfiles(String... profiles);

@@ -114,6 +114,7 @@ public abstract class PlaceholderConfigurerSupport extends PropertyResourceConfi
 	@Nullable
 	protected String nullValue;
 
+	// 是否忽略解析不到的属性，如果不忽略，找不到将抛出异常
 	protected boolean ignoreUnresolvablePlaceholders = false;
 
 	@Nullable

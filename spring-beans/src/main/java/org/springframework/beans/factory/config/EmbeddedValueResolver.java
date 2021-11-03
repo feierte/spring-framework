@@ -51,7 +51,9 @@ public class EmbeddedValueResolver implements StringValueResolver {
 	@Override
 	@Nullable
 	public String resolveStringValue(String strVal) {
+		// 先使用Bean工厂处理占位符resolveEmbeddedValue
 		String value = this.exprContext.getBeanFactory().resolveEmbeddedValue(strVal);
+		// 再使用el表达式参与计算~~~~
 		if (this.exprResolver != null && value != null) {
 			Object evaluated = this.exprResolver.evaluate(value, this.exprContext);
 			value = (evaluated != null ? evaluated.toString() : null);

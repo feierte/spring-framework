@@ -165,6 +165,8 @@ public interface ConfigurableEnvironment extends Environment, ConfigurableProper
 	 * @param parent the environment to merge with
 	 * @since 3.1.2
 	 * @see org.springframework.context.support.AbstractApplicationContext#setParent
+	 *
+	 * @apiNote 合并两个环境配置信息，此方法的唯一实现在子类 AbstractEnvironment 上。
 	 */
 	void merge(ConfigurableEnvironment parent);
 

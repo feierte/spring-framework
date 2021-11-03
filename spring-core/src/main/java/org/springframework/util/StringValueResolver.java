@@ -27,6 +27,8 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.beans.factory.config.ConfigurableBeanFactory#resolveAliases
  * @see org.springframework.beans.factory.config.BeanDefinitionVisitor#BeanDefinitionVisitor(StringValueResolver)
  * @see org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
+ *
+ * @apiNote 一个处理字符串的简单策略接口。
  */
 @FunctionalInterface
 public interface StringValueResolver {

@@ -59,11 +59,15 @@ public interface ConfigurablePropertyResolver extends PropertyResolver {
 
 	/**
 	 * Set the prefix that placeholders replaced by this resolver must begin with.
+	 *
+	 * @apiNote 设置占位符的前缀，默认值是 ${
 	 */
 	void setPlaceholderPrefix(String placeholderPrefix);
 
 	/**
 	 * Set the suffix that placeholders replaced by this resolver must end with.
+	 *
+	 * @apiNote 设置占位符的后缀，默认值是 }
 	 */
 	void setPlaceholderSuffix(String placeholderSuffix);
 
@@ -71,6 +75,8 @@ public interface ConfigurablePropertyResolver extends PropertyResolver {
 	 * Specify the separating character between the placeholders replaced by this
 	 * resolver and their associated default value, or {@code null} if no such
 	 * special character should be processed as a value separator.
+	 *
+	 * @apiNote 设置分隔符，默认的分隔符是 冒号:
 	 */
 	void setValueSeparator(@Nullable String valueSeparator);
 
@@ -84,6 +90,8 @@ public interface ConfigurablePropertyResolver extends PropertyResolver {
 	 * the value set here to determine correct behavior when property values contain
 	 * unresolvable placeholders.
 	 * @since 3.2
+	 *
+	 * @apiNote 是否忽略解析不了的占位符，默认是false  表示不忽略~~~（解析不了就抛出异常）
 	 */
 	void setIgnoreUnresolvableNestedPlaceholders(boolean ignoreUnresolvableNestedPlaceholders);
 

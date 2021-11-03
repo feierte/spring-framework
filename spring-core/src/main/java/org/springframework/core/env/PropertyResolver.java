@@ -27,7 +27,8 @@ import org.springframework.lang.Nullable;
  * @see Environment
  * @see PropertySourcesPropertyResolver
  *
- * <p>对获取属性的抽象
+ * @apiNote 属性解析器，对获取属性的抽象。此接口用于在底层源之上解析一系列的属性值：例如properties文件,yaml文件,甚至是一些nosql（因为nosql也是k-v形式）。
+ *
  */
 public interface PropertyResolver {
 
@@ -44,6 +45,10 @@ public interface PropertyResolver {
 	 * @see #getProperty(String, String)
 	 * @see #getProperty(String, Class)
 	 * @see #getRequiredProperty(String)
+	 *
+	 * @apiNote getProperty() 指定的是 key 本身，并不需要包含 ${}，
+	 *  1. 若 key 不存在返回null，但是若 key 的值里还有占位符，那就就继续解析。若出现占位符里的 key 不存在时，就抛错
+	 *  2. getRequiredProperty() 方法若 key 不存在就直接报错了~
 	 */
 	@Nullable
 	String getProperty(String key);
@@ -100,6 +105,11 @@ public interface PropertyResolver {
 	 * @return the resolved String (never {@code null})
 	 * @throws IllegalArgumentException if given text is {@code null}
 	 * @see #resolveRequiredPlaceholders
+	 *
+	 * @apiNote resolvePlaceholders()它的入参是 ${} 一起也包含进来的。它有如下特点：
+	 *  1. 若 ${} 里面的 key 不存在，就原样输出，不报错。若存在就使用值替换
+	 *  2. key 必须用 ${} 包着，否则原样输出~~
+	 *  3. 若是 resolveRequiredPlaceholders() 方法，那key不存在就会抛错~
 	 */
 	String resolvePlaceholders(String text);
 
