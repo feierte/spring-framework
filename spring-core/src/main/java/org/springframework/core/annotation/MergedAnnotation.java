@@ -59,8 +59,7 @@ import org.springframework.lang.Nullable;
  * @see MergedAnnotations
  * @see MergedAnnotationPredicates
  *
- * <p>
- * MergedAnnotation接口用于封装来源于多个不同注解的属性。
+ * @apiNote MergedAnnotation 接口用于封装来源于多个不同注解的属性。即是对注解的数据抽象，它提供了丰富的api用来获取注解中的属性值。
  */
 public interface MergedAnnotation<A extends Annotation> {
 
@@ -82,6 +81,8 @@ public interface MergedAnnotation<A extends Annotation> {
 	 * {@linkplain #isMetaPresent() meta-present} annotations within the context
 	 * of the {@link SearchStrategy} used.
 	 * @return {@code true} if the annotation is present
+	 *
+	 * @apiNote 判断注解是否存在，会从所有的注解中判断（包括组合注解）
 	 */
 	boolean isPresent();
 

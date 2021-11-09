@@ -64,6 +64,12 @@ public interface ImportSelector {
 	 * Select and return the names of which class(es) should be imported based on
 	 * the {@link AnnotationMetadata} of the importing @{@link Configuration} class.
 	 * @return the class names, or an empty array if none
+	 *
+	 * @apiNote 该方法将返回一个数组，也就是类名（必须是类的全类名），@Import 注解将会把返回的类名加入到 Spring 容器中进行管理。
+	 * 若返回的全类名是不存在的类，容器会抛错。
+	 *
+	 * <p>importingClassMetadata 包含配置类上面所有的注解信息，以及该配置类本身信息；
+	 * 若有需要，可以根据这些其它注解信息，来判断哪些 Bean 应该注册进去，哪些不需要。
 	 */
 	String[] selectImports(AnnotationMetadata importingClassMetadata);
 

@@ -633,19 +633,20 @@ class ConfigurationClassParser {
 	private void processImports(ConfigurationClass configClass, SourceClass currentSourceClass,
 			Collection<SourceClass> importCandidates, Predicate<String> exclusionFilter,
 			boolean checkForCircularImports) {
-
+		// 相当于没有找到 @Import 注解，那就不处理了
+		// 说明：获取 @Import 是递归获取，任意子类父类上标注有都行的
 		if (importCandidates.isEmpty()) {
 			return;
 		}
 
-		// 在这里检查@Import是否循环import了
-		// checkForCircularImports表示是否需要进行循环import检查，true表示需要，false表示不需要
+		// 循环依赖检查：如果存在循环依赖的话,则直接抛出异常(比如你 @Import 我，我 @Import 你这种情况)
+		// checkForCircularImports 表示是否需要进行循环 import 检查，true 表示需要，false 表示不需要
 		if (checkForCircularImports && isChainedImportOnStack(configClass)) {
 			this.problemReporter.error(new CircularImportProblem(configClass, this.importStack));
 		}
 		else {
 			// importStack 用来进行递归循环处理，可能当前处理的 import 中 import 进来了新的 import
-			// importStack会存放要解析的内部类，防止内部类之间循环import。
+			// importStack 会存放要解析的内部类，防止内部类之间循环 import。
 			/*
 			 * 比如A，B两个内部类，A有import注解，导入的是B，同样B有import注解，导入的是A，这样如果在处理的时候发现存在A了，那就说明是循环import了。
 			 * @Configuration
@@ -661,14 +662,14 @@ class ConfigurationClassParser {
 			this.importStack.push(configClass);
 			try {
 				// 遍历所有被 import 的类，并根据所属类型执行对应的操作:
-				// 如果是 ImportSelector，执行 select 操作并递归处理
+				// 如果是 ImportSelector，执行 selectImports 操作并递归处理
 				// 如果是 ImportBeanDefinitionRegistrar，添加到当前 configClass 的 importBeanDefinitionRegistrars 中
 				// 否则其他所有的都当做 Configuration 来处理，调用 processConfigurationClass
 				for (SourceClass candidate : importCandidates) {
 					if (candidate.isAssignable(ImportSelector.class)) {
 						// Candidate class is an ImportSelector -> delegate to it to determine imports
 						Class<?> candidateClass = candidate.loadClass();
-						// 实例化，如果该类有实现对应的Aware接口，则注入对应的属性
+						// 实例化，并且如果该类有实现对应的Aware接口，则注入对应的属性
 						ImportSelector selector = ParserStrategyUtils.instantiateClass(candidateClass, ImportSelector.class,
 								this.environment, this.resourceLoader, this.registry);
 						Predicate<String> selectorFilter = selector.getExclusionFilter();
@@ -681,9 +682,12 @@ class ConfigurationClassParser {
 						else {  // ImportSelector 返回的是类名数组，可能又返回了一个 ImportSelector，所以递归处理
 							String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata());
 							Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames, exclusionFilter);
+							// 这里面高级了：因为我们这里放进去的Bean，有可能是普通Bean，当然也还有可能是实现了ImportSelector等等接口的，
+							// 因此此处继续调用processImports进行处理，递归的效果~~~~
 							processImports(configClass, currentSourceClass, importSourceClasses, exclusionFilter, false);
 						}
 					}
+					// 如果实现了 ImportBeanDefinitionRegistrar 这个接口的
 					else if (candidate.isAssignable(ImportBeanDefinitionRegistrar.class)) {
 						// Candidate class is an ImportBeanDefinitionRegistrar ->
 						// delegate to it to register additional bean definitions
@@ -691,6 +695,7 @@ class ConfigurationClassParser {
 						ImportBeanDefinitionRegistrar registrar =
 								ParserStrategyUtils.instantiateClass(candidateClass, ImportBeanDefinitionRegistrar.class,
 										this.environment, this.resourceLoader, this.registry);
+						// 完成了实例化后和设置 Aware 方法后，添加进 configClass 类的属性 importBeanDefinitionRegistrars 里先缓存着（至于执行时机，留给下面讲吧）
 						configClass.addImportBeanDefinitionRegistrar(registrar, currentSourceClass.getMetadata());
 					}
 					else { // 当做 @Configuration class 处理

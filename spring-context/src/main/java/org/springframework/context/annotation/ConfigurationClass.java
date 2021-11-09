@@ -62,7 +62,7 @@ final class ConfigurationClass {
 	private String beanName;
 
 	/**
-	 * 存放通过注解在配置类上的@Import引入的候选类
+	 * 存放通过注解在配置类上的 @Import 引入的候选类
 	 * （包括ImportSelector选择器类中引入的候选类、包括DeferredImportSelector选择器中引入的候选类、包括@Import引入的普通类）
 	 * 例如：ConfigA对应的ConfigurationClass对象的属性importedBy就包含ConfigB所对应的ConfigurationClass对象。
 	 * @Configuration
@@ -72,19 +72,19 @@ final class ConfigurationClass {
 	private final Set<ConfigurationClass> importedBy = new LinkedHashSet<>(1);
 
 	/**
-	 * 配置类中 所有被@Bean注解的方法（BeanMethod是 对被@Bean注解的方法的封装）
+	 * 配置类中 所有被 @Bean 注解的方法（BeanMethod是对被 @Bean 注解的方法的封装）
 	 */
 	private final Set<BeanMethod> beanMethods = new LinkedHashSet<>();
 
 	/**
-	 * 存放 通过@ImportResource注解引入资源类 和 BeanDefinitionReader 之间的映射关系
+	 * 存放通过 @ImportResource 注解引入资源类 和 BeanDefinitionReader 之间的映射关系
 	 */
 	private final Map<String, Class<? extends BeanDefinitionReader>> importedResources =
 			new LinkedHashMap<>();
 
 	/**
-	 * 存放通过@Import注解引入的ImportBeanDefinitionRegistrar实现类，用于注册自定义bean到IOC容器
-	 *   value值是引入当前类的注解元数据
+	 * 存放通过 @Import 注解引入的 ImportBeanDefinitionRegistrar 实现类，用于注册自定义的 bean 到 Spring 容器，
+	 *   value 值是引入当前类的注解元数据
 	 */
 	private final Map<ImportBeanDefinitionRegistrar, AnnotationMetadata> importBeanDefinitionRegistrars =
 			new LinkedHashMap<>();

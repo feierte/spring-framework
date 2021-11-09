@@ -38,8 +38,8 @@ import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
  * @see org.springframework.core.type.classreading.MetadataReader#getAnnotationMetadata()
  * @see AnnotatedTypeMetadata
  *
- * @apiNote AnnotationMetadata是ClassMetadata和AnnotatedTypeMetadata的子接口，具有两者的能力，并且新增了访问注解的相关方法。可以简单的理解为塔山对注解的抽象。
- * 经常这么使用得到注解里面所有的属性值：
+ * @apiNote AnnotationMetadata 是 ClassMetadata 和 AnnotatedTypeMetadata 的子接口，具有两者的能力，并且新增了访问注解的相关方法。可以简单的理解为它是对注解的抽象。
+ * <p>经常这么使用得到注解里面所有的属性值：
  * AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(annoMetadata, annType);
  *
  * <p>表示注解标注注的元信息中包含了使用了哪些注解，相应的注解作用在哪个类上等信息
