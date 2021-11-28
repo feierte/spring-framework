@@ -45,7 +45,7 @@ import org.springframework.util.MultiValueMap;
  * @author Juergen Hoeller
  * @since 4.0
  *
- * <p>条件评估器：用于解析@Conditional注解
+ * @apiNote 条件评估器：用于解析 @Conditional 注解
  */
 class ConditionEvaluator {
 
@@ -79,7 +79,7 @@ class ConditionEvaluator {
 	 * @param phase the phase of the call
 	 * @return if the item should be skipped
 	 *
-	 * <p>判定基于@Conditional注解的配置类是否应该忽略
+	 * @apiNote 判定基于 @Conditional 注解的配置类是否应该忽略
 	 */
 	public boolean shouldSkip(@Nullable AnnotatedTypeMetadata metadata, @Nullable ConfigurationPhase phase) {
 		// 首先判定配置类是否存在注解，然后判定注解中是否包含@Conditional注解
@@ -96,6 +96,7 @@ class ConditionEvaluator {
 		}
 
 		List<Condition> conditions = new ArrayList<>();
+		// 从 bean 的注解信息封装对象中获取所有的 Conditional 类型或者Conditional的派生注解
 		for (String[] conditionClasses : getConditionClasses(metadata)) {
 			for (String conditionClass : conditionClasses) {
 				Condition condition = getCondition(conditionClass, this.context.getClassLoader());

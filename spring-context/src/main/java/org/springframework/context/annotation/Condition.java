@@ -38,7 +38,7 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
  * @see Conditional
  * @see ConditionContext
  *
- * <p>条件判定接口
+ * @apiNote 条件判定接口
  */
 @FunctionalInterface
 public interface Condition {
@@ -50,7 +50,10 @@ public interface Condition {
 	 * or {@link org.springframework.core.type.MethodMetadata method} being checked
 	 * @return {@code true} if the condition matches and the component can be registered,
 	 * or {@code false} to veto the annotated component's registration
-	 * <p>用来判定是否符合指定的条
+	 *
+	 * @apiNote 用来判定是否符合指定的条。
+	 * context 参数：在判断条件是否匹配时，可以使用的各种上下文信息都可以通过 ConditionContext 获取。
+	 * metadata 参数：表示 @Conditional 注解的类或方法上的注解元数据。
 	 */
 	boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata);
 

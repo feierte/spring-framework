@@ -139,6 +139,7 @@ class ConfigurationClassBeanDefinitionReader {
 				this.registry.removeBeanDefinition(beanName);
 			}
 			this.importRegistry.removeImportingClass(configClass.getMetadata().getClassName());
+			// @Conditional 条件不满足，不在注册配置类中包含的其他 Bean
 			return;
 		}
 

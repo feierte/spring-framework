@@ -50,6 +50,8 @@ package org.springframework.core.env;
  * @see ConfigurableEnvironment
  * @see SystemEnvironmentPropertySource
  * @see org.springframework.web.context.support.StandardServletEnvironment
+ *
+ * @apiNote 标准环境，普通 Java 应用时使用，会自动注册 System.getProperties() 和 System.getenv() 到环境中。
  */
 public class StandardEnvironment extends AbstractEnvironment {
 

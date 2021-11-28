@@ -157,6 +157,8 @@ abstract class ConfigurationClassUtils {
 	 * @param metadata the metadata of the annotated class
 	 * @return {@code true} if the given class is to be registered for
 	 * configuration class processing; {@code false} otherwise
+	 *
+	 * @apiNote 存在注解 @Component、@Import、@ImportResource、@ComponentScan 或方法上存在 @Bean 的类，就可以认定为配置类。
 	 */
 	public static boolean isConfigurationCandidate(AnnotationMetadata metadata) {
 		// Do not consider an interface or an annotation...

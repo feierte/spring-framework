@@ -174,8 +174,8 @@ import javax.servlet.ServletException;
  * @see org.springframework.web.servlet.support.AbstractDispatcherServletInitializer
  * @see org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer
  *
- * @apiNote 现在JavaConfig配置方式在逐步取代xml配置方式。而 WebApplicationInitializer 可以看做是Web.xml的替代，它是一个接口。
- * 通过实现WebApplicationInitializer，在其中可以添加servlet，listener，filter等，在加载Web项目的时候会加载这个接口实现类，从而起到web.xml相同的作用。
+ * @apiNote 现在 JavaConfig 配置方式在逐步取代 xml 配置方式。而 WebApplicationInitializer 可以看做是 Web.xml 的替代，它是一个接口。
+ * 通过实现 WebApplicationInitializer，在其中可以添加 servlet，listener，filter 等，在加载 Web 项目的时候会加载这个接口实现类，从而起到 web.xml 相同的作用。
  */
 public interface WebApplicationInitializer {
 

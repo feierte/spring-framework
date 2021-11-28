@@ -42,7 +42,7 @@ import org.springframework.lang.Nullable;
 public class MutablePropertySources implements PropertySources {
 
 	/**
-	 * 使用CopyOnWriteArrayList不仅为了线程安全，还表示 属性的来源是有顺序的
+	 * 使用 CopyOnWriteArrayList 不仅为了线程安全，还表示属性的来源是有顺序的
 	 */
 	private final List<PropertySource<?>> propertySourceList = new CopyOnWriteArrayList<>();
 

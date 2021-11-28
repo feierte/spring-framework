@@ -108,7 +108,7 @@ import java.util.Set;
  * @see #onStartup(Set, ServletContext)
  * @see WebApplicationInitializer
  *
- * @apiNote SpringServletContainerInitializer是Servlet容器启动类ServletContainerInitializer的实现。
+ * @apiNote SpringServletContainerInitializer 是 Servlet 容器启动类 ServletContainerInitializer 的实现。
  */
 @HandlesTypes(WebApplicationInitializer.class)
 public class SpringServletContainerInitializer implements ServletContainerInitializer {

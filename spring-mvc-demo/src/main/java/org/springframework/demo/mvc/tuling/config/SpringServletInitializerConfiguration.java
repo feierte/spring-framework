@@ -10,7 +10,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 /**
- * 初始化spring 和 springmvc ioc容器的配置类
+ * 初始化 spring 和 springmvc ioc 容器的配置类
  * @author Jie Zhao
  * @date 2020/12/1 20:31
  */
@@ -31,7 +31,7 @@ public class SpringServletInitializerConfiguration extends AbstractDispatcherSer
 	}
 
 	/**
-	 * 用于创建SpringMVC的 IOC容器
+	 * 用于创建 SpringMVC 的 IOC 容器
 	 * @return
 	 */
 	@Override
@@ -44,7 +44,7 @@ public class SpringServletInitializerConfiguration extends AbstractDispatcherSer
 	}
 
 	/**
-	 * 用于指定DispatcherServlet的请求映射
+	 * 用于指定 DispatcherServlet 的请求映射
 	 * @return
 	 */
 	@Override
@@ -53,7 +53,7 @@ public class SpringServletInitializerConfiguration extends AbstractDispatcherSer
 	}
 
 	/**
-	 * 用于创建Spring的 IOC容器
+	 * 用于创建 Spring 的 IOC 容器
 	 * @return
 	 */
 	@Override

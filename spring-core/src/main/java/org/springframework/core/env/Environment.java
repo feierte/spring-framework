@@ -75,7 +75,17 @@ package org.springframework.core.env;
  *
  * 对于他俩，我愿意这么来翻译：
  * 		profiles：配置。它代表应用在一启动时注册到context中bean definitions的命名的逻辑分组。
- * 		properties：属性。几乎在所有应用中都扮演着重要角色，他可能源自多种源头。例如属性文件，JVM系统属性，系统环境变量，JNDI，servlet上下文参数，Map等等，Environment对象和其相关的对象一起提供给用户一个方便用来配置和解析属性的服务。
+ * 		properties：属性。几乎在所有应用中都扮演着重要角色，他可能源自多种源头。例如属性文件，JVM系统属性，系统环境变量，JNDI，servlet上下文参数，Map等等，
+ * 			Environment对象和其相关的对象一起提供给用户一个方便用来配置和解析属性的服务。
+ *
+ * <p> Profile
+ * 剖面，大体意思是：我们程序可能从某几个剖面来执行应用，比如正式机环境、测试机环境、开发机环境等，每个剖面的配置可能不一样（比如开发机可能使用本地的数据库测试，
+ * 正式机使用正式机的数据库测试）等；因此呢，就需要根据不同的环境选择不同的配置；
+ *
+ * profile有两种：
+ * 	默认的：通过环境中 “spring.profiles.default” 属性获取，如果没有配置默认值是 “default”
+ * 	明确激活的：通过环境中 “spring.profiles.active” 获取
+ * 查找顺序是：先进性明确激活的匹配，如果没有指定明确激活的（即集合为空）就找默认的；配置属性值从 Environment 读取。
  */
 public interface Environment extends PropertyResolver {
 

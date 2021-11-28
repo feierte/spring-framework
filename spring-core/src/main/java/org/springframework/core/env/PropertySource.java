@@ -61,8 +61,9 @@ public abstract class PropertySource<T> {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	// 属性源名称
 	protected final String name;
-
+	// 属于原（比如来自 Map，那就是一个 Map 对象）
 	protected final T source;
 
 
@@ -110,6 +111,8 @@ public abstract class PropertySource<T> {
 	 * from {@link #getProperty(String)}. Subclasses may wish to implement
 	 * a more efficient algorithm if possible.
 	 * @param name the property name to find
+	 *
+	 * @apiNote 判断是否包含某个属性
 	 */
 	public boolean containsProperty(String name) {
 		return (getProperty(name) != null);
@@ -120,6 +123,8 @@ public abstract class PropertySource<T> {
 	 * or {@code null} if not found.
 	 * @param name the property to find
 	 * @see PropertyResolver#getRequiredProperty(String)
+	 *
+	 * @apiNote 获取属性名对应的属性值
 	 */
 	@Nullable
 	public abstract Object getProperty(String name);

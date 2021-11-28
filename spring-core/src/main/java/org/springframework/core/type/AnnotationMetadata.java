@@ -112,8 +112,8 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * annotated (or meta-annotated) with the given annotation type.
 	 * @param annotationName the fully qualified class name of the annotation
 	 * type to look for
-	 * <p>
-	 * 类里面只要有方法标注有参数指定的注解，就返回true
+	 *
+	 * @apiNote 类里面只要有方法标注有参数指定的注解，就返回 true
 	 */
 	default boolean hasAnnotatedMethods(String annotationName) {
 		return !getAnnotatedMethods(annotationName).isEmpty();

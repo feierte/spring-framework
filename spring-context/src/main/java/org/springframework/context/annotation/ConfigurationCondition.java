@@ -33,17 +33,19 @@ public interface ConfigurationCondition extends Condition {
 
 	/**
 	 * Return the {@link ConfigurationPhase} in which the condition should be evaluated.
+	 *
+	 * @apiNote 返回条件被评估的阶段（即 @Conditional 注解起作用的阶段）。
 	 */
 	ConfigurationPhase getConfigurationPhase();
 
 
 	/**
 	 * The various configuration phases where the condition could be evaluated.
-	 * <p>
-	 * ConfigurationPhase控制的是过滤的时机，是在创建Configuration类的时候过滤还是在创建bean的时候过滤（也可用条件注解的生效阶段来描述）
 	 *
-	 * <p>默认情况下，带有@Configuration注解的类  为full configuration ， phase 为 PARSE_CONFIGURATION，
-	 * 其余方法带有@Bean，或者注解元数据中 带有 @Component，@ComponentScan，@Import，@ImportResource的 为 lite 模式，phase 为REGISTER_BEAN
+	 * @apiNote ConfigurationPhase 控制的是条件被评估的时机，是在创建Configuration类的时候评估还是在创建bean的时候评估（也可用条件注解的生效阶段来描述）
+	 *
+	 * <p>默认情况下，带有 @Configuration 注解的类  为 full configuration ， phase 为 PARSE_CONFIGURATION，
+	 * 其余方法带有 @Bean，或者注解元数据中 带有 @Component，@ComponentScan，@Import，@ImportResource 的为 lite 模式，phase 为 REGISTER_BEAN。
 	 */
 	enum ConfigurationPhase {
 
@@ -52,7 +54,8 @@ public interface ConfigurationCondition extends Condition {
 		 * class is being parsed.
 		 * <p>If the condition does not match at this point, the {@code @Configuration}
 		 * class will not be added.
-		 * <p>判断是否在解析配置类的时候就进行 condition 条件判断，若失败，则该配置类不注册
+		 *
+		 * @apiNote 判断是否在解析配置类的时候就进行 condition 条件判断，若失败，则该配置类不注册
 		 */
 		PARSE_CONFIGURATION,
 
@@ -62,7 +65,9 @@ public interface ConfigurationCondition extends Condition {
 		 * {@code @Configuration} classes from being added.
 		 * <p>At the time that the condition is evaluated, all {@code @Configuration}
 		 * classes will have been parsed.
-		 * <p>所有配置类均注册为Bean
+		 *
+		 * @apiNote 条件应该在 Bean 注册时评估（即 @Conditional 注解在 Bean 注册阶段生效）。
+		 * 注意：这里说的 Bean 注册，应该是注册 Bean Definition 阶段。
 		 */
 		REGISTER_BEAN
 	}
