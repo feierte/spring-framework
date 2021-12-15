@@ -40,7 +40,7 @@ package org.springframework.context;
  * @see org.springframework.web.servlet.FrameworkServlet#applyInitializers
  *
  * @apiNote 这个类的主要作用就是在 ConfigurableApplicationContext 类型（或者子类型）的 ApplicationContext ，
- * 做 refresh 之前允许我们对 ConfigurableApplicationContext 的实例做进一步的设置和处理。
+ * 做 refresh 之前允许我们对 ConfigurableApplicationContext 类型的实例做进一步的设置和处理。
  *
  * <p>通常用于需要对应用程序上下文进行编程初始化的web应用程序中。例如，根据上下文环境注册属性源或激活概要文件。
  * 		1、参考 ContextLoader 和 FrameworkServlet 中支持定义 contextInitializerClasses 作为 context-param 或定义 init-param。

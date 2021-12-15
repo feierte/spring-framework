@@ -63,6 +63,9 @@ package org.springframework.context;
  * @since 3.0
  * @see LifecycleProcessor
  * @see ConfigurableApplicationContext
+ *
+ * @apiNote Spring 容器需显示的调用 start 和 destroy(或者 close，stop)等方法时，才会触发 Lifecycle 的生命周期。
+ * 实现 SmartLifecycle 接口可以实现 Spring 容器自动触发 Lifecycle 的生命周期。
  */
 public interface SmartLifecycle extends Lifecycle, Phased {
 
@@ -91,6 +94,9 @@ public interface SmartLifecycle extends Lifecycle, Phased {
 	 * @see #getPhase()
 	 * @see LifecycleProcessor#onRefresh()
 	 * @see ConfigurableApplicationContext#refresh()
+	 *
+	 * @apiNote 如果该 Lifecycle 组件所在的上下文在调用 refresh() 时，希望能够自动调用 Lifecycle 的生命周期方法，则该方法需返回 true。
+	 * 返回 false 值表明该组件打算需要显示调用 start() 或 stop() 方法来触发生命周期方法。
 	 */
 	default boolean isAutoStartup() {
 		return true;
@@ -112,6 +118,8 @@ public interface SmartLifecycle extends Lifecycle, Phased {
 	 * want to put the same steps within their common lifecycle monitor (if any).
 	 * @see #stop()
 	 * @see #getPhase()
+	 *
+	 * @apiNote SmartLifecycle 可以实现异步回调执行 stop 方法，用于结束生命周期之前的收尾业务逻辑处理；并且可以设置是否在容器刷新时自动开启生命周期
 	 */
 	default void stop(Runnable callback) {
 		stop();
@@ -127,6 +135,8 @@ public interface SmartLifecycle extends Lifecycle, Phased {
 	 * @see #start()
 	 * @see #stop(Runnable)
 	 * @see org.springframework.context.support.DefaultLifecycleProcessor#getPhase(Lifecycle)
+	 *
+	 * @apiNote 获取优先级，启动时值越小越先启动；停止时值越小越后停止
 	 */
 	@Override
 	default int getPhase() {

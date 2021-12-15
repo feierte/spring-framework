@@ -49,6 +49,7 @@ public class RequestContextListener implements ServletRequestListener {
 			RequestContextListener.class.getName() + ".REQUEST_ATTRIBUTES";
 
 
+	// ServletRequest 创建的时候会触发该方法被调用执行
 	@Override
 	public void requestInitialized(ServletRequestEvent requestEvent) {
 		if (!(requestEvent.getServletRequest() instanceof HttpServletRequest)) {
@@ -59,9 +60,13 @@ public class RequestContextListener implements ServletRequestListener {
 		ServletRequestAttributes attributes = new ServletRequestAttributes(request);
 		request.setAttribute(REQUEST_ATTRIBUTES_ATTRIBUTE, attributes);
 		LocaleContextHolder.setLocale(request.getLocale());
+		// 将 ServletRequestAttributes 与当前线程绑定，因为是一个静态方法，因此这意味着无论在哪里，只要调用
+		// RequestContextHolder.getRequestAttributes().getAttribute().setAttribute()
+		// 都能将Bean和request进行绑定，而且在一次request的生命周期中不会重复创建对象
 		RequestContextHolder.setRequestAttributes(attributes);
 	}
 
+	// ServletRequest 销毁的时候会触发该方法被调用执行
 	@Override
 	public void requestDestroyed(ServletRequestEvent requestEvent) {
 		ServletRequestAttributes attributes = null;

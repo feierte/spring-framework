@@ -47,6 +47,12 @@ public abstract class RequestContextHolder  {
 	private static final boolean jsfPresent =
 			ClassUtils.isPresent("javax.faces.context.FacesContext", RequestContextHolder.class.getClassLoader());
 
+	/**
+	 * Spring 默认使用 ThreadLocal 把 RequestAttributes 设置到当前请求线程中，这样如果在请求方法里面另起一个子线程然后通过 getRequestAttributes 方法是获取不到 RequestAttributes 的。
+	 * 所以要想能让子线程获取到，就需要使用 InheritableThreadLocal，看 setRequestAttributes 方法有这个布尔值可以设置的。
+	 *
+	 * @see inheritableRequestAttributesHolder
+	 */
 	private static final ThreadLocal<RequestAttributes> requestAttributesHolder =
 			new NamedThreadLocal<>("Request attributes");
 

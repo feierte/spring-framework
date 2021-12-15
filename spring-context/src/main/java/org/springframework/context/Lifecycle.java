@@ -46,6 +46,12 @@ package org.springframework.context;
  * @see ConfigurableApplicationContext
  * @see org.springframework.jms.listener.AbstractMessageListenerContainer
  * @see org.springframework.scheduling.quartz.SchedulerFactoryBean
+ *
+ * @apiNote Lifecycle 定义了生命周期。任何 Spring 组件都可以实现该接口，实现了该接口的对象都具有了生命周期。
+ *
+ * <p>ConfigurableApplicationContext 实现了 Lifecycle 接口，则说明 ConfigurableApplicationContext 的子类（也就是 Spring 容器或称为应用上下文）都具有生命周期。
+ * 所以 AbstractApplicationContext 也具有生命周期，spring容器将在容器上下文中找出所有实现了 LifeCycle 及其子类接口的类，并一一调用它们实现的类。
+ * Spring 是通过委托给生命周期处理器 LifecycleProcessor 来实现这一点的。
  */
 public interface Lifecycle {
 

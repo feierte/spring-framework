@@ -999,6 +999,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 		asyncManager.registerCallableInterceptor(FrameworkServlet.class.getName(), new RequestBindingInterceptor());
 
+		// 将 RequestAttributes 设置到 RequestContextHolder
 		initContextHolders(request, localeContext, requestAttributes);
 
 		try {
@@ -1014,6 +1015,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 
 		finally {
+			// 重置 RequestContextHolder 之前设置的 RequestAttributes
 			resetContextHolders(request, previousLocaleContext, previousAttributes);
 			if (requestAttributes != null) {
 				requestAttributes.requestCompleted();
