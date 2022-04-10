@@ -49,6 +49,10 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @apiNote HandlerAdapter 接口根据类名来理解就是 处理器适配器，每一款 Handler 都有其唯一对应的 HandlerAdapter，
  * 当我们在处理请求时调用的也是 HandlerAdapter 的 handle 方法，典型的 适配器设计模式。
+ *
+ * <p>因为在 SpringMVC 中 Handler 可以是任意形式的（只要能处理请求即可）。但是把请求交给 Servlet 的时候，
+ * 由于 Servlet 的方法结构都是 doService(request, response) 形式的，要让固定的 Servlet 处理方法调用 Handler 来进行处理，
+ * 便是 HandlerAdapter 的职责。
  */
 public interface HandlerAdapter {
 

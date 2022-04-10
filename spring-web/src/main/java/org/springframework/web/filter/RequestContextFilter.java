@@ -47,9 +47,15 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @see org.springframework.web.context.request.RequestContextHolder
  * @see org.springframework.web.context.request.RequestContextListener
  * @see org.springframework.web.servlet.DispatcherServlet
+ *
+ * @apiNote RequestContextFilter 是一个 Servlet Filter，专门用来将当前请求绑定到当前线程上，
+ * 这样在当前线程中任何没有当前请求对象为参数的地方也可以使用 RequestContextHolder 获取当前请求对象及其属性。
+ *
+ * <p>该过滤器还是用和 RequestContextHolder 类似的模式通过 LocaleContextHolder 暴露本地化上下文对象 LocaleContext。
  */
 public class RequestContextFilter extends OncePerRequestFilter {
 
+	// 是否要将 LocaleContext 和 RequestAttributes 设置为可以被子线程继承，缺省值为 false
 	private boolean threadContextInheritable = false;
 
 
@@ -93,6 +99,7 @@ public class RequestContextFilter extends OncePerRequestFilter {
 			HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
+		// 构造 RequestAttributes 对象并绑定到当前请求处理线程
 		ServletRequestAttributes attributes = new ServletRequestAttributes(request, response);
 		initContextHolders(request, attributes);
 
@@ -100,6 +107,9 @@ public class RequestContextFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 		}
 		finally {
+			// 当前请求处理完成，清除当前线程中的 RequestAttributes 属性，
+			// 因为此时当前线程可能会被容器用于处理下一个请求，如果没有该清除动作，
+			// 可能会泄露当前请求信息。
 			resetContextHolders();
 			if (logger.isTraceEnabled()) {
 				logger.trace("Cleared thread-bound request context: " + request);

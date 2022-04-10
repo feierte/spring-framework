@@ -52,17 +52,21 @@ public class RequestContextListener implements ServletRequestListener {
 	// ServletRequest 创建的时候会触发该方法被调用执行
 	@Override
 	public void requestInitialized(ServletRequestEvent requestEvent) {
+		// 判断是否是 HttpServletRequest（即目前只支持 http 请求）
 		if (!(requestEvent.getServletRequest() instanceof HttpServletRequest)) {
 			throw new IllegalArgumentException(
 					"Request is not an HttpServletRequest: " + requestEvent.getServletRequest());
 		}
+		// 获取当前的 request
 		HttpServletRequest request = (HttpServletRequest) requestEvent.getServletRequest();
+		// 创建  ServletRequestAttributes 对象
+		// 该对象只是简单的封装了 request，实际上 scope 为 request 或 session 的 Bean 都存储在 request 或 session 中
 		ServletRequestAttributes attributes = new ServletRequestAttributes(request);
 		request.setAttribute(REQUEST_ATTRIBUTES_ATTRIBUTE, attributes);
 		LocaleContextHolder.setLocale(request.getLocale());
 		// 将 ServletRequestAttributes 与当前线程绑定，因为是一个静态方法，因此这意味着无论在哪里，只要调用
 		// RequestContextHolder.getRequestAttributes().getAttribute().setAttribute()
-		// 都能将Bean和request进行绑定，而且在一次request的生命周期中不会重复创建对象
+		// 都能将 Bean 和 request 进行绑定，而且在一次 request 的生命周期中不会重复创建对象
 		RequestContextHolder.setRequestAttributes(attributes);
 	}
 

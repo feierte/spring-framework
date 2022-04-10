@@ -396,6 +396,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					if (!StringUtils.hasLength(scopeName)) {
 						throw new IllegalStateException("No scope name defined for bean ´" + beanName + "'");
 					}
+					// this.scopes 是一个 Map<String, Scope>，用于存放 Scope 对象实例
+					// 这里如果是 request 则获取到 RequestScope，如果是 Session 则获取到 SessionScope
 					Scope scope = this.scopes.get(scopeName);
 					if (scope == null) {
 						throw new IllegalStateException("No Scope registered for scope name '" + scopeName + "'");

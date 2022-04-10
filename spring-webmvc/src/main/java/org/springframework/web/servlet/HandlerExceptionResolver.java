@@ -32,6 +32,8 @@ import org.springframework.lang.Nullable;
  *
  * @author Juergen Hoeller
  * @since 22.11.2003
+ *
+ * @apiNote 用于处理 Handler 产生的异常。
  */
 public interface HandlerExceptionResolver {
 

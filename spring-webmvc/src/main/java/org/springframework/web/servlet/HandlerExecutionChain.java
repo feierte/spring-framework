@@ -35,7 +35,7 @@ import java.util.List;
  * @since 20.06.2003
  * @see HandlerInterceptor
  *
- * @apiNote HandlerExecutionChain是实际的处理器的一个包装对象，它包含实际的处理器和一些请求前后的处理流程。
+ * @apiNote HandlerExecutionChain 是实际的处理器的一个包装对象，它包含实际的处理器和一些请求前后的处理流程（拦截器）。
  */
 public class HandlerExecutionChain {
 
@@ -44,13 +44,13 @@ public class HandlerExecutionChain {
 	/**
 	 * 实际的请求处理器（即 Controller），用来控制我们的请求到达哪个对象的哪个方法
 	 */
-	private final Object handler; // 存储的是HandlerMethod
+	private final Object handler; // 存储的是 HandlerMethod
 
 	@Nullable
-	private HandlerInterceptor[] interceptors; // 所有的HandlerInterceptor，数组形式存储
+	private HandlerInterceptor[] interceptors; // 所有的 HandlerInterceptor，数组形式存储
 
 	@Nullable
-	private List<HandlerInterceptor> interceptorList; // 所有的HandlerInterceptor，链表形式存储
+	private List<HandlerInterceptor> interceptorList; // 所有的 HandlerInterceptor，链表形式存储
 
 	private int interceptorIndex = -1;
 
@@ -146,7 +146,7 @@ public class HandlerExecutionChain {
 	 * next interceptor or the handler itself. Else, DispatcherServlet assumes
 	 * that this interceptor has already dealt with the response itself.
 	 *
-	 * @apiNote 处理实际请求前的一些操作，调用拦截器中的preHandle方法
+	 * @apiNote 处理实际请求前的一些操作，调用拦截器中的 preHandle 方法
 	 */
 	boolean applyPreHandle(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// 获取所有初始化的拦截器

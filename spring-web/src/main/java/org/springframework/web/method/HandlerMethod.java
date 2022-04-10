@@ -65,7 +65,7 @@ public class HandlerMethod {
 	/** Logger that is available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	// 方法所在的类,如果是String类型,可以去容器中获取
+	// 方法所在的类,如果是 String 类型,可以去容器中获取
 	private final Object bean;
 
 	@Nullable
@@ -75,7 +75,7 @@ public class HandlerMethod {
 
 	private final Method method;
 
-	// 如果方法是bridged方法,则对应原始方法
+	// 如果方法是 bridged 方法,则对应原始方法
 	private final Method bridgedMethod;
 
 	// 方法的参数

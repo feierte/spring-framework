@@ -39,9 +39,16 @@ public abstract class AbstractRequestAttributesScope implements Scope {
 
 	@Override
 	public Object get(String name, ObjectFactory<?> objectFactory) {
+		/*
+		 * 这里很重要
+		 * RequestContextHolder 中通过 ThreadLocal 将 RequestAttributes 实例和当前线程绑定
+		 * RequestAttributes 在构造的时候需要传入 HttpServletRequest
+		 */
 		// 获取当前线程绑定的 RequestAttributes 对象
 		RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-		// 从 RequestAttributes 获取对象实例
+		// 从当前线程绑定的 RequestAttributes 中获取对象（实际上是从 HttpServletRequest 的 Map）
+		// 如果已经实例化过了，则不再实例化
+		// 否则进入 Spring IOC 过程获取对象
 		Object scopedObject = attributes.getAttribute(name, getScope());
 		if (scopedObject == null) {
 			// 如果该对象还未实例化，则进入 Spring IOC 容器过程获取对象实例

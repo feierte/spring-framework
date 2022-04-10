@@ -41,6 +41,12 @@ import org.springframework.util.ClassUtils;
  * @see RequestContextListener
  * @see org.springframework.web.filter.RequestContextFilter
  * @see org.springframework.web.servlet.DispatcherServlet
+ *
+ * @apiNote 工具类，用来在当前线程中暴露当前请求及其属性 RequestAttributes。这样的话，在整个请求处理过程中，
+ * 在当前线程中通过此工具类就可以获取对象 RequestAttributes，从而就可以访问当前请求及其属性。
+ *
+ * <p>有了该工具类，在一个请求处理过程中访问不到 request 对象的地方，就可以通过 {@link RequestContextHolder#getRequestAttributes()}
+ * 或者 {@link RequestContextHolder#currentRequestAttributes()} 来获取当前 request 的属性了。
  */
 public abstract class RequestContextHolder  {
 

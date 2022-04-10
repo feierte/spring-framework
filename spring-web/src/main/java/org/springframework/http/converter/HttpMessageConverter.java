@@ -33,7 +33,8 @@ import org.springframework.lang.Nullable;
  * @param <T> the converted object type
  *
  * @apiNote Http 请求和响应消息转换器
- *
+ * <p>
+ *     <pre>{@code
  *          | <-------- Java 对象 ---------| <-------- HttpInputMessage ---------| <-------- 请求报文 ---------|
  *			|							  |
  *			|							  |
@@ -41,6 +42,7 @@ import org.springframework.lang.Nullable;
  * 			|							  |
  * 			|							  |
  * 			| --------- Java 对象 -------->|	--------- HttpOutputMessage -------->| --------- 响应报文 -------->|
+ * 		}</pre>
  */
 public interface HttpMessageConverter<T> {
 

@@ -29,6 +29,8 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.0
  * @see ServletRequestAttributes
+ *
+ * @apiNote 用来抽象一个请求中的所有属性对象。
  */
 public interface RequestAttributes {
 

@@ -115,10 +115,10 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 	@Override
 	@Nullable
 	protected Object getHandlerInternal(HttpServletRequest request) throws Exception {
-		// 从request中拿到请求的url
+		// 从 request 中拿到请求的 url
 		String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
 		request.setAttribute(LOOKUP_PATH, lookupPath);
-		// 通过请求的url拿到handler，具体怎么拿的，请往下看lookupHandler()方法的实现
+		// 通过请求的 url 拿到 handler，具体怎么拿的，请往下看 lookupHandler() 方法的实现
 		Object handler = lookupHandler(lookupPath, request);
 		if (handler == null) {
 			// We need to care for the default handler directly, since we need to
@@ -159,13 +159,14 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 	@Nullable
 	protected Object lookupHandler(String urlPath, HttpServletRequest request) throws Exception {
 		// Direct match?
-		// 从handlerMap中拿handler，有没有很熟悉的感觉，对，前面初始化时我们把url与BeanName的对应关系放到handlerMap中，现在取出Handler，实际上取出来的就是beanName,此时通过请求的url就拿到了对应的beanName，handlerMapping也光荣的完成了它的任务
+		// 从 handlerMap 中拿 handler，有没有很熟悉的感觉，对，前面初始化时我们把 url 与 BeanName 的对应关系放到 handlerMap 中，
+		// 现在取出 Handler，实际上取出来的就是 beanName，此时通过请求的 url 就拿到了对应的 beanName，handlerMapping 也光荣的完成了它的任务
 		Object handler = this.handlerMap.get(urlPath);
 		if (handler != null) {
 			// Bean name or resolved handler?
 			if (handler instanceof String) {
 				String handlerName = (String) handler;
-				// 通过beanName从Spring容器中拿到Bean对象
+				// 通过 beanName 从 Spring 容器中拿到 Bean 对象
 				handler = obtainApplicationContext().getBean(handlerName);
 			}
 			validateHandler(handler, request);

@@ -585,7 +585,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		if (this.detectAllHandlerMappings) {
 			// Find all HandlerMappings in the ApplicationContext, including ancestor contexts.
-			// 从ApplicationContext(包括继承来的上下文)中获取所有类型为 HandlerMapping 的bean
+			// 从 ApplicationContext （包括继承来的上下文）中获取所有类型为 HandlerMapping 的 bean
 			Map<String, HandlerMapping> matchingBeans =
 					BeanFactoryUtils.beansOfTypeIncludingAncestors(context, HandlerMapping.class, true, false);
 			if (!matchingBeans.isEmpty()) {
@@ -596,7 +596,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 		else {
 			try {
-				// 从ApplicationContext(包括继承来的上下文)中获取名称为 handlerMapping 的bean
+				// 从 ApplicationContext（包括继承来的上下文）中获取名称为 handlerMapping 的bean
 				HandlerMapping hm = context.getBean(HANDLER_MAPPING_BEAN_NAME, HandlerMapping.class);
 				this.handlerMappings = Collections.singletonList(hm);
 			}
@@ -609,7 +609,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		// a default HandlerMapping if no other mappings are found.
 		// 如果上面步骤从容器获取 HandlerMapping 失败，则使用缺省策略创建 HandlerMapping 对象记录到 handlerMappings
 		if (this.handlerMappings == null) {
-			// 若上下文中没有 handlerMapping，就使用Spring默认的handlerMapping
+			// 若上下文中没有 handlerMapping，就使用 Spring 默认的 handlerMapping
 			this.handlerMappings = getDefaultStrategies(context, HandlerMapping.class);
 			if (logger.isTraceEnabled()) {
 				logger.trace("No HandlerMappings declared for servlet '" + getServletName() +
@@ -1005,20 +1005,28 @@ public class DispatcherServlet extends FrameworkServlet {
 
 			try {
 				// 1.检查是否是文件上传的请求
+				/**
+				 * 如果配置了 MultipartResolver 会调用 isMultipart() 方法判断请求中是否包含文件。
+				 * 如果请求数据中包含文件，则调用 MultipartResolver 的 resolveMultipart()
+				 * 方法对请求的数据进行解析，然后将文件数据解析成 MultipartFile
+				 * 并封装在 MultipartHttpServletRequest (继承了 HttpServletRequest) 对象中并返回
+				 */
 				processedRequest = checkMultipart(request);
 				multipartRequestParsed = (processedRequest != request);
 
 				// Determine handler for the current request.
-				// 2.取得处理当前请求的controller,这里也称为 handler 处理器,
-				// 第一个步骤的意义就在这里体现了.这里并不是直接返回controller,而是返回的HandlerExecutionChain请求处理器链对象,该对象封装了handler和interceptors.
+				// 2.取得处理当前请求的 controller，这里也称为 handler 处理器,
+				// 第一个步骤的意义就在这里体现了。这里并不是直接返回 controller，
+				// 而是返回的 HandlerExecutionChain 请求处理器链对象，该对象封装了 handler 和 interceptors.
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) {
+					// 如果 handler 为空，则返回404
 					noHandlerFound(processedRequest, response);
 					return;
 				}
 
 				// Determine handler adapter for the current request.
-				// 3. 获取处理request的处理器适配器handler adapter
+				// 3. 获取处理 request 的处理器适配器 handler adapter
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
 				// Process last-modified header, if supported by the handler.
@@ -1032,13 +1040,13 @@ public class DispatcherServlet extends FrameworkServlet {
 					}
 				}
 
-				// 拦截器执行拦截，对客户端请求request进行拦截
+				// 4.拦截器执行拦截，在处理客户端请求 request 业务逻辑之前进行拦截
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
 					return;
 				}
 
 				// Actually invoke the handler.
-				// 5.实际的处理器处理请求，返回结果视图对象（核心逻辑，处理handler，返回ModerAndView对象）
+				// 5.实际的处理器处理请求，返回结果视图对象（核心逻辑，处理 handler，返回 ModerAndView 对象）
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
 				if (asyncManager.isConcurrentHandlingStarted()) {
@@ -1046,7 +1054,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 
 				applyDefaultViewName(processedRequest, mv);
-				// 拦截器执行拦截，对客户端响应response进行拦截
+				// 6.拦截器执行拦截，对客户端响应 response 进行拦截
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
 			catch (Exception ex) {
