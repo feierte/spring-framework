@@ -28,6 +28,8 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 4.3
  * @see DefaultResourceLoader#addProtocolResolver
+ *
+ * @apiNote ProtocolResolver 是一个策略接口，可以用于自定义协议解析。
  */
 @FunctionalInterface
 public interface ProtocolResolver {
