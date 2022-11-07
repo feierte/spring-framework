@@ -496,24 +496,24 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 		do {
 			final List<InjectionMetadata.InjectedElement> currElements = new ArrayList<>();
-
+            // 找到对象类中所有标注了 @Autowired 的属性（成员变量）
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
-				// 如果类内的属性上有@Autowired注解，则用工具类获取注解信息
+				// 如果类内的属性上有 @Autowired 注解，则用工具类获取注解信息
 				MergedAnnotation<?> ann = findAutowiredAnnotation(field);
 				if (ann != null) {
-					// @Autowired注解不支持静态方法
+					// @Autowired 注解不支持静态成员变量
 					if (Modifier.isStatic(field.getModifiers())) {
 						if (logger.isInfoEnabled()) {
 							logger.info("Autowired annotation is not supported on static fields: " + field);
 						}
 						return;
 					}
-					// 获取@Autowired注解的required的属性值，如果true，但注入失败会抛出异常，false则不会
+					// 获取 @Autowired 注解的 required 的属性值，如果为 true，但注入失败会抛出异常，false 则不会
 					boolean required = determineRequiredStatus(ann);
 					currElements.add(new AutowiredFieldElement(field, required));
 				}
 			});
-
+			// 找到对象类中所有标注了 @Autowired 成员方法
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
 				Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
 				if (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) {
@@ -527,7 +527,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 						}
 						return;
 					}
-					// @Autowired注解标识在方法上的目的就是将容器内的Bean注入到方法的参数中，没有参数就违背了初衷
+					// @Autowired 注解标识在方法上的目的就是将容器内的 Bean 注入到方法的参数中，没有参数就违背了初衷
 					if (method.getParameterCount() == 0) {
 						if (logger.isInfoEnabled()) {
 							logger.info("Autowired annotation should only be used on methods with parameters: " +
@@ -541,7 +541,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 			});
 
 			elements.addAll(0, currElements);
-			// 在解析完Bean的类型之后，递归的解析其父类，将所有的@Autowired的属性和方法收集起来，
+			// 在解析完Bean的类型之后，递归的解析其父类，将所有的 @Autowired 的属性和方法收集起来，
 			// 且类的层级越高其属性会被越优先注入
 			targetClass = targetClass.getSuperclass();
 		}
@@ -551,7 +551,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 	}
 
 	/**
-	 * 查看传入的AccessibleObject类型参数，是否被 @Autowired、@Value或@Inject 注解
+	 * 查看传入的 AccessibleObject 类型参数，是否被 @Autowired、@Value 或 @Inject 注解
 	 * @param ao
 	 * @return
 	 */
