@@ -86,6 +86,8 @@ public interface SmartInstantiationAwareBeanPostProcessor extends InstantiationA
 	 * @return the object to expose as bean reference
 	 * (typically with the passed-in bean instance as default)
 	 * @throws org.springframework.beans.BeansException in case of errors
+	 *
+	 * @apiNote 获取的提前暴露的 Bean 引用，主要用于解决循环引用的问题。
 	 */
 	default Object getEarlyBeanReference(Object bean, String beanName) throws BeansException {
 		return bean;

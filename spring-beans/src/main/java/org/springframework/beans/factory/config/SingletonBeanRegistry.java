@@ -55,10 +55,10 @@ public interface SingletonBeanRegistry {
 	 * @see org.springframework.beans.factory.DisposableBean#destroy
 	 * @see org.springframework.beans.factory.support.BeanDefinitionRegistry#registerBeanDefinition
 	 *
-	 * @apiNote 以指定的名称 把Object放入到 SingletonBeanRegistry中
-	 * 1、给定的Object必须是被完全初始化了的（比如new出来的）。
-	 * 2、此注册单例的接口不会提供任何用以初始化的回调函数（比如：InitializingBean#afterPropertiesSet等都是不会被执行的）
-	 * 3、如果此接口的实现类是一个BeanFactory，最好最好最好将你的类注册成BeanDefinition，而不是直接注册成单例对象（这样可以使你定义的bean收到InitializingBean和DisposableBean的回调）
+	 * @apiNote 以指定的名称 beanName 把 Object 放入到 SingletonBeanRegistry 中
+	 * 1、给定的 Object 必须是被完全初始化了的（比如 new 出来的）。
+	 * 2、此注册单例的接口不会提供任何用以初始化的回调函数（比如：InitializingBean#afterPropertiesSet 等都是不会被执行的）
+	 * 3、如果此接口的实现类是一个 BeanFactory，最好最好最好将你的类注册成 BeanDefinition，而不是直接注册成单例对象（这样可以使你定义的 bean 收到 InitializingBean 和 DisposableBean 的回调）
 	 */
 	void registerSingleton(String beanName, Object singletonObject);
 
