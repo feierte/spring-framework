@@ -252,7 +252,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 	@Override
 	public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
-		// 查找Bean内@Autowired注解的信息
+		// 查找 Bean 内 @Autowired 注解的信息
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, beanType, null);
 		metadata.checkConfigMembers(beanDefinition);
 	}
@@ -408,11 +408,12 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 	}
 
 	/**
-	 * 在MergedBeanDefinitionPostProcessor的postProcessMergedBeanDefinition（）方法执行之后，下一步就是执行postProcessProperties()方法，
-	 * AutowiredAnnotationBeanPostProcessor的postProcessPropertyValues（）方法就是从Spring IOC容器从找到合适的Bean，注入属性。
-	 * 找到合适的Bean，注入@Autowired标识方法的参数，然后执行此方法。
+	 * 在 MergedBeanDefinitionPostProcessor 的 postProcessMergedBeanDefinition() 方法执行之后，下一步就是执行 postProcessProperties() 方法，
+	 * AutowiredAnnotationBeanPostProcessor 的 postProcessPropertyValues() 方法就是从 Spring IOC 容器从找到合适的 Bean，注入属性。
+	 * 找到合适的 Bean，注入 @Autowired 标识方法的参数，然后执行此方法。
 	 *
-	 * <p> 注解驱动的Bean执行属性填充并不在autowireByName和autowireByType中，而是在AutowiredAnnotationBeanPostProcessor这个后置处理器的postProcessProperties中。
+	 * <p> 注解驱动的 Bean 执行属性填充并不在 autowireByName 和 autowireByType 中，
+	 * 而是在 AutowiredAnnotationBeanPostProcessor 这个后置处理器的 postProcessProperties 中。
 	 * @param pvs
 	 * @param bean
 	 * @param beanName

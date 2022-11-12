@@ -254,28 +254,29 @@ public class AnnotatedBeanDefinitionReader {
 			@Nullable Class<? extends Annotation>[] qualifiers, @Nullable Supplier<T> supplier,
 			@Nullable BeanDefinitionCustomizer[] customizers) {
 
-		// 先把此实体类转换为一个BeanDefinition
-		// Spring在这里写死了，直接new了几个AnnotatedGenericBeanDefinition，也就是说通过AnnotatedBeanDefinitionReader对象注册的BeanDefinition都是AnnotatedGenericBeanDefinition
+		// 先把此实体类转换为一个 BeanDefinition
+		// Spring 在这里写死了，直接 new 了一个 AnnotatedGenericBeanDefinition，
+		// 也就是说通过 AnnotatedBeanDefinitionReader 对象注册的 BeanDefinition 都是 AnnotatedGenericBeanDefinition
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
 		/*
-		 * abd.getMetadata()返回的AnnotationMetadata，该元数据包括注解信息、是否是内部类、类Class基本信息等等
-		 * 此处由conditionEvaluator#shouldSkip进行过滤，此Class是否是配置类。
-		 * 大体逻辑为：必须有 @Configuration 修饰，然后解析一些Condition注解，看是否排除~~ ？？？
+		 * abd.getMetadata() 返回的 AnnotationMetadata，该元数据包括注解信息、是否是内部类、类Class基本信息等等
+		 * 此处由 ConditionEvaluator#shouldSkip 进行过滤，此 Class 是否是配置类。
+		 * 大体逻辑为：必须有 @Configuration 修饰，然后解析一些 Condition 注解，看是否排除~~ ？？？
 		 */
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
 		}
 
-		// 在注册的时候可以提供一个supplier
+		// 在注册的时候可以提供一个 supplier
 		abd.setInstanceSupplier(supplier);
-		// 解析@Scope注解，得到一个ScopeMetadata
+		// 解析 @Scope 注解，得到一个 ScopeMetadata
 		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
 		abd.setScope(scopeMetadata.getScopeName());
-		// 这里是为bean创建名称，如果指定了名称就是用指定的名称，否则生成类名小写（AnnotationBeanNameGenerator）的默认名称
+		// 这里是为 bean 创建名称，如果指定了名称就是用指定的名称，否则生成类名小写（AnnotationBeanNameGenerator）的默认名称
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
 
 		// 处理通用注解 @Lazy @Primary @DependsOn @Role @Description
-		// 如果该类有以上注解，那么就将这些注解信息 添加到该BeanDefinition中
+		// 如果该类有以上注解，那么就将这些注解信息 添加到该 BeanDefinition 中
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
 		if (qualifiers != null) {
 			for (Class<? extends Annotation> qualifier : qualifiers) {
@@ -292,8 +293,8 @@ public class AnnotatedBeanDefinitionReader {
 		}
 
 		// 自定义信息
-		// 查看是否传入了BeanDefinitionCustomizer，如果传入了，可以对BeanDefinition进行一些自定义操作
-		// 我们注册时，可以传入一些回调方法，在解析得到bd后调用
+		// 查看是否传入了 BeanDefinitionCustomizer，如果传入了，可以对 BeanDefinition 进行一些自定义操作
+		// 我们注册时，可以传入一些回调方法，在解析得到 bd 后调用
 		if (customizers != null) {
 			for (BeanDefinitionCustomizer customizer : customizers) {
 				customizer.customize(abd);

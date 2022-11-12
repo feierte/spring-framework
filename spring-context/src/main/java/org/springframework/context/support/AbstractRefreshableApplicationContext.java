@@ -126,16 +126,16 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			closeBeanFactory();
 		}
 		try {
-			// 创建具体的beanFactory，这里创建的是DefaultListableBeanFactory，最重要的beanFactory
-			// spring注册及加载bean就靠它。其实这里还是一个基本的容器
+			// 创建具体的 BeanFactory，这里创建的是 DefaultListableBeanFactory，最重要的 BeanFactory
+			// spring 注册及加载 bean 就靠它。其实这里还是一个基本的容器
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			beanFactory.setSerializationId(getId());
-			// 设置 是否允许BeanDefinition重复定义
-			// 设置 是否允许循环引用依赖
+			// 设置是否允许 BeanDefinition 重复定义
+			// 设置是否允许循环引用依赖
 			customizeBeanFactory(beanFactory);
-			// 初始化XmlBeanDefinitionReader用来读取xml的BeanDefinition，并加载解析注册到BeanDefinitionRegistry
+			// 初始化 XmlBeanDefinitionReader 用来读取 xml 的 BeanDefinition，并加载解析注册到 BeanDefinitionRegistry
 			loadBeanDefinitions(beanFactory);
-			// 设置为全局变量（关联新建的BeanFactory到Spring的应用上下文中），AbstractRefreshableApplicationContext持有DefaultListableBeanFactory引用
+			// 设置为全局变量（关联新建的 BeanFactory 到 Spring 的应用上下文中），AbstractRefreshableApplicationContext 持有 DefaultListableBeanFactory 引用
 			this.beanFactory = beanFactory;
 		}
 		catch (IOException ex) {
@@ -202,7 +202,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see org.springframework.beans.factory.support.DefaultListableBeanFactory#setAllowRawInjectionDespiteWrapping
 	 */
 	protected DefaultListableBeanFactory createBeanFactory() {
-		// 创建DefaultListableBeanFactory实例，并为其设置parent BeanFactory
+		// 创建 DefaultListableBeanFactory 实例，并为其设置 parent BeanFactory
 		return new DefaultListableBeanFactory(getInternalParentBeanFactory());
 	}
 

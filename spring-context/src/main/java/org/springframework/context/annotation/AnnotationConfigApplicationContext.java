@@ -99,7 +99,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * {@link Configuration @Configuration} classes
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
-		/**
+		/*
 		 * 1、调用无参构造函数，因为该类有父类{@code GenericApplicationContext}，所以会先调用父类的无参构造函数。
 		 * {@code GenericApplicationContext}的无参构造函数的主要功能是初始化了{@code DefaultListableBeanFactory}
 		 *

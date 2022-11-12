@@ -1542,9 +1542,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			throws CannotLoadBeanClassException {
 
 		try {
-			// 如果mbd指定了bean的Class对象
+			// 如果 mbd 指定了 bean 的 Class 对象
 			if (mbd.hasBeanClass()) {
-				// 直接返回mbd的指定bean的Class对象
+				// 直接返回 mbd 的指定 bean 的 Class 对象
 				return mbd.getBeanClass();
 			}
 			if (System.getSecurityManager() != null) {
@@ -1622,16 +1622,16 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		String className = mbd.getBeanClassName();
 		// 如果能成功获得配置的bean全路径类名
 		if (className != null) {
-			// 评估benaDefinition中包含的className,如果className是可解析表达式，会对其进行解析，否则直接返回className:
+			// 评估 BeanDefinition 中包含的 className，如果 className 是可解析表达式，会对其进行解析，否则直接返回 className
 			Object evaluated = evaluateBeanDefinitionString(className, mbd);
-			if (!className.equals(evaluated)) {	// 如果className与解析后的值不一样
+			if (!className.equals(evaluated)) {	// 如果 className 与解析后的值不一样
 				// A dynamically resolved expression, supported as of 4.2...
 				if (evaluated instanceof Class) {
 					return (Class<?>) evaluated;
 				}
 				else if (evaluated instanceof String) {
 					className = (String) evaluated;
-					// 标记mdb的配置的bean类名需要重新被dynameicLoader加载
+					// 标记mdb的配置的bean类名需要重新被 dynamicLoader 加载
 					freshResolve = true;
 				}
 				else {

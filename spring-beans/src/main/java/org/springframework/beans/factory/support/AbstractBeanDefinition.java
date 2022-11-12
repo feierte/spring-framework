@@ -140,7 +140,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 	/**
 	 * 当前 bean 定义的 beanClass 属性，注意并不一定是最终生成的 bean 所使用的 class，
-	 * 可能是 String（bean名称）, 也可能是 Class（bean的class对象）
+	 * 可能是 String（bean名称）, 也可能是 Class（bean的class对象）。
+	 * xml 从 <bean> 标签中解析出来的 class 属性在刚刚开始的时候必定是个字符串
 	 */
 	@Nullable
 	private volatile Object beanClass;

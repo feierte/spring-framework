@@ -91,9 +91,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 
 	/**
 	 * Cache of early singleton objects: bean name to bean instance.
-	 * “二级缓存”，存放singletonFactory制造出来的 singleton 的缓存早期单例对象缓存
-	 * @apiNote
-	 * 用于存储在创建Bean早期对创建的原始bean的一个引用，注意这里是原始bean，即使用工厂方法或构造方法创建出来的对象，一旦对象最终创建好，此引用信息将删除
+	 * @apiNote “二级缓存”，存放 singletonFactory 制造出来的 singleton 的缓存早期单例对象缓存
+	 * <p>用于存储在创建 Bean 早期对创建的原始 bean 的一个引用，注意这里是原始 bean，即使用工厂方法或构造方法创建出来的对象，一旦对象最终创建好，此引用信息将删除
 	 */
 	private final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>(16);
 
@@ -159,7 +158,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * @param singletonObject the singleton object
 	 */
 	protected void addSingleton(String beanName, Object singletonObject) {
-		// 可以看到该方法在registerSingleton里被调用时已经加了锁，为什么这里还要加锁？
+		// 可以看到该方法在 registerSingleton 里被调用时已经加了锁，为什么这里还要加锁？
 		// 因为该方法可能会被单独调用，因为锁的是同一个对象（singletonObjects），按照锁的可重进入，所以这里不会增加新的锁。
 		// 如果该方法在没有加锁的方法中被调用，该方法的锁可以很好的起到线程安全的作用
 		synchronized (this.singletonObjects) {
@@ -259,7 +258,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				if (logger.isDebugEnabled()) {
 					logger.debug("Creating shared instance of singleton bean '" + beanName + "'");
 				}
-				// 验证要真正开始创建对象，先标识该bean正在被创建，因为Spring的bean创建过程复杂、步骤很多，所以需要标识
+				// 验证要真正开始创建对象，先标识该 bean 正在被创建，因为 Spring 的 bean 创建过程复杂、步骤很多，所以需要标识
 				beforeSingletonCreation(beanName);
 				boolean newSingleton = false;
 				boolean recordSuppressedExceptions = (this.suppressedExceptions == null);

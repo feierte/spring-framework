@@ -255,7 +255,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 	public int loadBeanDefinitions(String... locations) throws BeanDefinitionStoreException {
 		Assert.notNull(locations, "Location array must not be null");
 		int count = 0;
-		// 如果有多个配置文件，则循环读取加载，并统计总共加载了多少个BeanDefinition
+		// 如果有多个配置文件，则循环读取加载，并统计总共加载了多少个 BeanDefinition
 		for (String location : locations) {
 			count += loadBeanDefinitions(location);
 		}
