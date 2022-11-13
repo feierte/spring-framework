@@ -1903,7 +1903,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * <p>
 	 * 这段代码主要功能：
 	 * 	1.辅助性检查；
-	 * 	2.进行了子类父类的合并，并把存储xml配置的GernericBeanDefinition转换为RootBeanDefinition；
+	 * 	2.进行了子类父类的合并，并把存储xml配置的GenericBeanDefinition转换为RootBeanDefinition；
 	 * 	3.真正核心是调用了getObjectFromFactoryBean这个方法。
 	 *
 	 * 	getObjectForBeanInstance方法所做的工作：

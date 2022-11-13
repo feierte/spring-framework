@@ -80,4 +80,18 @@ public class User {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
+
+	@Override
+	public String toString() {
+		return "User{" +
+				"id='" + id + '\'' +
+				", username='" + username + '\'' +
+				", password='" + password + '\'' +
+				", email='" + email + '\'' +
+				", birthday=" + birthday +
+				", gender='" + gender + '\'' +
+				", mobile='" + mobile + '\'' +
+				", nickname='" + nickname + '\'' +
+				'}';
+	}
 }
