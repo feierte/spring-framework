@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'org.springframework'
+version '5.2.10.BUILD-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.11'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    // JSR 303 API
+    compile group: 'javax.inject', name: 'javax.inject', version: '1'
+
+    compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    compile group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.3.3'
+    // yaml文件解析工具类
+    compile group: 'org.yaml', name: 'snakeyaml', version: '1.27'
+    providedCompile group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
+
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.21'
+    compile("com.alibaba:druid:1.1.8")
+    compile(project(":spring-core")) // 代表本项目的
+    compile(project(":spring-beans"))
+    compile(project(":spring-aop"))
+    compile(project(":spring-context"))
+    compile(project(":spring-jdbc"))
+    compile(project(":spring-web"))
+    compile(project(":spring-webmvc"))
+    compile(project(":spring-jdbc"))
+    compile(project(":spring-tx"))
+    compile(project(":spring-test"))
+    optional("org.aspectj:aspectjweaver")
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation 'org.hamcrest:hamcrest-core:2.1'
+}
+
+test {
+    useJUnitPlatform()
+}
