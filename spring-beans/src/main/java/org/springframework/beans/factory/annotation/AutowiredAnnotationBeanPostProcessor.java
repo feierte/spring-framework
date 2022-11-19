@@ -542,7 +542,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 			});
 
 			elements.addAll(0, currElements);
-			// 在解析完Bean的类型之后，递归的解析其父类，将所有的 @Autowired 的属性和方法收集起来，
+			// 在解析完当前 Bean 之后，递归的解析其父类，将所有的 @Autowired 的属性和方法收集起来，
 			// 且类的层级越高其属性会被越优先注入
 			targetClass = targetClass.getSuperclass();
 		}
@@ -720,6 +720,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 	 */
 	private class AutowiredMethodElement extends InjectionMetadata.InjectedElement {
 
+		// 表示 @Autowired 注解中的 required 属性
 		private final boolean required;
 
 		private volatile boolean cached = false;

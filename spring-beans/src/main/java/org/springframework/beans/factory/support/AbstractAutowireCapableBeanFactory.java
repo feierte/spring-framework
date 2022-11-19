@@ -536,10 +536,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
-					// 调用属性合并后置处理器, 进行属性合并
-					// 这里会进行 一些注解 的扫描
+					// 调用属性合并后置处理器, 进行属性合并.
+					// 这里会进行一些注解的扫描，并缓存起来，供接下来的步骤使用：例如
 					// CommonAnnotationBeanPostProcessor -> @PostConstruct @PreDestroy @Resource
-					// AutowiredAnnotationBeanPostProcessor -> @Autowired @Value
+					// AutowiredAnnotationBeanPostProcessor -> @Autowired @Value @javax.inject.Inject
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {

@@ -45,6 +45,8 @@ import org.springframework.util.ReflectionUtils;
  *
  * @author Juergen Hoeller
  * @since 2.5
+ *
+ * @apiNote 在自动装配中，用于表示需要被自动装配元素（Filed、Method、Constructor）的元信息，即被 @Autowired、@Value、@javax.inject.Inject 修饰的元素。
  */
 public class InjectionMetadata {
 
@@ -181,8 +183,9 @@ public class InjectionMetadata {
 	 */
 	public abstract static class InjectedElement {
 
+		// 被注入的元素：成员变量、成员方法或者构造方法
 		protected final Member member;
-
+		// 表示该被注入的元素是否是成员变量
 		protected final boolean isField;
 
 		@Nullable
