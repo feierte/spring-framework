@@ -85,8 +85,8 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @apiNote AbstractAutoProxyCreator 中实现了创建代理的逻辑
  *
- * <p>AbstractAutoProxyCreator 的本质是 BeanPostProcessor。AbstractAutoProxyCreator 实现了 SmartInstantiationAwareBeanPostProcessor接口的方法，
- * SmartInstantiationAwareBeanPostProcessor 接口方法穿插在 Bean初始化的过程中，转念一想，Spring Aop的核心思想就是动态代理，那么必然会在bean初始化的时候"做手脚"。
+ * <p>AbstractAutoProxyCreator 的本质是 BeanPostProcessor。AbstractAutoProxyCreator 实现了 SmartInstantiationAwareBeanPostProcessor 接口的方法，
+ * SmartInstantiationAwareBeanPostProcessor 接口方法穿插在 Bean 初始化的过程中，转念一想，Spring Aop 的核心思想就是动态代理，那么必然会在 bean 初始化的时候"做手脚"。
  */
 @SuppressWarnings("serial")
 public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport

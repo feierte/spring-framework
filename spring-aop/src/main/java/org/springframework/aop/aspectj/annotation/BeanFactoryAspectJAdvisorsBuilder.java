@@ -99,6 +99,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	public List<Advisor> buildAspectJAdvisors() {
 		List<String> aspectNames = this.aspectBeanNames;
 
+
 		if (aspectNames == null) {
 			// 加锁。防止多个线程同时加载 Aspect
 			synchronized (this) {
