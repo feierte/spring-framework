@@ -17,7 +17,7 @@ dependencies {
     // JSR 303 API
     compile group: 'javax.inject', name: 'javax.inject', version: '1'
 
-    compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
     compile group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.3.3'
     // yaml文件解析工具类
     compile group: 'org.yaml', name: 'snakeyaml', version: '1.27'
