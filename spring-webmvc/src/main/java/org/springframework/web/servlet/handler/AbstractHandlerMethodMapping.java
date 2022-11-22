@@ -365,6 +365,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		request.setAttribute(LOOKUP_PATH, lookupPath);
 		this.mappingRegistry.acquireReadLock();
 		try {
+			// 寻找能够处理当前请求路径的处理器方法（Controller 中的方法）
 			HandlerMethod handlerMethod = lookupHandlerMethod(lookupPath, request);
 			return (handlerMethod != null ? handlerMethod.createWithResolvedBean() : null);
 		}

@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletRequest;
  * @see org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping
  * @see org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
  *
- * @apiNote HandlerMapping 是 SpringMVC 中完成 url 到 Controller 映射的组件。
+ * @apiNote 处理器映射，HandlerMapping 是 SpringMVC 中完成 url 到 Controller 映射的组件。
  * DispatcherServlet 接收 request,然后从 HandlerMapping 查找能够处理 request 的 controller.
  *
  * <p> HandlerMapping 主要作用：
