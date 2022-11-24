@@ -36,6 +36,8 @@ import org.springframework.web.util.WebUtils;
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
  * @since 3.1
+ *
+ * @apiNote 请求参数匹配条件。
  */
 public final class ParamsRequestCondition extends AbstractRequestCondition<ParamsRequestCondition> {
 

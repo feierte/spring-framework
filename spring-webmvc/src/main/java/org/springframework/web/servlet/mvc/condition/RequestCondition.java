@@ -33,6 +33,9 @@ import org.springframework.lang.Nullable;
  * @since 3.1
  * @param <T> the type of objects that this RequestCondition can be combined
  * with and compared to
+ *
+ * @apiNote 请求匹配条件。RequestCondition 接口是 SpringMVC 对一个请求匹配条件的概念建模。
+ * RequestCondition 是一个泛型接口，事实上，它的泛型参数 T 通常也是一个 RequestCondition 对象。
  */
 public interface RequestCondition<T> {
 
@@ -42,6 +45,8 @@ public interface RequestCondition<T> {
 	 * @param other the condition to combine with.
 	 * @return a request condition instance that is the result of combining
 	 * the two condition instances.
+	 *
+	 * @apiNote 将该请求匹配条件和另外一个请求匹配条件合并
 	 */
 	T combine(T other);
 
@@ -56,6 +61,12 @@ public interface RequestCondition<T> {
 	 * be matched to a pre-flight request it should return an instance with
 	 * empty content thus not causing a failure to match.
 	 * @return a condition instance in case of a match or {@code null} otherwise.
+	 *
+	 * @apiNote 检查当前请求匹配条件和指定请求 request 是否匹配，如果不匹配返回 null，
+	 * 如果匹配，生成一个新的请求匹配条件，该新的请求匹配条件是当前请求匹配条件针对指定请求 request 的剪裁。
+	 *
+	 * <p>举个例子来讲，如果当前请求匹配条件是一个路径匹配条件，包含多个路径匹配模板，并且其中有些模板和指定请求 request 匹配，
+	 * 那么返回的新建的请求匹配条件将仅仅包含和指定请求 request 匹配的那些路径模板。
 	 */
 	@Nullable
 	T getMatchingCondition(HttpServletRequest request);

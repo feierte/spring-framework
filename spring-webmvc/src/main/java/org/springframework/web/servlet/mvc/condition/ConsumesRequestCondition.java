@@ -47,6 +47,8 @@ import org.springframework.web.servlet.mvc.condition.HeadersRequestCondition.Hea
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
  * @since 3.1
+ *
+ * @apiNote 根据注解 {@link RequestMapping#consumes()} 和 {@link RequestMapping#headers()} 方法中指定的请求头 'Content-Type' 进行条件匹配。
  */
 public final class ConsumesRequestCondition extends AbstractRequestCondition<ConsumesRequestCondition> {
 

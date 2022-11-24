@@ -67,6 +67,8 @@ import org.springframework.core.annotation.AliasFor;
  * @see PutMapping
  * @see DeleteMapping
  * @see PatchMapping
+ *
+ * @apiNote RequestMapping 是一个用来处理请求地址映射的注解，可用于类或方法上。用于类上，表示类中的所有响应请求的方法都是以该地址作为父路径。
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -120,10 +122,12 @@ public @interface RequestMapping {
 	 * <p><b>Supported at the type level as well as at the method level!</b>
 	 * When used at the type level, all method-level mappings inherit this
 	 * HTTP method restriction.
-	 * <p>
-	 * method：用于指定请求的方式。它支持以下这些类型：
+	 *
+	 * @apiNote 用于指定请求的方式。它支持以下这些类型：
 	 * GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE
 	 * 这些值是通过RequestMethod枚举指定的。
+	 *
+	 * <p>该方法返回的数组会传递给 {@link RequestMethodsRequestCondition} 中的成员变量 {@code Set<RequestMethod> methods}.
 	 */
 	RequestMethod[] method() default {};
 
@@ -139,8 +143,17 @@ public @interface RequestMapping {
 	 * <p><b>Supported at the type level as well as at the method level!</b>
 	 * When used at the type level, all method-level mappings inherit this
 	 * parameter restriction.
-	 * <p></>
-	 * 验证请求url中是否有 params中 指定的参数
+	 *
+	 * @apiNote 该属性表示请求的参数，当请求的路径中包含 params 中指定的某些参数值时，该请求才会被处理，否则不予处理。
+	 * 该方法支持一下三种表达式格式：
+	 * 	1.!param1: 表示允许不含有 param1 请求参数。
+	 * 	2.param2 != value2: 表示不包含 param2 请求参数或者虽然包含 param2 请求参数，但是值不等于 value2；不允许包含 param2 请求参数且值等于 value2。
+	 * 	3.param3=value3：表示需要包含 param3 请求参数且值等于 value3。
+	 * 该方法中的参数值是大小写敏感的。
+	 *
+	 * <p>{@link RequestMapping#headers()} 方法支持的表达式和该方法相同。{@link RequestMapping#headers()} 中的参数是请求头参数。
+	 *
+	 * @see org.springframework.web.servlet.mvc.condition.AbstractNameValueExpression
 	 */
 	String[] params() default {};
 
@@ -165,6 +178,9 @@ public @interface RequestMapping {
 	 * @see org.springframework.http.MediaType
 	 * <p>
 	 * 验证请求头中是否有 headers指定的 请求头
+	 *
+	 * <p>该方法和 {@link RequestMapping#params()} 不一样的一点是：该方法的中的参数是大小写不敏感的，而 params() 是大小写敏感的。
+	 * @see {@link RequestMapping#params()}
 	 */
 	String[] headers() default {};
 

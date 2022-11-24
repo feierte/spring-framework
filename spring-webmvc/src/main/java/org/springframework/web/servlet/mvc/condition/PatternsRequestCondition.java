@@ -41,6 +41,8 @@ import org.springframework.web.util.UrlPathHelper;
  *
  * @author Rossen Stoyanchev
  * @since 3.1
+ *
+ * @apiNote 请求路径匹配条件。
  */
 public class PatternsRequestCondition extends AbstractRequestCondition<PatternsRequestCondition> {
 

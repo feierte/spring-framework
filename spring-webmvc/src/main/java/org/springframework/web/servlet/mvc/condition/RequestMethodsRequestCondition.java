@@ -41,6 +41,8 @@ import org.springframework.web.cors.CorsUtils;
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
  * @since 3.1
+ *
+ * @apiNote 请求方法匹配条件。
  */
 public final class RequestMethodsRequestCondition extends AbstractRequestCondition<RequestMethodsRequestCondition> {
 

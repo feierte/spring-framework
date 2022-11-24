@@ -36,6 +36,8 @@ public abstract class AbstractRequestCondition<T extends AbstractRequestConditio
 	 * Indicates whether this condition is empty, i.e. whether or not it
 	 * contains any discrete items.
 	 * @return {@code true} if empty; {@code false} otherwise
+	 *
+	 * @apiNote 当前请求匹配条件对象中的内容是否为空。
 	 */
 	public boolean isEmpty() {
 		return getContent().isEmpty();
@@ -45,6 +47,12 @@ public abstract class AbstractRequestCondition<T extends AbstractRequestConditio
 	 * Return the discrete items a request condition is composed of.
 	 * <p>For example URL patterns, HTTP request methods, param expressions, etc.
 	 * @return a collection of objects (never {@code null})
+	 *
+	 * @apiNote 一个请求匹配条件可能由多个部分组成，这些组成部分被包装成一个名为 content 的集合。
+	 * 比如 ：
+	 * 	对于请求路径匹配条件，可能有多个 URL pattern,
+	 * 	对于请求方法匹配条件，可能有多个 HTTP request method,
+	 * 	对于请求参数匹配条件，可能有多个 param 表达式.
 	 */
 	protected abstract Collection<?> getContent();
 
@@ -52,6 +60,8 @@ public abstract class AbstractRequestCondition<T extends AbstractRequestConditio
 	 * The notation to use when printing discrete items of content.
 	 * <p>For example {@code " || "} for URL patterns or {@code " && "}
 	 * for param expressions.
+	 *
+	 * @apiNote 将该条件作为字符串展示时，各个组成部分之间的中缀标识符。比如 "||" 或者 "&&" 等。
 	 */
 	protected abstract String getToStringInfix();
 

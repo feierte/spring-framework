@@ -54,6 +54,12 @@ import org.springframework.web.util.UrlPathHelper;
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
  * @since 3.1
+ *
+ * @apiNote 请求映射信息。即 {@link org.springframework.web.bind.annotation.RequestMapping} 会被解析成 RequestMappingInfo 对象，
+ * 并且注解的每个属性都解析成一个对应的 {@link RequestCondition}
+ *
+ * <p> 通过对条件的筛选，选出符合条件的 RequestMappingInfo，如果包含多个 RequestMappingInfo，需要对条件进行排序，再选出优先级最高的一个 RequestMappingInfo。
+ * 最后再通过 RequestMappingInfoHandlerMapping 获取对应的 HandlerMethod ，然后就可以封装执行过程了。
  */
 public final class RequestMappingInfo implements RequestCondition<RequestMappingInfo> {
 

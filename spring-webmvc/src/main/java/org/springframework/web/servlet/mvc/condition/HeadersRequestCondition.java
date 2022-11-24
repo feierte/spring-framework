@@ -39,6 +39,8 @@ import org.springframework.web.cors.CorsUtils;
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
  * @since 3.1
+ *
+ * @apiNote 请求头信息匹配条件。
  */
 public final class HeadersRequestCondition extends AbstractRequestCondition<HeadersRequestCondition> {
 
