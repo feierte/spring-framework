@@ -540,7 +540,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		private final Map<T, MappingRegistration<T>> registry = new HashMap<>();
 
 		private final Map<T, HandlerMethod> mappingLookup = new LinkedHashMap<>();
-
+		// 保存了 <请求路径（/hello） -> RequestMappingInfo> 的映射关系
 		private final MultiValueMap<String, T> urlLookup = new LinkedMultiValueMap<>();
 
 		private final Map<String, List<HandlerMethod>> nameLookup = new ConcurrentHashMap<>();
@@ -727,11 +727,11 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 
 	private static class MappingRegistration<T> {
-
+		// 对请求路径（/hello）的封装，一般存放的是 RequestMappingInfo
 		private final T mapping;
-
+		// 控制器方法
 		private final HandlerMethod handlerMethod;
-
+		// 映射到该控制器方法的请求路径
 		private final List<String> directUrls;
 
 		@Nullable

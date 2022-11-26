@@ -43,6 +43,8 @@ import org.springframework.util.CollectionUtils;
  * @see ViewResolver
  * @see HandlerAdapter#handle
  * @see org.springframework.web.servlet.mvc.Controller#handleRequest
+ *
+ * @apiNote 包装了 Model 和 View。View 表示要去的视图，Model 表示向要去的视图传递的数据。
  */
 public class ModelAndView {
 

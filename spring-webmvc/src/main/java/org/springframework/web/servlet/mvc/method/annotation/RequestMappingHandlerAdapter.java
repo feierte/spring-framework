@@ -132,6 +132,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	@Nullable
 	private List<HandlerMethodArgumentResolver> customArgumentResolvers;
 
+	// 什么时候注入进来的？我们能修改吗？怎么改？
 	@Nullable
 	private HandlerMethodArgumentResolverComposite argumentResolvers;
 

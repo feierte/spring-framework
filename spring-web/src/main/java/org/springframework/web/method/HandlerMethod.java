@@ -65,17 +65,17 @@ public class HandlerMethod {
 	/** Logger that is available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	// 方法所在的类,如果是 String 类型,可以去容器中获取
+	// 方法所在的类（即 Controller），如果是 String 类型，可以通过 BeanFactory#getBean() 方法获取到相应的 Bean 对象
 	private final Object bean;
 
 	@Nullable
 	private final BeanFactory beanFactory;
-
+	// 对应 Controller 的类型
 	private final Class<?> beanType;
 
 	private final Method method;
 
-	// 如果方法是 bridged 方法,则对应原始方法
+	// 如果方法是 bridged 方法，则对应原始方法
 	private final Method bridgedMethod;
 
 	// 方法的参数

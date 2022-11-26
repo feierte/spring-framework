@@ -36,7 +36,7 @@ import org.springframework.lang.Nullable;
  * @see AspectMetadata
  * @see org.aspectj.lang.reflect.AjTypeSystem
  *
- * @apiNote 将被 @Aspect 注解的切面 解析成一个或多个 Advisor
+ * @apiNote Advisor 的创建工厂。将被 @Aspect 注解的切面 解析成一个或多个 Advisor
  */
 public interface AspectJAdvisorFactory {
 
