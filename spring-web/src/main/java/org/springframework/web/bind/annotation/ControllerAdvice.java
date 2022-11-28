@@ -71,6 +71,13 @@ import org.springframework.stereotype.Component;
  * @since 3.2
  * @see org.springframework.stereotype.Controller
  * @see RestControllerAdvice
+ *
+ * @apiNote 控制器增强器，作用是给 Controller 控制器添加统一的操作或处理。
+ *
+ * <p> ControllerAdvice 应用场景
+ * 1.全局异常处理：结合方法型注解 @ExceptionHandler，用于捕获 Controller 中抛出的指定类型的异常，从而达到不同类型的异常区别处理的目的。
+ * 2.全局数据绑定：结合方法型注解 @InitBinder，用于 request 中自定义参数解析方式进行注册，从而达到自定义指定格式参数的目的。
+ * 3.全局数据预处理：结合方法型注解 @ModelAttribute，表示其注解的方法将会在目标 Controller 方法执行之前执行。
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
