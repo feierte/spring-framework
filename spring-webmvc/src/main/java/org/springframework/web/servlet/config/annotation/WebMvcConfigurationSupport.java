@@ -806,10 +806,14 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 	protected final List<HttpMessageConverter<?>> getMessageConverters() {
 		if (this.messageConverters == null) {
 			this.messageConverters = new ArrayList<>();
+			// 在这里，应用程序可以自定义自己的 HttpMessageConverter
 			configureMessageConverters(this.messageConverters);
+			// 若应用程序没有自定义 HttpMessageConverter，则使用 Spring 的默认 HttpMessageConverter
 			if (this.messageConverters.isEmpty()) {
 				addDefaultHttpMessageConverters(this.messageConverters);
 			}
+			// 不管应用程序配不配置 HttpMessageConverter，通过扩展接口进来的转换器都会添加进来
+			// 因为复写此个 protected 方法也是我们最为常用的自定义消息转换器的一个手段
 			extendMessageConverters(this.messageConverters);
 		}
 		return this.messageConverters;
