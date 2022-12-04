@@ -419,7 +419,7 @@ class ConfigurationClassParser {
 	 */
 	private void processMemberClasses(ConfigurationClass configClass, SourceClass sourceClass,
 			Predicate<String> filter) throws IOException {
-
+		// 获取当前配置类的所有内部类
 		Collection<SourceClass> memberClasses = sourceClass.getMemberClasses();
 		if (!memberClasses.isEmpty()) {
 			List<SourceClass> candidates = new ArrayList<>(memberClasses.size());
@@ -432,11 +432,15 @@ class ConfigurationClassParser {
 			OrderComparator.sort(candidates);
 			for (SourceClass candidate : candidates) {
 				if (this.importStack.contains(configClass)) {
+					// 这里是来处理循环导入的问题。对于一个配置类 A 的内部配置类 B, 相当于 A @Import(B) 进行处理，
+					// A 中的内部类 B 使用注解标明自己需要被容器管理, 然后 B @Import(A) 造成循环导入的情况。
+					// 遇到这种情况就是循环导入了，内部实现就是抛出异常, 这里就是出现循环导入则抛出异常
 					this.problemReporter.error(new CircularImportProblem(configClass, this.importStack));
 				}
 				else {
 					this.importStack.push(configClass);
 					try {
+						// 把这个内部类当做一个配置类进行解析, 解析过程没有注入 BeanDefinition, 需要后续处理这些遗漏的 BeanDefinition
 						processConfigurationClass(candidate.asConfigClass(configClass), filter);
 					}
 					finally {

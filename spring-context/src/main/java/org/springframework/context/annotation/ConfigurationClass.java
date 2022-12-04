@@ -45,6 +45,8 @@ import org.springframework.util.ClassUtils;
  * @since 3.0
  * @see BeanMethod
  * @see ConfigurationClassParser
+ *
+ * @apiNote ConfigurationClass 表示用户自定义的有注解 @Configuration 标注的配置类。
  */
 final class ConfigurationClass {
 

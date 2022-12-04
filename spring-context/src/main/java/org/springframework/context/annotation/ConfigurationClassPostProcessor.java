@@ -317,6 +317,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			}
 		}
 
+		// web环境，这里都设置了StandardServletEnvironment
+		// 一般来说到此处，env环境不可能为null了~~~ 此处做一个容错处理~~~
 		if (this.environment == null) {
 			this.environment = new StandardEnvironment();
 		}
@@ -344,6 +346,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			 * 而是先解析成ConfigurationClass类，真正放入到map中的是在下面的this.reader.loadBeanDefinitions()方法中实现的。
 			 */
 			parser.parse(candidates);
+			// 校验配置类不能是final的，因为需要使用CGLIB给full模式的配置类生成代理对象，见postProcessBeanFactory方法
 			parser.validate();
 
 			Set<ConfigurationClass> configClasses = new LinkedHashSet<>(parser.getConfigurationClasses());
@@ -359,6 +362,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			// 实际经过上一步的parse()后，解析出来的bean已经放入到BeanDefinition中了，但是由于这些bean可能会引入新的bean，
 			// 例如实现了ImportBeanDefinitionRegistrar或者ImportSelector接口的Bean，或bean中存在@Bean注解的方法。
 			// 因此需要执行一次loadBeanDefinition()，这样就会执行ImportBeanDefinitionRegistrar或者ImportSelector接口的Bean，或bean中存在@Bean注解的方法。
+
+			// 这个方法是非常重要的，因为它决定了向容器注册Bean定义信息的顺序问题~~~
 			this.reader.loadBeanDefinitions(configClasses);
 			alreadyParsed.addAll(configClasses);
 
