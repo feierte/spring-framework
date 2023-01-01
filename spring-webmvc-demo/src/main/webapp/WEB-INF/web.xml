@@ -6,6 +6,10 @@
          version="2.5">
 
 
+	<context-param>
+		<param-name>configLocation</param-name>
+		<param-value></param-value>
+	</context-param>
     <!--<servlet>
         <servlet-name>dispatcherServlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>

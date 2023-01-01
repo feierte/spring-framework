@@ -41,6 +41,11 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since January 19, 2001
  * @see ServletContextAware#setServletContext
+ *
+ * @apiNote WebApplicationContext 是专门为 Web 应用提供的 Spring 应用上下文。除了具有标准 ApplicationContext 的功能以外，
+ * 还额外具有 web 访问功能和配置 web 的功能（ConfigurableWebApplicationContext 提供）。
+ *
+ * <p>该接口中提供了 web 功能的基本能力，例如：提供了 bean 作用域的描述名称，ServletContext 的 bean 名称，还有访问 ServletContext 的方法。
  */
 public interface WebApplicationContext extends ApplicationContext {
 
@@ -99,6 +104,9 @@ public interface WebApplicationContext extends ApplicationContext {
 
 	/**
 	 * Return the standard Servlet API ServletContext for this application.
+	 *
+	 * @apiNote 获取 ServletContext 对象。该方法是 Spring Web 应用和 Servlet 规范的连接点，
+	 * 获取到了 ServletContext 对象，也就具有了操作整个 web 应用（基于 Servlet 规范的 web 应用）的能力了。
 	 */
 	@Nullable
 	ServletContext getServletContext();

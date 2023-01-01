@@ -37,6 +37,10 @@ import org.springframework.lang.Nullable;
  * @see #refresh
  * @see ContextLoader#createWebApplicationContext
  * @see org.springframework.web.servlet.FrameworkServlet#createWebApplicationContext
+ *
+ * @apiNote 可配置的 spring web 应用上下文。主要提供了配置 web 应用的能力，设置应用的初始化配置路径。
+ *
+ * <p>注意事项：该应用上下文中的 setter 方法必须在 {@link #refresh()} 方法刷新应用之前被调用才能起作用。
  */
 public interface ConfigurableWebApplicationContext extends WebApplicationContext, ConfigurableApplicationContext {
 
