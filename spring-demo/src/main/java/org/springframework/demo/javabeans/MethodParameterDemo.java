@@ -1,9 +1,7 @@
 package org.springframework.demo.javabeans;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.StandardReflectionParameterNameDiscoverer;
-import org.springframework.demo.domain.Person;
 import org.springframework.demo.ioc.beanfactory.City;
 import org.springframework.demo.ioc.beanfactory.User;
 
@@ -18,7 +16,6 @@ import java.util.List;
  *
  * @see org.springframework.core.MethodParameter
  */
-@Slf4j
 public class MethodParameterDemo {
 
 	public static void main(String[] args) throws NoSuchMethodException {
