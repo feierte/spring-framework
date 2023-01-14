@@ -697,7 +697,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Register early post-processor for detecting inner beans as ApplicationListeners.
 		// 向 Spring 容器中注册一个用于发现事件监听器的 BeanPostProcessor
-		// ApplicationListenerDetector 是用于解析实现 ApplicationListener 接口的 Spring 监听器 的 BeanPostProcessor
+		// ApplicationListenerDetector 是用于解析实现 ApplicationListener 接口的 Spring 监听器的 BeanPostProcessor
 		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found.

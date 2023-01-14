@@ -26,6 +26,8 @@ import org.springframework.context.ApplicationListener;
  *
  * @author Stephane Nicoll
  * @since 4.2
+ *
+ * @apiNote 将被 {@link EventListener} 注解的方法适配成 {@link ApplicationListener}
  */
 public interface EventListenerFactory {
 
@@ -33,6 +35,8 @@ public interface EventListenerFactory {
 	 * Specify if this factory supports the specified {@link Method}.
 	 * @param method an {@link EventListener} annotated method
 	 * @return {@code true} if this factory supports the specified method
+	 *
+	 * @apiNote 查看方法是否能适配成 {@link ApplicationListener}。
 	 */
 	boolean supportsMethod(Method method);
 

@@ -34,6 +34,7 @@ import org.reactivestreams.Subscription;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.PayloadApplicationEvent;
 import org.springframework.context.expression.AnnotatedElementKey;
 import org.springframework.core.BridgeMethodResolver;
@@ -64,6 +65,8 @@ import org.springframework.util.concurrent.ListenableFuture;
  * @author Juergen Hoeller
  * @author Sam Brannen
  * @since 4.2
+ *
+ * @apiNote {@link ApplicationListener} 的适配器，该类使用了适配器模式，将被 {@link EventListener} 适配成了 {@link ApplicationListener}。
  */
 public class ApplicationListenerMethodAdapter implements GenericApplicationListener {
 
