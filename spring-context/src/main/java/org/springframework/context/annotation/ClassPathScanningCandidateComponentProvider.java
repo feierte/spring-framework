@@ -531,6 +531,8 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * and converts a "."-based package path to a "/"-based resource path.
 	 * @param basePackage the base package as specified by the user
 	 * @return the pattern specification to be used for package searching
+	 *
+	 * @apiNote 将 basePackage 中的 ${...} 替换为实际的配置值，然后在将其中的路径分隔符 “.” 转换为 “/”。
 	 */
 	protected String resolveBasePackage(String basePackage) {
 		return ClassUtils.convertClassNameToResourcePath(getEnvironment().resolveRequiredPlaceholders(basePackage));
