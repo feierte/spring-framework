@@ -42,6 +42,12 @@ import org.springframework.util.StringUtils;
  * @since 3.1.1
  * @see AnnotationUtils#getAnnotationAttributes
  * @see AnnotatedElementUtils
+ *
+ * @apiNote 注解里属性的抽象。
+ * AnnotationAttributes 直接扩展了 LinkedHashMap 说明既要 K-V 数据结构，又要确保其顺序保持与属性方法声明一致。
+ *
+ * <p>属性覆盖
+ * 当注解和标注在其上的元注解具有相同的属性时，该注解覆盖其元注解中的同名属性。
  */
 @SuppressWarnings("serial")
 public class AnnotationAttributes extends LinkedHashMap<String, Object> {
