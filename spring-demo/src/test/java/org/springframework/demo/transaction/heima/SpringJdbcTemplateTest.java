@@ -1,7 +1,7 @@
 package org.springframework.demo.transaction.heima;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.demo.transaction.heima.config.SpringConfiguration;
@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +22,8 @@ import java.util.Map;
  * @author Jie Zhao
  * @date 2021/10/7 22:49
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringConfiguration.class)
 public class SpringJdbcTemplateTest {
 

@@ -22,9 +22,11 @@ dependencies {
     // yaml文件解析工具类
     compile group: 'org.yaml', name: 'snakeyaml', version: '1.27'
 
-    // implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
-    // annotationProcessor("org.projectlombok:lombok:1.18.18")
-
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
+//    annotationProcessor("org.projectlombok:lombok:1.18.18")
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.12'
+    implementation("org.apache.logging.log4j:log4j-api")
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.21'
     compile("com.alibaba:druid:1.1.8")
     compile(project(":spring-core")) // 代表本项目的
@@ -38,6 +40,6 @@ dependencies {
     compile(project(":spring-tx"))
     compile(project(":spring-test"))
     optional("org.aspectj:aspectjweaver")
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+//    testCompile group: 'junit', name: 'junit', version: '4.12'
     testImplementation 'org.hamcrest:hamcrest-core:2.1'
 }
