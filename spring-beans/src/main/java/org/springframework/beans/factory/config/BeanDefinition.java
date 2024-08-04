@@ -190,6 +190,8 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * Specify the factory bean to use, if any.
 	 * This the name of the bean to call the specified factory method on.
 	 * @see #setFactoryMethodName
+	 *
+	 * @apiNote 对应 <bean/> 标签中的 factory-bean 属性，用来实例化对象
 	 */
 	void setFactoryBeanName(@Nullable String factoryBeanName);
 
@@ -206,6 +208,8 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * or otherwise as a static method on the local bean class.
 	 * @see #setFactoryBeanName
 	 * @see #setBeanClassName
+	 *
+	 * @apiNote 对应 <bean/> 标签中的 factory-method 属性，用来实例化对象
 	 */
 	void setFactoryMethodName(@Nullable String factoryMethodName);
 

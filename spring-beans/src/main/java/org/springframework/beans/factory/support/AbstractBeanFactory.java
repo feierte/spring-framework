@@ -318,15 +318,17 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 			}
 
-			// 如果不仅仅是做类型检查，则还标记bean的状态为已经创建（即将beanName加入alreadyCreated集合中）
+			// typeCheckOnly 为 true 时表示仅仅进行对象类型检查，而不进行对象创建。
+			// 在 doGetBean 方法中传入的 typeCheckOnly 为 false，表示不仅仅是做类型检查，
+			// 则还标记 bean 的状态为已经创建（即将 beanName 加入 alreadyCreated 集合中）
 			if (!typeCheckOnly) {
 				markBeanAsCreated(beanName);
 			}
 
 			try {
 				/*
-				 * 将存储xml配置的GenericBeanDefinition实例转换成RootBeanDefinition实例，方便后续处理。
-				 * 如果存在父bean，则同时合并父bean的相关属性
+				 * 将存储 xml 配置的 GenericBeanDefinition 实例转换成 RootBeanDefinition 实例，方便后续处理。
+				 * 如果存在父 bean，则同时合并父 bean 的相关属性
 				 */
 				RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				// 检查bean是否是抽象的，如果是则抛出异常

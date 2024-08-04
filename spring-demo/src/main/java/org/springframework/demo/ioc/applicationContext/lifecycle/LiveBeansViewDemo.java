@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.demo.ioc.applicationContext;
+package org.springframework.demo.ioc.applicationContext.lifecycle;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.LiveBeansView;

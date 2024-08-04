@@ -14,34 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.demo.ioc.applicationContext;
+package org.springframework.demo.ioc.applicationContext.lifecycle;
 
 import org.springframework.context.Lifecycle;
+import org.springframework.context.support.GenericApplicationContext;
+
+import static org.springframework.beans.factory.support.BeanDefinitionBuilder.rootBeanDefinition;
 
 /**
- * 自定义 {@link Lifecycle} 实现
+ * 自定义 {@link Lifecycle} Bean 示例
  *
  * @author <a href="mailto:mercyblitz@gmail.com">Mercy</a>
+ * @see Lifecycle
  * @since
  */
-public class MyLifecycle implements Lifecycle {
+public class LifecycleDemo {
 
-    private boolean running = false;
+    public static void main(String[] args) {
+        GenericApplicationContext context = new GenericApplicationContext();
+        // 注解 MyLifecycle 成为一个 Spring Bean
+        context.registerBeanDefinition("myLifecycle", rootBeanDefinition(MyLifecycle.class).getBeanDefinition());
 
-    @Override
-    public void start() {
-        running = true;
-        System.out.println("MyLifecycle 启动...");
-    }
+        // 刷新 Spring 应用上下文
+        context.refresh();
 
-    @Override
-    public void stop() {
-        running = false;
-        System.out.println("MyLifecycle 停止...");
-    }
+        // 启动 Spring 应用上下文
+        context.start();
 
-    @Override
-    public boolean isRunning() {
-        return running;
+        // 停止 Spring 应用上下文
+        context.stop();
+
+        // 关闭 Spring 应用
+        context.close();
     }
 }
