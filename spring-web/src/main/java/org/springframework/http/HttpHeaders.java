@@ -82,21 +82,41 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 	/**
 	 * The HTTP {@code Accept} header field name.
 	 * @see <a href="https://tools.ietf.org/html/rfc7231#section-5.3.2">Section 5.3.2 of RFC 7231</a>
+	 *
+	 * @apiNote 属于请求头，描述客户端希望接收的响应 body 数据类型。就是希望服务器返回什么类型的数据。多个类型用逗号分隔。
+	 * <p>常用的四种大类型：text、image、audio/video、application。
+	 * 四大类型下面会细分出多个子类，形式是 “type/subtype” 的字符串。
+	 * 1.text：即文本格式，例如 text/html、text/plain等
+	 * 2.image：即图片文件，例如 image/gif、image/png等
+	 * 3.audio/video：音频和视频数据，例如 audio/mpeg、video/mp4等
+	 * 4.application：数据格式不固定，可能是文本也可能是二进制，必须由上层应用程序来解释。例如：application/json、application/pdf等
+	 * 		application/octet-stream 表示不透明的二进制数据，当实在不知道数据是什么类型时，可以使用这个类型。
 	 */
 	public static final String ACCEPT = "Accept";
 	/**
 	 * The HTTP {@code Accept-Charset} header field name.
 	 * @see <a href="https://tools.ietf.org/html/rfc7231#section-5.3.3">Section 5.3.3 of RFC 7231</a>
+	 *
+	 * @apiNote 表示客户端支持的字符编码集。
+	 * <p>现在浏览器都支持多种字符集，通常不会发送 Accept-Charset 这个请求头。Accept-Language 类似，因为可以从使用的字符集中推断出来。
 	 */
 	public static final String ACCEPT_CHARSET = "Accept-Charset";
 	/**
 	 * The HTTP {@code Accept-Encoding} header field name.
 	 * @see <a href="https://tools.ietf.org/html/rfc7231#section-5.3.4">Section 5.3.4 of RFC 7231</a>
+	 *
+	 * @apiNote 表示客户端支持的压缩算法。这里的压缩是指对响应体数据的压缩。（请求体一般是空的）
+	 * <p>HTTP常用的压缩算法：
+	 * 1.gzip：GUN zip 压缩格式，也是互联网上最流行的压缩格式。
+	 * 2.deflate：zlib（deflate）压缩格式，流行程度仅次于 gzip。
+	 * 3.br：一种专门为 HTTP 优化的新压缩算法（Brotli）。
 	 */
 	public static final String ACCEPT_ENCODING = "Accept-Encoding";
 	/**
 	 * The HTTP {@code Accept-Language} header field name.
 	 * @see <a href="https://tools.ietf.org/html/rfc7231#section-5.3.5">Section 5.3.5 of RFC 7231</a>
+	 *
+	 * @apiNote 表示客户端支持的语言类型，例如：en、en-US、en-GB、zh等。
 	 */
 	public static final String ACCEPT_LANGUAGE = "Accept-Language";
 	/**
@@ -172,6 +192,8 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 	/**
 	 * The HTTP {@code Content-Encoding} header field name.
 	 * @see <a href="https://tools.ietf.org/html/rfc7231#section-3.1.2.2">Section 3.1.2.2 of RFC 7231</a>
+	 *
+	 * @apiNote 标识响应体的压缩算法，压缩算法有哪些，参考 {@link HttpHeaders#ACCEPT_ENCODING}
 	 */
 	public static final String CONTENT_ENCODING = "Content-Encoding";
 	/**
@@ -202,6 +224,10 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 	/**
 	 * The HTTP {@code Content-Type} header field name.
 	 * @see <a href="https://tools.ietf.org/html/rfc7231#section-3.1.1.5">Section 3.1.1.5 of RFC 7231</a>
+	 *
+	 * @see HttpHeaders#ACCEPT
+	 * @apiNote 标识响应体的数据类型，具体类型有哪些，参考 {@link HttpHeaders#ACCEPT}
+	 * <p>响应头的字符编码也是在这个请求头指定的，例如：Content-Type: text/html;charset=utf-8
 	 */
 	public static final String CONTENT_TYPE = "Content-Type";
 	/**
