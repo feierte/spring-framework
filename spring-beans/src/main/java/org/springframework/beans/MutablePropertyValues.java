@@ -52,6 +52,8 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	@Nullable
 	private Set<String> processedProperties;
 
+	// 表示该属性集合中的属性值是否被类型转换器转换过，false：没有转换过，true：转换过。
+	// 给属性注入值时，有可能注入的是字符串或是 bean 的 id 值，所以需要再注入时将这些值转换成属性真正的类型值。
 	private volatile boolean converted = false;
 
 

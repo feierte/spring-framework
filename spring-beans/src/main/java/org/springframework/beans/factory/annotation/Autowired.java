@@ -97,6 +97,13 @@ import java.lang.annotation.Target;
  * @see AutowiredAnnotationBeanPostProcessor
  * @see Qualifier
  * @see Value
+ *
+ * @apiNote 给构造方法、成员方法、方法参数、成员变量、注解自动注入引用值，等用于 <bean/> 标签中的子标签 <property name = "" ref = ""/> 的作用，
+ * 给 bean 注入引用值。
+ * <p/>
+ * {@code <bean id="" class="">
+ *            <property name = "" ref = ""/>
+ *     </bean>}
  */
 @Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)

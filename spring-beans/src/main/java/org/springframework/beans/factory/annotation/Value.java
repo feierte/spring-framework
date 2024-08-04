@@ -51,6 +51,13 @@ import java.lang.annotation.Target;
  * @see Autowired
  * @see org.springframework.beans.factory.config.BeanExpressionResolver
  * @see org.springframework.beans.factory.support.AutowireCandidateResolver#getSuggestedValue
+ *
+ * @apiNote 给对象成员变量、方法、参数、注解自动注入值，等用于 <bean/> 标签中的子标签 <property name = "" value = ""/> 的作用，
+ * 以字符串的方式给 bean 注入值。
+ * <p/>
+ * {@code <bean id="" class="">
+ *     		<property name = "" value = ""/>
+ *     </bean>}
  */
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)

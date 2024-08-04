@@ -93,7 +93,7 @@ public interface PropertyAccessor {
 	 * (may be a nested path and/or an indexed/mapped property)
 	 * @return whether the property is writable
 	 *
-	 * @apiNote 查看属性是否是可写的，如果该属性不存在，则返回false
+	 * @apiNote 查看属性是否是可写的，如果该属性不可写，则返回 false，例如一个被 final 修饰的成员变量就是不可写的。
 	 */
 	boolean isWritableProperty(String propertyName);
 
