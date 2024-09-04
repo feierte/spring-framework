@@ -39,16 +39,16 @@ public class ProxyConfig implements Serializable {
 	/**
 	 * 标记是否直接对目标类进行代理，而不是通过接口产生代理
 	 * 是否对类进行代理（而不是对接口进行代理）
-	 * 当设置为true时，使用cglib动态代理
+	 * 即当设置为 true 时，使用 cglib 动态代理，当为 false 时，取决目标对象是否实现了接口，如果实现了接口使用 jdk 动态代理，否则使用 cglib 代理。
 	 */
 	private boolean proxyTargetClass = false;
 
 	/**
-	 * 当设置为true时，强制使用cglib动态代理。
-	 * 对于Singleton的代理，推荐使用cglib，因为cglib创建代理比jdk动态代理慢，但是创建出来的代理对象运行效率更高
+	 * 当设置为 true 时，强制使用 cglib 动态代理。
+	 * 对于 Singleton 的代理，推荐使用 cglib，因为 cglib 创建代理比 jdk 动态代理慢，但是创建出来的代理对象运行效率更高
 	 */
 	// 标记是否对代理进行优化。true：那么在生成代理对象之后，如果对代理配置进行了修改，已经创建的代理对象也不会获取修改之后的代理配置。
-	// 如果exposeProxy设置为true，即使optimize为true也会被忽略。
+	// 如果 exposeProxy 设置为 true，即使 optimize 为 true 也会被忽略。
 	private boolean optimize = false;
 
 	/**
