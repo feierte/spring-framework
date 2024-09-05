@@ -25,6 +25,9 @@ package org.springframework.context.annotation;
  * @see org.springframework.scheduling.annotation.EnableAsync#mode()
  * @see org.springframework.scheduling.annotation.AsyncConfigurationSelector#selectImports
  * @see org.springframework.transaction.annotation.EnableTransactionManagement#mode()
+ *
+ * @apiNote Spring AOP 有两种实现方式：Proxy-based 和 Weaving-based。
+ * Proxy-based 指的是动态代理实现方式，Weaving-based 指的是通过字节码增强的方式来达到功能增强的目的。
  */
 public enum AdviceMode {
 

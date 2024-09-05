@@ -75,6 +75,8 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 	 * Cache of TransactionAttributes, keyed by method on a specific target class.
 	 * <p>As this base class is not marked Serializable, the cache will be recreated
 	 * after serialization - provided that the concrete subclass is Serializable.
+	 *
+	 * @apiNote 缓存目标对象中的方法及其对应的 TransactionAttribute
 	 */
 	private final Map<Object, TransactionAttribute> attributeCache = new ConcurrentHashMap<>(1024);
 
@@ -90,6 +92,7 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 	@Override
 	@Nullable
 	public TransactionAttribute getTransactionAttribute(Method method, @Nullable Class<?> targetClass) {
+		// 如果传入的方法是 Object 类中声明的方法，则跳过，不进行事务功能增强
 		if (method.getDeclaringClass() == Object.class) {
 			return null;
 		}
@@ -109,7 +112,7 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 		}
 		else {
 			// We need to work it out.
-			// 尝试从方法中获取事务相关配置元数据
+			// 尝试从方法中获取事务相关配置元数据（解析 @Transactional 注解，并拿到注解中的属性值）
 			TransactionAttribute txAttr = computeTransactionAttribute(method, targetClass);
 			// Put it in the cache.
 			if (txAttr == null) {
@@ -147,37 +150,49 @@ public abstract class AbstractFallbackTransactionAttributeSource implements Tran
 	 * <p>As of 4.1.8, this method can be overridden.
 	 * @since 4.1.8
 	 * @see #getTransactionAttribute
+	 *
+	 * @apiNote 从方法和目标类中查找 @Transactional，这个方法可以看出两个关键信息：
+	 * （1）非 public 修饰的方法无法进行事务增加，所以这也是 @Transactional 只能声明在 public 修饰的方法上才能生效
+	 * （2）如果方法和目标类上面都声明了 @Transactional，则方法上面的 @Transactional 优先级更高
 	 */
 	@Nullable
 	protected TransactionAttribute computeTransactionAttribute(Method method, @Nullable Class<?> targetClass) {
 		// Don't allow no-public methods as required.
+		// 非 public 修饰的方法无法进行事务增加，所以这也是 @Transactional 只能声明在 public 修饰的方法上才能生效
 		if (allowPublicMethodsOnly() && !Modifier.isPublic(method.getModifiers())) {
 			return null;
 		}
 
 		// The method may be on an interface, but we need attributes from the target class.
 		// If the target class is null, the method will be unchanged.
+		// 获取目标类中的方法，而不是桥接方法
 		Method specificMethod = AopUtils.getMostSpecificMethod(method, targetClass);
 
 		// First try is the method in the target class.
+		// 查找方法上面是否有 @Transactional 注解并解析成 TransactionAttribute，
+		// findTransactionAttribute 该方法是通过 SpringTransactionAnnotationParser 实现的
 		TransactionAttribute txAttr = findTransactionAttribute(specificMethod);
 		if (txAttr != null) {
 			return txAttr;
 		}
 
 		// Second try is the transaction attribute on the target class.
+		// 如果在方法上面没有找到 @Transactional 注解，则在从目标类中查找
 		txAttr = findTransactionAttribute(specificMethod.getDeclaringClass());
 		if (txAttr != null && ClassUtils.isUserLevelMethod(method)) {
 			return txAttr;
 		}
 
+		// 从方法和目标类上面都没有查找到 @Transactional
 		if (specificMethod != method) {
 			// Fallback is to look at the original method.
+			// 从方法和目标类上面都没有查找到 @Transactional，则从原始方法中找
 			txAttr = findTransactionAttribute(method);
 			if (txAttr != null) {
 				return txAttr;
 			}
 			// Last fallback is the class of the original method.
+			// 从方法和目标类上面都没有查找到 @Transactional，则从原始方法的声明类中找
 			txAttr = findTransactionAttribute(method.getDeclaringClass());
 			if (txAttr != null && ClassUtils.isUserLevelMethod(method)) {
 				return txAttr;

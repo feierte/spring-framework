@@ -76,6 +76,8 @@ public interface SavepointManager {
 	 * transaction does not support savepoints
 	 * @throws TransactionException if the release failed
 	 * @see java.sql.Connection#releaseSavepoint
+	 *
+	 * @apiNote 释放指定的 savepoint，注意大部分的事务管理器在事务完成时会释放该事务上的 savepoint。
 	 */
 	void releaseSavepoint(Object savepoint) throws TransactionException;
 

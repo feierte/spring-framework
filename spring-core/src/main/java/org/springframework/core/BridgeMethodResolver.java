@@ -50,6 +50,8 @@ import org.springframework.util.ReflectionUtils.MethodFilter;
  */
 public final class BridgeMethodResolver {
 
+	// 缓存
+	// key 是桥接方法，value 是桥接方法对应的原始方法
 	private static final Map<Method, Method> cache = new ConcurrentReferenceHashMap<>();
 
 	private BridgeMethodResolver() {
@@ -64,8 +66,11 @@ public final class BridgeMethodResolver {
 	 * @param bridgeMethod the method to introspect
 	 * @return the original method (either the bridged method or the passed-in method
 	 * if no more specific one could be found)
+	 *
+	 * @apiNote 查找桥接方法的原始方法
 	 */
 	public static Method findBridgedMethod(Method bridgeMethod) {
+		// 不是桥接方法，直接返回
 		if (!bridgeMethod.isBridge()) {
 			return bridgeMethod;
 		}

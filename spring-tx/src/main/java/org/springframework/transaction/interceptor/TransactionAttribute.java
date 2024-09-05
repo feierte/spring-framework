@@ -30,7 +30,7 @@ import org.springframework.transaction.TransactionDefinition;
  * @see DefaultTransactionAttribute
  * @see RuleBasedTransactionAttribute
  *
- * @apiNote 事务属性接口，该接口是 TransactionDefinition 的实现接口
+ * @apiNote 事务属性接口，该接口是存放事务相关的信息，该信息一般来自于 @Transactional 注解中的属性值。
  *
  * <p>获取TransactionAttribute
  * 在执行目标方法之前，获取事务之前，执行的目标增强。spring是从事务来源中获取事务的属性TransactionAttribute

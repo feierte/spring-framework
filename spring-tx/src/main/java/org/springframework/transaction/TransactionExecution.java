@@ -53,6 +53,8 @@ public interface TransactionExecution {
 	/**
 	 * Return whether this transaction is completed, that is,
 	 * whether it has already been committed or rolled back.
+	 *
+	 * @apiNote 判断当前事务是否已经完成，即成功提交或者失败回滚了
 	 */
 	boolean isCompleted();
 

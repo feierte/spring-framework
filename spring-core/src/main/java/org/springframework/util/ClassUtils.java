@@ -877,6 +877,9 @@ public abstract class ClassUtils {
 	 * class, but the original class in case of a CGLIB-generated subclass.
 	 * @param clazz the class to check
 	 * @return the user-defined class
+	 *
+	 * @apiNote 获取用户定义的类，什么是用户定义的类？ 1）非代理类 2）如果是代理类，用户类则是代理的目标类（Object 类触发）
+	 * 这个方法的意思是：如果传入的是非代理类，直接返回这个非代理类；如果传入的是代理类，则返回该代理类代理的目标类
 	 */
 	public static Class<?> getUserClass(Class<?> clazz) {
 		if (clazz.getName().contains(CGLIB_CLASS_SEPARATOR)) {
@@ -1244,6 +1247,7 @@ public abstract class ClassUtils {
 	 * @see #getInterfaceMethodIfPossible
 	 */
 	public static Method getMostSpecificMethod(Method method, @Nullable Class<?> targetClass) {
+		// 目标类 != null && 方法是目标类中的方法 && 方法能够被重写
 		if (targetClass != null && targetClass != method.getDeclaringClass() && isOverridable(method, targetClass)) {
 			try {
 				if (Modifier.isPublic(method.getModifiers())) {
@@ -1322,6 +1326,8 @@ public abstract class ClassUtils {
 	 * Determine whether the given method is overridable in the given target class.
 	 * @param method the method to check
 	 * @param targetClass the target class to check against
+	 *
+	 * @apiNote 参数 method 是否是参数 targetClass 中的能够被重写的方法。
 	 */
 	private static boolean isOverridable(Method method, @Nullable Class<?> targetClass) {
 		if (Modifier.isPrivate(method.getModifiers())) {

@@ -36,7 +36,8 @@ import java.io.Flushable;
  * @see org.springframework.transaction.support.TransactionCallback#doInTransaction
  * @see org.springframework.transaction.interceptor.TransactionInterceptor#currentTransactionStatus()
  *
- * @apiNote 该接口用于控制事务执行，即设置事务结果、检查事务是否完成或是否为新事务。（可以让事务管理器控制事务的执行，可以检查事务是不是一个新事务，或者是否只读）
+ * @apiNote TransactionStatus 直译过来就是事务状态，但该接口不仅仅表示事物状态那么简单，它是事务的超集（包含了事务对象，并且存储了事务的状态）。
+ * 该接口用于控制事务执行，即设置事务结果、检查事务是否完成或是否为新事务。（可以让事务管理器控制事务的执行，可以检查事务是不是一个新事务，或者是否只读）
  */
 public interface TransactionStatus extends TransactionExecution, SavepointManager, Flushable {
 
@@ -50,6 +51,8 @@ public interface TransactionStatus extends TransactionExecution, SavepointManage
 	 * @see #createSavepoint()
 	 * @see #rollbackToSavepoint(Object)
 	 * @see #releaseSavepoint(Object)
+	 *
+	 * @apiNote 是否设置了 savepoint，savepoint 是当事务回滚时需要恢复到的状态
 	 */
 	boolean hasSavepoint();
 
