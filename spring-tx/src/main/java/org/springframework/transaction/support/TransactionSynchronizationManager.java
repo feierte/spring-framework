@@ -78,6 +78,11 @@ public abstract class TransactionSynchronizationManager {
 
 	private static final Log logger = LogFactory.getLog(TransactionSynchronizationManager.class);
 
+	/**
+	 * 事务资源，两种数据键值对
+	 * 1. 会话工厂和会话，SqlSessionFactory -> SqlSessionHolder
+	 * 2. 数据源和连接，DataSource -> ConnectionHolder
+	 */
 	private static final ThreadLocal<Map<Object, Object>> resources =
 			new NamedThreadLocal<>("Transactional resources");
 

@@ -108,6 +108,8 @@ import org.springframework.util.Assert;
  * @see TransactionAwareDataSourceProxy
  * @see LazyConnectionDataSourceProxy
  * @see org.springframework.jdbc.core.JdbcTemplate
+ *
+ * @apiNote SpringBoot 中默认使用的事务管理器
  */
 @SuppressWarnings("serial")
 public class DataSourceTransactionManager extends AbstractPlatformTransactionManager
@@ -236,8 +238,11 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 	@Override
 	protected Object doGetTransaction() {
+
 		DataSourceTransactionObject txObject = new DataSourceTransactionObject();
 		txObject.setSavepointAllowed(isNestedTransactionAllowed());
+		// 先从当前事务管理器中获取 DataSource 对象，然后尝试以它作为一个 Key 从一个 ThreadLocal 的 Map 中获取对应的 ConnectionHolder 连接对象，
+		// 再将 ConnectionHolder 包装成一个 DataSourceTransactionObject 对象返回
 		ConnectionHolder conHolder =
 				(ConnectionHolder) TransactionSynchronizationManager.getResource(obtainDataSource());
 		txObject.setConnectionHolder(conHolder, false);
@@ -247,6 +252,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 	@Override
 	protected boolean isExistingTransaction(Object transaction) {
 		DataSourceTransactionObject txObject = (DataSourceTransactionObject) transaction;
+		// 是否已有 Connection 连接，且正处于一个事务中
 		return (txObject.hasConnectionHolder() && txObject.getConnectionHolder().isTransactionActive());
 	}
 

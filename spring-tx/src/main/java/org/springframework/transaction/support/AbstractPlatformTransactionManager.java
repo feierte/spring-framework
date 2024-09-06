@@ -117,6 +117,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 
 	private int defaultTimeout = TransactionDefinition.TIMEOUT_DEFAULT;
 
+	// 是否允许事务嵌套，true：允许，false：不允许
 	private boolean nestedTransactionAllowed = false;
 
 	private boolean validateExistingTransaction = false;
@@ -342,34 +343,52 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			throws TransactionException {
 
 		// Use defaults if no transaction definition given.
+		// 如果没有获取到 @Transactional 注解的信息，则创建一个默认的 TransactionDefinition 对象
 		TransactionDefinition def = (definition != null ? definition : TransactionDefinition.withDefaults());
 
+		// 获取事务，没有的话则创建新的事物
 		Object transaction = doGetTransaction();
 		boolean debugEnabled = logger.isDebugEnabled();
 
+		// 如果上面 transaction 数据源事务对象已有 Connection 连接，且正处于一个事务中，表示当前线程已经在一个事务中了
 		if (isExistingTransaction(transaction)) {
 			// Existing transaction found -> check propagation behavior to find out how to behave.
+			// 根据 Spring 事务传播级别进行不同的处理，同时创建一个 DefaultTransactionStatus 事务状态对象，包含以下信息：
+			// 1）TransactionDefinition 事务定义、
+			// 2）DataSourceTransactionObject 数据源事务对象、
+			// 3）是否需要新创建一个事务、
+			// 4）是否需要一个新的事务同步器、
+			// 5）被挂起的事务资源对象
 			return handleExistingTransaction(def, transaction, debugEnabled);
 		}
+		// 否则，当前线程没有事务，走到这里表示当前环境中不存在事务
 
 		// Check definition settings for new transaction.
+		// 超时时间设置的值不能小于默认值
 		if (def.getTimeout() < TransactionDefinition.TIMEOUT_DEFAULT) {
 			throw new InvalidTimeoutException("Invalid transaction timeout", def.getTimeout());
 		}
 
 		// No existing transaction found -> check propagation behavior to find out how to proceed.
+		// 如果是 MANDATORY 事务传播级别（当前线程已经在一个事务中，则加入该事务，否则抛出异常），因为当前线程没有事务，此时抛出异常
 		if (def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_MANDATORY) {
 			throw new IllegalTransactionStateException(
 					"No existing transaction found for transaction marked with propagation 'mandatory'");
 		}
+		// 否则，如果事务传播级别为 REQUIRED | REQUIRES_NEW | NESTED
+		// REQUIRED：如果当前线程已经在一个事务中，则加入该事务，否则新建一个事务（默认）
+		// REQUIRES_NEW：无论如何都会创建一个新的事务，如果当前线程已经在一个事务中，则挂起当前事务，创建一个新的事务
+		// NESTED：执行一个嵌套事务
 		else if (def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRED ||
 				def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRES_NEW ||
 				def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NESTED) {
+			// 创建一个“空”的挂起资源对象
 			SuspendedResourcesHolder suspendedResources = suspend(null);
 			if (debugEnabled) {
 				logger.debug("Creating new transaction with name [" + def.getName() + "]: " + def);
 			}
 			try {
+				// 开启一个新事务
 				return startTransaction(def, transaction, debugEnabled, suspendedResources);
 			}
 			catch (RuntimeException | Error ex) {
@@ -377,6 +396,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				throw ex;
 			}
 		}
+		// 否则，创建一个“空”的事务状态对象
 		else {
 			// Create "empty" transaction: no actual transaction, but potentially synchronization.
 			if (def.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT && logger.isWarnEnabled()) {
@@ -384,6 +404,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 						"isolation level will effectively be ignored: " + def);
 			}
 			boolean newSynchronization = (getTransactionSynchronization() == SYNCHRONIZATION_ALWAYS);
+			// 创建一个 DefaultTransactionStatus 事务状态对象，设置相关属性，这里也是一个新的事务
 			return prepareTransactionStatus(def, null, true, newSynchronization, debugEnabled, null);
 		}
 	}
@@ -394,10 +415,16 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	private TransactionStatus startTransaction(TransactionDefinition definition, Object transaction,
 			boolean debugEnabled, @Nullable SuspendedResourcesHolder suspendedResources) {
 
+		// 是否需要新的事务同步器，默认为 true
 		boolean newSynchronization = (getTransactionSynchronization() != SYNCHRONIZATION_NEVER);
+		// 创建一个 DefaultTransactionStatus 事务状态对象，设置相关属性
+		// 这里 newTransaction 参数为 true，表示是一个新的事务
 		DefaultTransactionStatus status = newTransactionStatus(
 				definition, transaction, true, newSynchronization, debugEnabled, suspendedResources);
+		// 【关键】执行 begin 操作，如果没有 Connection 数据库连接，则通过 DataSource 创建一个新的连接，设置 Connection 的隔离级别、是否只读，
+		// 并执行 Connection#setAutoCommit(false) 方法，不自动提交，同时将 DataSource（数据源对象）和 ConnectionHolder（数据库连接持有者）保存至 ThreadLocal 中
 		doBegin(transaction, definition);
+		// 借助 TransactionSynchronizationManager 事务同步管理器设置相关 ThreadLocal 变量
 		prepareSynchronization(status, definition);
 		return status;
 	}

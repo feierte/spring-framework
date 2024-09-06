@@ -335,7 +335,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		// 所以此处是为了拿到 @Transactional 中的属性
 		TransactionAttributeSource tas = getTransactionAttributeSource();
 		final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);
-		// 获取事务管理器
+		// 获取事务管理器（可以指定，没有指定则获取默认的）
 		final TransactionManager tm = determineTransactionManager(txAttr);
 
 		// 处理 ReactiveTransactionManager
@@ -362,22 +362,27 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		// 获取方法的全限定性方法名称，例如：com.example.UserService.updateAllUser
 		final String joinpointIdentification = methodIdentification(method, targetClass, txAttr);
 
+		// 默认走下面这个分支，因为事务管理器一般不是 CallbackPreferringPlatformTransactionManager
 		if (txAttr == null || !(ptm instanceof CallbackPreferringPlatformTransactionManager)) {
 			// Standard transaction demarcation with getTransaction and commit/rollback calls.
+			// 创建 TransactionInfo 事务信息对象，绑定在 ThreadLocal 中
 			TransactionInfo txInfo = createTransactionIfNecessary(ptm, txAttr, joinpointIdentification);
 
 			Object retVal;
 			try {
 				// This is an around advice: Invoke the next interceptor in the chain.
 				// This will normally result in a target object being invoked.
+				// 继续执行方法调用链
 				retVal = invocation.proceedWithInvocation();
 			}
 			catch (Throwable ex) {
 				// target invocation exception
+				// 如果捕获到异常，则在这里完成事务，进行回滚或者提交
 				completeTransactionAfterThrowing(txInfo, ex);
 				throw ex;
 			}
 			finally {
+				// 释放 ThreadLocal 中的 TransactionInfo 对象，设置为上一个事务信息对象（没有的话为空）
 				cleanupTransactionInfo(txInfo);
 			}
 
@@ -389,10 +394,12 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			}
 
+			// 正常情况，到这里完成事务
 			commitTransactionAfterReturning(txInfo);
 			return retVal;
 		}
 
+		// 否则，就是支持回调的事务管理器，编程式事务（回调偏向）
 		else {
 			Object result;
 			final ThrowableHolder throwableHolder = new ThrowableHolder();
@@ -565,6 +572,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 			@Nullable TransactionAttribute txAttr, final String joinpointIdentification) {
 
 		// If no name specified, apply method identification as transaction name.
+		// 没有设置事务名称，则封装成一个 DelegatingTransactionAttribute 委托对象，支持返回一个事务名称（全限定性类名.方法名）
 		if (txAttr != null && txAttr.getName() == null) {
 			txAttr = new DelegatingTransactionAttribute(txAttr) {
 				@Override
@@ -577,6 +585,12 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		TransactionStatus status = null;
 		if (txAttr != null) {
 			if (tm != null) {
+				// 从事务管理器中获取一个 TransactionStatus 事务状态对象（对事务的封装），该对象包含以下信息：
+				// 1）TransactionDefinition 事务定义、
+				// 2）DataSourceTransactionObject 数据源事务对象（包括 DataSource 和 Connection）、
+				// 3）是否是一个新的事务、
+				// 4）是否是一个新的事务同步器、
+				// 5）被挂起的事务资源对象
 				status = tm.getTransaction(txAttr);
 			}
 			else {
@@ -586,6 +600,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			}
 		}
+		// 创建一个 TransactionInfo 事务信息对象，并绑定到 ThreadLocal 中
 		return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);
 	}
 

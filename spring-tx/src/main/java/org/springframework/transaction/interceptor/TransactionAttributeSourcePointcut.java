@@ -94,8 +94,8 @@ abstract class TransactionAttributeSourcePointcut extends StaticMethodMatcherPoi
 			}
 			// 返回的是 BeanFactoryTransactionAttributeSourceAdvisor 的域 AnnotationTransactionAttributeSource
 			TransactionAttributeSource tas = getTransactionAttributeSource();
-			// 因为tas为 AnnotationTransactionAttributeSource，所以这里通过tas.getTransactionAttribute查看该方法是否有事务相关注解
-			// 如果有的话，就需要通过AOP进行事务处理
+			// 因为 tas 为 AnnotationTransactionAttributeSource，所以这里通过 tas.getTransactionAttribute 查看该方法是否有事务相关注解（例如：@Transactional）
+			// 如果有的话，就需要通过 AOP 进行代理，增加事务功能
 			return (tas == null || tas.isCandidateClass(clazz));
 		}
 	}
