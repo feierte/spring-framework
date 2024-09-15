@@ -51,7 +51,7 @@ public interface Condition {
 	 * @return {@code true} if the condition matches and the component can be registered,
 	 * or {@code false} to veto the annotated component's registration
 	 *
-	 * @apiNote 用来判定是否符合指定的条。
+	 * @apiNote 用来判定是否符合指定的条件。
 	 * context 参数：在判断条件是否匹配时，可以使用的各种上下文信息都可以通过 ConditionContext 获取。
 	 * metadata 参数：表示 @Conditional 注解的类或方法上的注解元数据。
 	 */

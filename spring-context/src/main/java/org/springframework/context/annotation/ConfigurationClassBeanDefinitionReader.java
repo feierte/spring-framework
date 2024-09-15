@@ -137,6 +137,7 @@ class ConfigurationClassBeanDefinitionReader {
 	private void loadBeanDefinitionsForConfigurationClass(
 			ConfigurationClass configClass, TrackedConditionEvaluator trackedConditionEvaluator) {
 
+		// 条件注解在这里判断，判断时机：注册为 BeanDefinition
 		// 判断是否需要跳过，与之前解析@Configuration判断是否跳过的逻辑是相同的 借助了conditionEvaluator。
 		if (trackedConditionEvaluator.shouldSkip(configClass)) {
 			String beanName = configClass.getBeanName();
@@ -144,7 +145,7 @@ class ConfigurationClassBeanDefinitionReader {
 				this.registry.removeBeanDefinition(beanName);
 			}
 			this.importRegistry.removeImportingClass(configClass.getMetadata().getClassName());
-			// @Conditional 条件不满足，不在注册配置类中包含的其他 Bean
+			// @Conditional 条件不满足，不再注册配置类中包含的其他 Bean
 			return;
 		}
 

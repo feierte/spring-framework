@@ -79,7 +79,9 @@ class ConditionEvaluator {
 	 * @param phase the phase of the call
 	 * @return if the item should be skipped
 	 *
-	 * @apiNote 判定基于 @Conditional 注解的配置类是否应该忽略
+	 * @apiNote 判定基于 @Conditional 注解的配置类是否应该忽略，
+	 * true：表示条件注解生效
+	 * false：表示条件注解不生效
 	 */
 	public boolean shouldSkip(@Nullable AnnotatedTypeMetadata metadata, @Nullable ConfigurationPhase phase) {
 		// 首先判定配置类是否存在注解，然后判定注解中是否包含@Conditional注解
@@ -96,7 +98,8 @@ class ConditionEvaluator {
 		}
 
 		List<Condition> conditions = new ArrayList<>();
-		// 从 bean 的注解信息封装对象中获取所有的 Conditional 类型或者Conditional的派生注解
+		// 从被 @Conditional 注解的元数据中获取所有的 @Conditional 类型或者 @Conditional 的派生注解，
+		// 拿到 @Conditional 注解中指定的 Condition 接口实现
 		for (String[] conditionClasses : getConditionClasses(metadata)) {
 			for (String conditionClass : conditionClasses) {
 				Condition condition = getCondition(conditionClass, this.context.getClassLoader());
@@ -106,11 +109,15 @@ class ConditionEvaluator {
 
 		AnnotationAwareOrderComparator.sort(conditions);
 
+		// 执行所有的 Condition 对象的判断逻辑（match方法）
 		for (Condition condition : conditions) {
 			ConfigurationPhase requiredPhase = null;
 			if (condition instanceof ConfigurationCondition) {
+				// 获取当前 Condition 的执行阶段
 				requiredPhase = ((ConfigurationCondition) condition).getConfigurationPhase();
 			}
+			// 如果入参传入的阶段和 Condition 的阶段不同，直接返回 FALSE。
+			// 如果阶段相同 或 Condition 的阶段为 null，再使用 Condition#matches(this.context, metadata) 做真正的条件装配逻辑，不符合则返回 TRUE。
 			if ((requiredPhase == null || requiredPhase == phase) && !condition.matches(this.context, metadata)) {
 				return true;
 			}
