@@ -131,6 +131,7 @@ public class PropertyPlaceholderHelper {
 			String value, PlaceholderResolver placeholderResolver, @Nullable Set<String> visitedPlaceholders) {
 
 		int startIndex = value.indexOf(this.placeholderPrefix);
+		// 如果不存在占位符（例如：${}），则原样返回 value。
 		if (startIndex == -1) {
 			return value;
 		}
@@ -139,6 +140,7 @@ public class PropertyPlaceholderHelper {
 		while (startIndex != -1) {
 			int endIndex = findPlaceholderEndIndex(result, startIndex);
 			if (endIndex != -1) {
+				// 解析出占位符中包裹的字符串，例如：${spring.application.name}，则得到 spring.application.name
 				String placeholder = result.substring(startIndex + this.placeholderPrefix.length(), endIndex);
 				String originalPlaceholder = placeholder;
 				if (visitedPlaceholders == null) {
@@ -152,6 +154,7 @@ public class PropertyPlaceholderHelper {
 				// 递归解析占位符，防止占位符中还包含占位符，例如 ${${foo}lish}
 				placeholder = parseStringValue(placeholder, placeholderResolver, visitedPlaceholders);
 				// Now obtain the value for the fully resolved key...
+				// 从当前环境中获取属性值
 				String propVal = placeholderResolver.resolvePlaceholder(placeholder);
 				if (propVal == null && this.valueSeparator != null) {
 					int separatorIndex = placeholder.indexOf(this.valueSeparator);

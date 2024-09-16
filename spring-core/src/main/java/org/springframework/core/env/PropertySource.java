@@ -63,7 +63,7 @@ public abstract class PropertySource<T> {
 
 	// 属性源名称
 	protected final String name;
-	// 属于原（比如来自 Map，那就是一个 Map 对象）
+	// 属性源，可来自 Map、Properties、Resource等。（比如来自 Map，那就是一个 Map 对象）
 	protected final T source;
 
 
@@ -207,6 +207,8 @@ public abstract class PropertySource<T> {
 	 * @see org.springframework.context.support.AbstractApplicationContext#initPropertySources()
 	 * @see org.springframework.web.context.support.StandardServletEnvironment
 	 * @see org.springframework.web.context.support.ServletContextPropertySource
+	 *
+	 * @apiNote  用于占位用。
 	 */
 	public static class StubPropertySource extends PropertySource<Object> {
 

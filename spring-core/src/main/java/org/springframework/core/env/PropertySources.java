@@ -49,12 +49,16 @@ public interface PropertySources extends Iterable<PropertySource<?>> {
 	/**
 	 * Return whether a property source with the given name is contained.
 	 * @param name the {@linkplain PropertySource#getName() name of the property source} to find
+	 *
+	 * @apiNote 是否包含参数中指定的属性源。注意该方法不是判断是否包含属性值的，这里容易误解。
 	 */
 	boolean contains(String name);
 
 	/**
 	 * Return the property source with the given name, {@code null} if not found.
 	 * @param name the {@linkplain PropertySource#getName() name of the property source} to find
+	 *
+	 * @apiNote 根据属性源名称获取属性源
 	 */
 	@Nullable
 	PropertySource<?> get(String name);

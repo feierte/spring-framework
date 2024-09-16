@@ -41,6 +41,8 @@ import org.springframework.util.ObjectUtils;
  * @author Juergen Hoeller
  * @since 3.1
  * @param <T> the source type
+ *
+ * @apiNote 可遍历的属性源，就是可以遍历属性源中的所有属性名称和属性值。
  */
 public abstract class EnumerablePropertySource<T> extends PropertySource<T> {
 
@@ -77,6 +79,8 @@ public abstract class EnumerablePropertySource<T> extends PropertySource<T> {
 	/**
 	 * Return the names of all properties contained by the
 	 * {@linkplain #getSource() source} object (never {@code null}).
+	 *
+	 * @apiNote 获取属性源中的所有属性名。
 	 */
 	public abstract String[] getPropertyNames();
 

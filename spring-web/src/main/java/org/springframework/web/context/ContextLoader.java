@@ -304,7 +304,7 @@ public class ContextLoader {
 						cwac.setParent(parent);
 					}
 					// 加载对应的spring配置文件中的Bean
-					// 读取Spring的配置文件，初始化根上下文环境
+					// 读取Spring的配置文件，并初始化根上下文环境
 					configureAndRefreshWebApplicationContext(cwac, servletContext);
 				}
 			}
@@ -415,13 +415,14 @@ public class ContextLoader {
 		// The wac environment's #initPropertySources will be called in any case when the context
 		// is refreshed; do it eagerly here to ensure servlet property sources are in place for
 		// use in any post-processing or initialization that occurs below prior to #refresh
+		// 刷新容器之前，将 ServletContext 注入到 Environment 中，这样就可以提前使用
 		ConfigurableEnvironment env = wac.getEnvironment();
 		if (env instanceof ConfigurableWebEnvironment) {
 			((ConfigurableWebEnvironment) env).initPropertySources(sc, null);
 		}
 
 		customizeContext(sc, wac);
-		// 最后调用传说中的refresh方法执行所有Java对象的创建。
+		// 最后调用 AbstractApplicationContext#refresh 方法执行所有 Java 对象的创建。
 		wac.refresh();
 	}
 

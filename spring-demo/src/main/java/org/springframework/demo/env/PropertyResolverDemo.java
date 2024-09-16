@@ -1,4 +1,4 @@
-package org.springframework.demo.environment;
+package org.springframework.demo.env;
 
 /**
  * PropertyResolver 的实例代码

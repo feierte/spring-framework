@@ -1,4 +1,4 @@
-package org.springframework.demo.environment;
+package org.springframework.demo.env;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.demo.ioc.beanfactory.User;

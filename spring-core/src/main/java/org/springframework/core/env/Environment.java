@@ -68,7 +68,8 @@ package org.springframework.core.env;
  * @see org.springframework.context.ConfigurableApplicationContext#setEnvironment
  * @see org.springframework.context.support.AbstractApplicationContext#createEnvironment
  *
- * @apiNote 用来表示整个应用运行时的环境，为了更形象地理解 Environment，你可以把Spring应用的运行时简单地想象成两个部分：一个是Spring应用本身，一个是Spring应用所处的环境。
+ * @apiNote 用来表示当前 Spring 整个应用运行时的环境，为了更形象地理解 Environment，你可以把Spring应用的运行时简单地想象成两个部分：
+ * 一个是Spring应用本身，一个是Spring应用所处的环境。
  *
  * <p>Environment在容器中是一个抽象的集合，是指应用环境的两个方面：profiles 和 properties。这个接口代表了当前应用正在运行的环境，为应用的两个重要方面建立抽象模型 【profiles】和【properties】。
  * 关于属性访问的方法通过父接口 PropertyResolver 暴露给客户端使用，本接口主要是扩展出访问【profiles】相关的接口。
@@ -79,13 +80,15 @@ package org.springframework.core.env;
  * 			Environment对象和其相关的对象一起提供给用户一个方便用来配置和解析属性的服务。
  *
  * <p> Profile
- * 剖面，大体意思是：我们程序可能从某几个剖面来执行应用，比如正式机环境、测试机环境、开发机环境等，每个剖面的配置可能不一样（比如开发机可能使用本地的数据库测试，
- * 正式机使用正式机的数据库测试）等；因此呢，就需要根据不同的环境选择不同的配置；
+ * 用来区分当前是 dev 环境还是 test 环境或者 prod 环境等等。
  *
  * profile有两种：
  * 	默认的：通过环境中 “spring.profiles.default” 属性获取，如果没有配置默认值是 “default”
  * 	明确激活的：通过环境中 “spring.profiles.active” 获取
- * 查找顺序是：先进性明确激活的匹配，如果没有指定明确激活的（即集合为空）就找默认的；配置属性值从 Environment 读取。
+ * 查找顺序是：先进行明确激活的匹配，如果没有指定明确激活的（即集合为空）就找默认的；配置属性值从 Environment 读取。
+ *
+ * <p> Properties
+ * 表示所有的属性，包括操作系统环境变量，如 PATH，JDK 相关配置，如 java.vm.specification.version（JDK版本），还有我们通过 properties 文件和 yaml 文件等配置文件自定义的属性。
  */
 public interface Environment extends PropertyResolver {
 

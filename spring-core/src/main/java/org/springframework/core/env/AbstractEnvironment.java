@@ -63,6 +63,8 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	 * log warnings from {@code getenv} calls coming from Spring, e.g. on WebSphere
 	 * with strict SecurityManager settings and AccessControlExceptions warnings.
 	 * @see #suppressGetenvAccess()
+	 *
+	 * @apiNote 为 true 时， getSystemEnvironment() 返回空集合，屏蔽 OS 相关信息
 	 */
 	public static final String IGNORE_GETENV_PROPERTY_NAME = "spring.getenv.ignore";
 
@@ -109,6 +111,7 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 
 	private final MutablePropertySources propertySources = new MutablePropertySources();
 
+	// propertyResolver 用于解析属性占位符和类型转换
 	private final ConfigurablePropertyResolver propertyResolver =
 			new PropertySourcesPropertyResolver(this.propertySources);
 

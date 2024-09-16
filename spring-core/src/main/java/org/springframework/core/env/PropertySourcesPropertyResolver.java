@@ -34,6 +34,9 @@ import org.springframework.lang.Nullable;
  */
 public class PropertySourcesPropertyResolver extends AbstractPropertyResolver {
 
+	/**
+	 * 属性源，可以看到属性解析器持有属性源，可以解析占位符和进行类型转换。
+	 */
 	@Nullable
 	private final PropertySources propertySources;
 
