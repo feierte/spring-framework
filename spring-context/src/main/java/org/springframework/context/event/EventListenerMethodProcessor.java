@@ -76,6 +76,7 @@ public class EventListenerMethodProcessor
 
 	private final EventExpressionEvaluator evaluator = new EventExpressionEvaluator();
 
+	// 缓存，存储没有 @EventListener 修饰的类，为了提供性能
 	private final Set<Class<?>> nonAnnotatedClasses = Collections.newSetFromMap(new ConcurrentHashMap<>(64));
 
 
@@ -149,6 +150,7 @@ public class EventListenerMethodProcessor
 
 			Map<Method, EventListener> annotatedMethods = null;
 			try {
+				// 查找类中所有被 @EventListener 注解的方法
 				annotatedMethods = MethodIntrospector.selectMethods(targetType,
 						(MethodIntrospector.MetadataLookup<EventListener>) method ->
 								AnnotatedElementUtils.findMergedAnnotation(method, EventListener.class));

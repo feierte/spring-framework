@@ -104,6 +104,8 @@ public abstract class AbstractApplicationEventMulticaster
 		synchronized (this.defaultRetriever) {
 			// Explicitly remove target for a proxy, if registered already,
 			// in order to avoid double invocations of the same listener.
+			// 添加监听器时，会先检查当前监听器对象是否是代理对象，如果是，则先把代理对象提取出来，
+			// 然后从监听器集合中先移除再重新添加，防止一个监听器以代理对象的方式被添加一次，又以被代理对象被添加一次。
 			Object singletonTarget = AopProxyUtils.getSingletonTarget(listener);
 			if (singletonTarget instanceof ApplicationListener) {
 				this.defaultRetriever.applicationListeners.remove(singletonTarget);
@@ -166,7 +168,8 @@ public abstract class AbstractApplicationEventMulticaster
 	 * @param eventType the event type
 	 * @return a Collection of ApplicationListeners
 	 * @see org.springframework.context.ApplicationListener
-	 * <p>根据事件和事件类型获得对应的监听器
+	 *
+	 * @apiNote 根据事件和事件类型获得对应的监听器
 	 */
 	protected Collection<ApplicationListener<?>> getApplicationListeners(
 			ApplicationEvent event, ResolvableType eventType) {
@@ -229,6 +232,7 @@ public abstract class AbstractApplicationEventMulticaster
 		// Add programmatically registered listeners, including ones coming
 		// from ApplicationListenerDetector (singleton beans and inner beans).
 		for (ApplicationListener<?> listener : listeners) {
+			// 判断当前监听器是否支持该事件
 			if (supportsEvent(listener, eventType, sourceType)) {
 				if (retriever != null) {
 					filteredListeners.add(listener);
@@ -243,6 +247,7 @@ public abstract class AbstractApplicationEventMulticaster
 			ConfigurableBeanFactory beanFactory = getBeanFactory();
 			for (String listenerBeanName : listenerBeans) {
 				try {
+					// 判断当前监听器是否支持该事件
 					if (supportsEvent(beanFactory, listenerBeanName, eventType)) {
 						ApplicationListener<?> listener =
 								beanFactory.getBean(listenerBeanName, ApplicationListener.class);
@@ -276,6 +281,8 @@ public abstract class AbstractApplicationEventMulticaster
 			}
 		}
 
+		// 对监听器进行排序，所以定义监听器的时候可以指定执行顺序（@Order 或者实现 Order 接口）
+		// 同步执行监听器，顺序才会起作用，异步执行监听器，顺序不起作用，无法确定执行顺序
 		AnnotationAwareOrderComparator.sort(allListeners);
 		if (retriever != null) {
 			if (filteredListenerBeans.isEmpty()) {

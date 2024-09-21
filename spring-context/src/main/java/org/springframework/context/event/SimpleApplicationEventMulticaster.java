@@ -135,11 +135,11 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
 		// 根据事件和事件类型去获得此事件和事件类型的监听器。getApplicationListeners(event, type)
 		for (ApplicationListener<?> listener : getApplicationListeners(event, type)) {
 			if (executor != null) {
-				// 执行事件
+				// 异步执行事件
 				executor.execute(() -> invokeListener(listener, event));
 			}
 			else {
-				// 执行事件
+				// 同步执行事件
 				invokeListener(listener, event);
 			}
 		}

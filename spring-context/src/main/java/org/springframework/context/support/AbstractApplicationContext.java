@@ -389,7 +389,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		Assert.notNull(event, "Event must not be null");
 
 		// Decorate event as an ApplicationEvent if necessary
-		// 支持两种事件 1、直接继承 ApplicationEvent，2、其他事件，会被包装为 PayloadApplicationEvent，可以使用 getPayload 获取真实的通知内容
+		// 支持两种事件
+		// 	1、直接继承 ApplicationEvent，
+		// 	2、其他事件（没有继承 ApplicationEvent 类），会被包装为 PayloadApplicationEvent，可以使用 getPayload 获取真实的通知内容
 		// 判断事件类型是否为 ApplicationEvent，如果不是则封装成 PayloadApplicationEvent
 		ApplicationEvent applicationEvent;
 		if (event instanceof ApplicationEvent) {
@@ -563,7 +565,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				onRefresh();
 
 				// Check for listener beans and register them.
-				// 注册应用的监听器。就是注册实现了ApplicationListener接口的监听器bean
+				// 注册应用的监听器
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
@@ -861,13 +863,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void registerListeners() {
 		// Register statically specified listeners first.
-		// 注册当前应用上下文所关联的ApplicationListener对象
+		// 注册当前应用上下文所关联的 ApplicationListener 对象，即通过 ConfigurableApplicationContext#addApplicationListener() 方法添加进去的监听器
 		for (ApplicationListener<?> listener : getApplicationListeners()) {
 			getApplicationEventMulticaster().addApplicationListener(listener);
 		}
 
 		// Do not initialize FactoryBeans here: We need to leave all regular beans
 		// uninitialized to let post-processors apply to them!
+		// 注册 ioc 容器中实现了 ApplicationListener 接口的监听器
 		String[] listenerBeanNames = getBeanNamesForType(ApplicationListener.class, true, false);
 		for (String listenerBeanName : listenerBeanNames) {
 			getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);

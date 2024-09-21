@@ -33,6 +33,8 @@ import org.springframework.lang.Nullable;
  * @since 4.2
  * @see SmartApplicationListener
  * @see GenericApplicationListenerAdapter
+ *
+ * <p> 有了 SmartApplicationListener，为啥还需要 GenericApplicationListenerAdapter？两者的类定义和方法（参数不一样）都一样
  */
 public interface GenericApplicationListener extends ApplicationListener<ApplicationEvent>, Ordered {
 

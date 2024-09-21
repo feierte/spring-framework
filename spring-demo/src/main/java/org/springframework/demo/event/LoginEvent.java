@@ -1,17 +1,14 @@
 package org.springframework.demo.event;
 
 import org.springframework.context.ApplicationEvent;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Jie Zhao
- * @date 2021/9/29 11:40
+ * @date 2024/9/21 9:05
  */
-public class MyApplicationEvent extends ApplicationEvent {
+public class LoginEvent extends ApplicationEvent {
 
-	private static final long serialVersionUID = 1L;
-
-	private String message;
+	private String userName;
 
 	/**
 	 * Create a new {@code ApplicationEvent}.
@@ -19,12 +16,12 @@ public class MyApplicationEvent extends ApplicationEvent {
 	 * @param source the object on which the event initially occurred or with
 	 *               which the event is associated (never {@code null})
 	 */
-	public MyApplicationEvent(Object source) {
+	public LoginEvent(Object source, String userName) {
 		super(source);
+		this.userName = userName;
 	}
 
-
-	public String getMessage() {
-		return "自定义事件发生了...";
+	public String getUserName() {
+		return userName;
 	}
 }
