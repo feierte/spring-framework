@@ -214,7 +214,7 @@ public interface TransactionDefinition {
 	 * Use the default timeout of the underlying transaction system,
 	 * or none if timeouts are not supported.
 	 *
-	 * @apiNote 默认事务的超时时间
+	 * @apiNote 默认事务的超时时间，-1 表示超时时间由底层的数据库决定
 	 */
 	int TIMEOUT_DEFAULT = -1;
 
