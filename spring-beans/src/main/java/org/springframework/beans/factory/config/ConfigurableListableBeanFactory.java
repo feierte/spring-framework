@@ -59,6 +59,11 @@ public interface ConfigurableListableBeanFactory
 	 * @param ifc the dependency interface to ignore
 	 * @see org.springframework.beans.factory.BeanFactoryAware
 	 * @see org.springframework.context.ApplicationContextAware
+	 *
+	 * @apiNote
+	 * 当 Spring 容器创建一个 Bean 时，会根据其定义（@Autowired, @Value, 构造函数参数等）尝试自动注入所需的依赖。
+	 * 一个 Bean 实现了某个被标记为 ignoreDependencyInterface 的接口，那么在自动装配阶段，Spring 会跳过对该 Bean 注入这个特定接口的实例。
+	 * 这个被忽略的接口通常代表了一种回调机制或容器服务，其实现或提供者由容器内部负责，而不是通过常规的依赖注入流程。
 	 */
 	void ignoreDependencyInterface(Class<?> ifc);
 
@@ -77,6 +82,14 @@ public interface ConfigurableListableBeanFactory
 	 * @param autowiredValue the corresponding autowired value. This may also be an
 	 * implementation of the {@link org.springframework.beans.factory.ObjectFactory}
 	 * interface, which allows for lazy resolution of the actual target value.
+	 *
+	 * @apiNote 提供一种全局的、显式的依赖绑定机制，优先于常规的 Bean 查找和注入流程。
+	 * <p>当 Spring 容器在自动装配一个 Bean（通过 @Autowired, @Inject, 构造函数注入等）时，如果发现某个依赖项的类型（dependencyType）
+	 * 与你通过 registerResolvableDependency 注册的类型匹配，容器会直接使用你注册的 autowiredValue 来满足该依赖，而不会去 Bean 工厂中
+	 * 查找类型为 dependencyType 的 Bean。
+	 * <p>这个注册的依赖项本身不会被注册为一个普通的 Spring Bean（即不会出现在 ApplicationContext 的 Bean 定义中，也不会经历完整的 Bean 生命周期）。
+	 * 它更像是一个“快捷方式”或“注入源”。
+	 * <p>在依赖解析过程中，注册的可解析依赖项的优先级通常高于通过 @Primary 或 @Qualifier 注解指定的 Bean。
 	 */
 	void registerResolvableDependency(Class<?> dependencyType, @Nullable Object autowiredValue);
 
@@ -88,6 +101,9 @@ public interface ConfigurableListableBeanFactory
 	 * @param descriptor the descriptor of the dependency to resolve
 	 * @return whether the bean should be considered as autowire candidate
 	 * @throws NoSuchBeanDefinitionException if there is no bean with the given name
+	 *
+	 * @apiNote 判断指定名称的 Bean 是否有资格作为给定依赖项（由 DependencyDescriptor 描述）的自动装配候选者。
+	 * 简单来说，它回答了这样一个问题：“在当前的上下文中，名为 beanName 的这个 Bean，能不能被用来注入到 descriptor 所描述的那个位置（比如某个字段、方法参数或构造函数参数）？”
 	 */
 	boolean isAutowireCandidate(String beanName, DependencyDescriptor descriptor)
 			throws NoSuchBeanDefinitionException;
@@ -145,7 +161,7 @@ public interface ConfigurableListableBeanFactory
 	void freezeConfiguration();
 
 	/**
-	 * Return whether this factory's bean definitions are frozen,
+	 * Return whether this factory's bean definitios are frozen,
 	 * i.e. are not supposed to be modified or post-processed any further.
 	 * @return {@code true} if the factory's configuration is considered frozen
 	 * @see #freezeConfiguration()
