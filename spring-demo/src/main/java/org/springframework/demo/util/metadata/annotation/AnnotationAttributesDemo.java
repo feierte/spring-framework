@@ -1,8 +1,8 @@
-package org.springframework.demo.metadata.annotation;
+package org.springframework.demo.util.metadata.annotation;
 
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationAttributes;
-import org.springframework.demo.metadata.annotation.override.TransactionalServiceBean;
+import org.springframework.demo.util.metadata.annotation.override.TransactionalServiceBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

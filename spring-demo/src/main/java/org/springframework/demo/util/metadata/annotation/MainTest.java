@@ -1,7 +1,5 @@
-package org.springframework.demo.metadata.annotation;
+package org.springframework.demo.util.metadata.annotation;
 
-import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.stereotype.Component;
 

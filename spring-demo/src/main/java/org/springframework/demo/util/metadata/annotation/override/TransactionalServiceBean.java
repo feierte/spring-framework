@@ -1,6 +1,6 @@
-package org.springframework.demo.metadata.annotation.override;
+package org.springframework.demo.util.metadata.annotation.override;
 
-import org.springframework.demo.metadata.annotation.TransactionalService;
+import org.springframework.demo.util.metadata.annotation.TransactionalService;
 
 /**
  * @author Jie Zhao

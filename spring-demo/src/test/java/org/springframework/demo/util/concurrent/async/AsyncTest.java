@@ -1,15 +1,15 @@
-package org.springframework.demo.concurrent.scheduling.async;
+package org.springframework.demo.util.concurrent.async;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.demo.util.concurrent.async.AsyncConfiguration;
+import org.springframework.demo.util.concurrent.async.AsyncService;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
-import java.sql.Time;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class AsyncTest {
 
 	@Autowired
-	AsyncService asyncService;
+    AsyncService asyncService;
 	@Autowired
 	RestTemplate restTemplate;
 

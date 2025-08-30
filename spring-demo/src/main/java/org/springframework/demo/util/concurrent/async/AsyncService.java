@@ -1,4 +1,4 @@
-package org.springframework.demo.concurrent.scheduling.async;
+package org.springframework.demo.util.concurrent.async;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
  * @date 2024/6/15 9:56
  */
 @Service
-@Slf4j
 public class AsyncService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AsyncService.class);
 	protected final Log logger = LogFactory.getLog(getClass());

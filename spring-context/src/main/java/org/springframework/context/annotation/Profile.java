@@ -95,6 +95,8 @@ import org.springframework.core.env.Profiles;
  * @see AbstractEnvironment#DEFAULT_PROFILES_PROPERTY_NAME
  * @see Conditional
  * @see org.springframework.test.context.ActiveProfiles
+ *
+ * @apiNote 指定某个 Bean 只能在特定的 Profile 下创建。
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

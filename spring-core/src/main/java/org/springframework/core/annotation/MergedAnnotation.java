@@ -59,7 +59,8 @@ import org.springframework.lang.Nullable;
  * @see MergedAnnotations
  * @see MergedAnnotationPredicates
  *
- * @apiNote MergedAnnotation 接口用于封装来源于多个不同注解的属性。即是对注解的数据抽象，它提供了丰富的api用来获取注解中的属性值。
+ * @apiNote 字面上理解为合并注解，MergedAnnotation 通常与一个注解对象一对一，但是它的属性可能来自于子注解或者元注解，
+ * 甚至是同一个注解中通过 @AliasFor 绑定其他属性，因此称为“合并”注解——这里的合并指的是属性上的合并。
  */
 public interface MergedAnnotation<A extends Annotation> {
 

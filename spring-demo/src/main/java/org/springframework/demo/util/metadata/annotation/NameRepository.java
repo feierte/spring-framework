@@ -1,4 +1,4 @@
-package org.springframework.demo.metadata.annotation;
+package org.springframework.demo.util.metadata.annotation;
 
 import java.util.Arrays;
 import java.util.List;

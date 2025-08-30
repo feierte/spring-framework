@@ -101,6 +101,16 @@ import org.springframework.util.StringUtils;
  * @see java.lang.reflect.AnnotatedElement#getAnnotations()
  * @see java.lang.reflect.AnnotatedElement#getAnnotation(Class)
  * @see java.lang.reflect.AnnotatedElement#getDeclaredAnnotations()
+ *
+ * @apiNote 注解工具类，主要提供了两类方法:
+ * 	1.getXXX 表示从 AnnotationElement 上寻找直接声明的注解。
+ * 	2.findXXX 表示从 AnnotatedElement 的层级结构（类或方法）上寻找存在的注解。
+ * 大部分情况下，get 开头的方法与 AnnotatedElement 本身直接提供的方法效果一致，比较特殊的 find 开头的方法，
+ * 此类方法会从AnnotatedElement 的层级结构中寻找存在的注解，关于“层级结构”，Spring 给出了一套定义：
+ * 	（1）当 AnnotatedElement 是 Class 时：层级结构指类本身，以及类和它的父类，父接口，以及父类的父类，父类的父接口......整个继承树中的所有 Class 文件；
+ * 	（2）当 AnnotatedElement 是 Method 是：层级结构指方法本身，以及声明该方法的类它的父类，父接口，以及父类的父类，父类的父接口......整个继承树中所有 Class 文件中，
+ * 		那些与搜索的 Method 具有完全相同签名的方法；
+ * 	（3）当 AnnotatedElement 不是上述两者中的一种时，它没有层级结构，搜索将仅限于 AnnotatedElement 这个对象本身；
  */
 public abstract class AnnotationUtils {
 
@@ -488,12 +498,18 @@ public abstract class AnnotationUtils {
 		}
 
 		// Shortcut: directly present on the element, with no merging needed?
-		if (AnnotationFilter.PLAIN.matches(annotationType) ||
-				AnnotationsScanner.hasPlainJavaAnnotationsOnly(annotatedElement)) {
+		// 这里两个条件满足的话，就只从当前 annotatedElement 直接查找注解，不进行层次结构查找了
+		if (AnnotationFilter.PLAIN.matches(annotationType) || // 判断注解是否是 java.lang 或者 org.springframework.lang 包下的，
+															// 即当查找的注解属于 java.lang、org.springframework.lang 包的时候就不进行查找，而是直接从被查找的元素直接声明的注解中获取。
+															// 这个选择不难理解，java.lang 包下提供的都是诸如 @Resource 或者 @Target 这样的注解，而 springframework.lang 包下提供的则都是 @Nonnull 这样的注解，
+															// 这些注解基本不可能作为有特殊业务意义的元注解使用，因此默认忽略也是合理的。
+				AnnotationsScanner.hasPlainJavaAnnotationsOnly(annotatedElement)) { // annotatedElement 是否是 Java 中的类 || annotatedElement 是否是 org.springframework.core.Ordered
 			return annotatedElement.getDeclaredAnnotation(annotationType);
 		}
 
 		// Exhaustive retrieval of merged annotations...
+		// 通过 MergedAnnotations 对层级结构进行搜索，并对获得的注解进行聚合。
+		// 在这个过程中，被聚合的注解就会被封装为 MergedAnnotation，而结束搜索后，获得的全部 MergedAnnotation 又会被聚合为 MergedAnnotations。
 		return MergedAnnotations.from(annotatedElement, SearchStrategy.INHERITED_ANNOTATIONS, RepeatableContainers.none())
 				.get(annotationType).withNonMergedAttributes()
 				.synthesize(MergedAnnotation::isPresent).orElse(null);

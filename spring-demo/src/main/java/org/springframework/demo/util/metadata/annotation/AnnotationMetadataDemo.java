@@ -1,4 +1,4 @@
-package org.springframework.demo.metadata.annotation;
+package org.springframework.demo.util.metadata.annotation;
 
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Target;
 import java.lang.reflect.AnnotatedElement;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package org.springframework.demo.metadata;
+package org.springframework.demo.util.metadata;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableAsync;

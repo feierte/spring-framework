@@ -1,4 +1,4 @@
-package org.springframework.demo.concurrent.scheduling.async;
+package org.springframework.demo.util.concurrent.async;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

@@ -1,4 +1,4 @@
-package org.springframework.demo.metadata.annotation.override;
+package org.springframework.demo.util.metadata.annotation.override;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
