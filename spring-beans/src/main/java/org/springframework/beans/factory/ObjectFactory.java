@@ -35,6 +35,9 @@ import org.springframework.beans.BeansException;
  * @since 1.0.2
  * @param <T> the object type
  * @see FactoryBean
+ *
+ * @apiNote 主要用于延迟获取（或创建）对象实例。
+ * ObjectFactory 作为一个“工厂”或“提供者”，当你需要一个对象时，不是直接持有该对象的实例，而是持有一个能产生该实例的 ObjectFactory。这实现了延迟初始化（Lazy Initialization）。
  */
 @FunctionalInterface
 public interface ObjectFactory<T> {
