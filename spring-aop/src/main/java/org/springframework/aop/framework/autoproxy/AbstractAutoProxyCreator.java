@@ -125,7 +125,10 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 */
 	private boolean freezeProxy = false;
 
-	/** Default is no common interceptors. */
+	/**
+	 * Default is no common interceptors.
+	 * 存放所有需要被代理的目标类共有的 advisors。默认是空的
+	 * */
 	private String[] interceptorNames = new String[0];
 
 	private boolean applyCommonInterceptorsFirst = true;
@@ -136,12 +139,23 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	@Nullable
 	private BeanFactory beanFactory;
 
+	/**
+	 * 缓存使用了 TargetSource 的 Bean。
+	 * TargetSource 是 Spring AOP 中用于动态获取目标对象的机制（如池化、ThreadLocal 等）。
+	 * 该缓存记录了哪些 Bean 使用了自定义的 TargetSource，以便在创建代理时正确处理。
+	 */
 	private final Set<String> targetSourcedBeans = Collections.newSetFromMap(new ConcurrentHashMap<>(16));
 
 	private final Map<Object, Object> earlyProxyReferences = new ConcurrentHashMap<>(16);
 
 	private final Map<Object, Class<?>> proxyTypes = new ConcurrentHashMap<>(16);
 
+	/**
+	 * 缓存已经处理过的 Bean 及其是否需要代理的决策结果。
+	 * Key 是 Bean 的唯一标识（通常是 beanName 或 BeanDefinition 的哈希）。
+	 * Value 是布尔值，表示该 Bean 是否是“被建议的”（即是否需要创建代理）。
+	 * 这个缓存可以避免重复计算，提升性能。例如，如果某个 Bean 是基础设施类（如 Advisor、Pointcut 等），则直接缓存为 false，不再处理。
+	 */
 	private final Map<Object, Boolean> advisedBeans = new ConcurrentHashMap<>(256);
 
 
@@ -277,6 +291,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			if (this.advisedBeans.containsKey(cacheKey)) {
 				return null;
 			}
+			// shouldSkip 方法判断是否应该跳过代理。可以通过扩展此方法来自定义跳过逻辑
 			if (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) {
 				this.advisedBeans.put(cacheKey, Boolean.FALSE);
 				return null;
@@ -363,6 +378,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		}
 
 		// Create proxy if we have advice.
+		// 获取适用于当前 bean 的 Advisors，注意与 this.interceptorNames 区分，它存放的是对所有需要被代理的目标类共用的 Advisors。
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
@@ -480,6 +496,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.copyFrom(this);
 
+		// 进行使用哪类代理判断，JDK 还是 CGLIB？
+		// 目标类实现了接口，且未强制使用 CGLIB（proxyTargetClass = false），则使用 JDK 动态代理
+		// 目标类没有实现接口，或 proxyTargetClass = true，则使用 CGLIB 动态代理
 		if (proxyFactory.isProxyTargetClass()) {
 			// Explicit handling of JDK proxy targets and lambdas (for introduction advice scenarios)
 			if (Proxy.isProxyClass(beanClass) || ClassUtils.isLambdaClass(beanClass)) {

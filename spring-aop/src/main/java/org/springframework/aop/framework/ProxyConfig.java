@@ -34,14 +34,28 @@ public class ProxyConfig implements Serializable {
 	private static final long serialVersionUID = -8409359707199703185L;
 
 
+	/**
+	 * 是否强制使用CGLIB代理（基于类的代理），而不是JDK动态代理（基于接口的代理）。
+	 * 如果为 true，Spring 会使用 CGLIB 创建代理，即使目标类实现了接口。
+	 * 如果为 false，且目标类实现了接口，Spring 会优先使用 JDK 动态代理。
+	 */
 	private boolean proxyTargetClass = false;
 
 	private boolean optimize = false;
 
 	boolean opaque = false;
 
+	/**
+	 * 是否将代理对象暴露在 AopContext 中。
+	 * 如果为 true，Spring 会将当前代理对象绑定到 ThreadLocal 中，可以通过 AopContext.currentProxy() 在目标方法内部获取当前代理对象。
+	 * 这在目标对象内部调用自身方法（self-invocation）时特别有用，因为直接调用不会触发 AOP 拦截，而通过代理对象调用可以。
+	 */
 	boolean exposeProxy = false;
 
+	/**
+	 * 一个标志位，表示代理配置是否“冻结”。
+	 * 如果设置为 true，则一旦代理创建完成，其配置（如使用的 Advisor）将不能被修改。这通常用于确保代理行为在运行时的一致性，防止动态修改带来的不确定性。
+	 */
 	private boolean frozen = false;
 
 

@@ -32,6 +32,8 @@ import org.aopalliance.aop.Advice;
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
+ *
+ * @apiNote 封装了切面逻辑（Advice）和切入点（Pointcut），决定“在哪里”执行“什么增强”。
  */
 public interface Advisor {
 
