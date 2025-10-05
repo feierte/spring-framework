@@ -344,20 +344,24 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		// Use defaults if no transaction definition given.
 		TransactionDefinition def = (definition != null ? definition : TransactionDefinition.withDefaults());
 
+		// 获取事务，查看是否已经存在了事务，如果已经存在了事务则获取，否则返回 null。
 		Object transaction = doGetTransaction();
 		boolean debugEnabled = logger.isDebugEnabled();
 
+		// 判断是否已经存在了事务，如果存在事务则处理事务传播行为。
 		if (isExistingTransaction(transaction)) {
 			// Existing transaction found -> check propagation behavior to find out how to behave.
 			return handleExistingTransaction(def, transaction, debugEnabled);
 		}
 
+		// 处理超时设置
 		// Check definition settings for new transaction.
 		if (def.getTimeout() < TransactionDefinition.TIMEOUT_DEFAULT) {
 			throw new InvalidTimeoutException("Invalid transaction timeout", def.getTimeout());
 		}
 
 		// No existing transaction found -> check propagation behavior to find out how to proceed.
+		// 如果不存在事务，且事务传播行为是 PROPAGATION_MANDATORY，则抛出异常
 		if (def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_MANDATORY) {
 			throw new IllegalTransactionStateException(
 					"No existing transaction found for transaction marked with propagation 'mandatory'");
@@ -370,6 +374,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				logger.debug("Creating new transaction with name [" + def.getName() + "]: " + def);
 			}
 			try {
+				// 创建新事务
 				return startTransaction(def, transaction, debugEnabled, suspendedResources);
 			}
 			catch (RuntimeException | Error ex) {
@@ -397,6 +402,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		boolean newSynchronization = (getTransactionSynchronization() != SYNCHRONIZATION_NEVER);
 		DefaultTransactionStatus status = newTransactionStatus(
 				definition, transaction, true, newSynchronization, debugEnabled, suspendedResources);
+		// 创建数据库连接并开启事务
 		doBegin(transaction, definition);
 		prepareSynchronization(status, definition);
 		return status;
@@ -409,28 +415,34 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			TransactionDefinition definition, Object transaction, boolean debugEnabled)
 			throws TransactionException {
 
+		// 当前方法不支持事务，抛出异常
 		if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NEVER) {
 			throw new IllegalTransactionStateException(
 					"Existing transaction found for transaction marked with propagation 'never'");
 		}
 
+		// 当前方法不支持事务，如果已经存在了事务，则需要将事务挂起，当前方法以非事务运行
 		if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NOT_SUPPORTED) {
 			if (debugEnabled) {
 				logger.debug("Suspending current transaction");
 			}
+			// 挂起已经存在的事务
 			Object suspendedResources = suspend(transaction);
 			boolean newSynchronization = (getTransactionSynchronization() == SYNCHRONIZATION_ALWAYS);
 			return prepareTransactionStatus(
 					definition, null, false, newSynchronization, debugEnabled, suspendedResources);
 		}
 
+		// 当前方法需要再新事务中运行，挂起当前事务，创建一个新事务
 		if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRES_NEW) {
 			if (debugEnabled) {
 				logger.debug("Suspending current transaction, creating new transaction with name [" +
 						definition.getName() + "]");
 			}
+			// 挂起当前事务
 			SuspendedResourcesHolder suspendedResources = suspend(transaction);
 			try {
+				// 创建新事务
 				return startTransaction(definition, transaction, debugEnabled, suspendedResources);
 			}
 			catch (RuntimeException | Error beginEx) {
@@ -452,6 +464,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				// Create savepoint within existing Spring-managed transaction,
 				// through the SavepointManager API implemented by TransactionStatus.
 				// Usually uses JDBC 3.0 savepoints. Never activates Spring synchronization.
+				// 创建 savepoint
 				DefaultTransactionStatus status =
 						prepareTransactionStatus(definition, transaction, false, false, debugEnabled, null);
 				status.createAndHoldSavepoint();

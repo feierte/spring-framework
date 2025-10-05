@@ -262,6 +262,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 		try {
 			if (!txObject.hasConnectionHolder() ||
 					txObject.getConnectionHolder().isSynchronizedWithTransaction()) {
+				// 创建数据库连接
 				Connection newCon = obtainDataSource().getConnection();
 				if (logger.isDebugEnabled()) {
 					logger.debug("Acquired Connection [" + newCon + "] for JDBC transaction");
@@ -279,6 +280,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			// Switch to manual commit if necessary. This is very expensive in some JDBC drivers,
 			// so we don't want to do it unnecessarily (for example if we've explicitly
 			// configured the connection pool to set it already).
+			// 开启事务
 			if (con.getAutoCommit()) {
 				txObject.setMustRestoreAutoCommit(true);
 				if (logger.isDebugEnabled()) {
@@ -296,6 +298,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			}
 
 			// Bind the connection holder to the thread.
+			// 将数据库连接绑定到当前线程上
 			if (txObject.isNewConnectionHolder()) {
 				TransactionSynchronizationManager.bindResource(obtainDataSource(), txObject.getConnectionHolder());
 			}

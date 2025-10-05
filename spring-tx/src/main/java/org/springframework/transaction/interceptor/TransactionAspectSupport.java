@@ -331,6 +331,13 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	 * @param invocation the callback to use for proceeding with the target invocation
 	 * @return the return value of the method, if any
 	 * @throws Throwable propagated from the target invocation
+	 *
+	 * @apiNote 定义了事务的核心流程：
+	 * 1.事务属性提取：通过 TransactionAttributeSource 获取方法或类上的事务属性（@Transactional 注解配置）
+	 * 2.事务管理器选择：根据配置确定具体的 PlatformTransactionManager 实现
+	 * 3.事务状态创建：调用 TransactionManager 的 getTransaction() 方法
+	 * 4.目标方法执行：通过 ReflectiveMethodInvocation.proceed() 执行原始方法
+	 * 5.事务提交/回滚：根据执行结果决定提交或回滚事务
 	 */
 	@Nullable
 	protected Object invokeWithinTransaction(Method method, @Nullable Class<?> targetClass,
@@ -339,6 +346,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		// If the transaction attribute is null, the method is non-transactional.
 		TransactionAttributeSource tas = getTransactionAttributeSource();
 		final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);
+		// 获取事务管理器，@Transactional 在多数据源场景下需要指定事务管理器。
 		final TransactionManager tm = determineTransactionManager(txAttr);
 
 		if (this.reactiveAdapterRegistry != null && tm instanceof ReactiveTransactionManager) {
@@ -379,16 +387,19 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 
 		if (txAttr == null || !(ptm instanceof CallbackPreferringPlatformTransactionManager)) {
 			// Standard transaction demarcation with getTransaction and commit/rollback calls.
+			// 按需创建事务，并处理事务的传播行为
 			TransactionInfo txInfo = createTransactionIfNecessary(ptm, txAttr, joinpointIdentification);
 
 			Object retVal;
 			try {
 				// This is an around advice: Invoke the next interceptor in the chain.
 				// This will normally result in a target object being invoked.
+				// 执行其他拦截逻辑和目标方法
 				retVal = invocation.proceedWithInvocation();
 			}
 			catch (Throwable ex) {
 				// target invocation exception
+				// 根据异常类型决定回滚
 				completeTransactionAfterThrowing(txInfo, ex);
 				throw ex;
 			}
@@ -404,6 +415,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			}
 
+			// 提交事务
 			commitTransactionAfterReturning(txInfo);
 			return retVal;
 		}
@@ -592,6 +604,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		TransactionStatus status = null;
 		if (txAttr != null) {
 			if (tm != null) {
+				// 在这里处理事务传播行为（要么创建事务、要么加入事务、要么...）
 				status = tm.getTransaction(txAttr);
 			}
 			else {

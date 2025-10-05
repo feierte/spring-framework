@@ -36,6 +36,11 @@ import org.springframework.lang.Nullable;
  * {@link org.springframework.jdbc.datasource.DataSourceTransactionManager},
  * which can serve as an implementation guide for other transaction strategies.
  *
+ * @apiNote 在 Spring 事务管理体系中，PlatformTransactionManager 扮演着事务执行引擎的角色，
+ * 这个基于策略模式设计的接口定义了事务操作的三大核心契约：getTransaction()、commit() 和 rollback()。
+ * 作为 Spring 事务抽象的核心接口，它通过统一的操作模板屏蔽了不同数据访问技术的事务实现差异，
+ * 使得开发者能够以一致的方式管理 JDBC、JPA、Hibernate 等多种技术的事务。
+ *
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @since 16.05.2003

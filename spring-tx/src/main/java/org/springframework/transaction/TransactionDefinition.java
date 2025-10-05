@@ -48,6 +48,9 @@ public interface TransactionDefinition {
 	 * Analogous to the EJB transaction attribute of the same name.
 	 * <p>This is typically the default setting of a transaction definition,
 	 * and typically defines a transaction synchronization scope.
+	 *
+	 * @apiNote 默认的事务传播行为。如果有事务在运行，当前的方法就在这个事务内运行，否则，就启动一个新的事务，并在自己的事务内运行。
+	 * <p>适用于大多数业务方法调用，保证操作在同一个事务中执行。例如订单创建后扣减库存的操作。
 	 */
 	int PROPAGATION_REQUIRED = 0;
 
@@ -69,6 +72,8 @@ public interface TransactionDefinition {
 	 * "synchronization on actual transaction").
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#setTransactionSynchronization
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#SYNCHRONIZATION_ON_ACTUAL_TRANSACTION
+	 *
+	 * @apiNote 支持事务，如果有事务在运行，当前的方法就在这个事务内运行；否则以非事务的方式执行。
 	 */
 	int PROPAGATION_SUPPORTS = 1;
 
@@ -77,6 +82,8 @@ public interface TransactionDefinition {
 	 * exists. Analogous to the EJB transaction attribute of the same name.
 	 * <p>Note that transaction synchronization within a {@code PROPAGATION_MANDATORY}
 	 * scope will always be driven by the surrounding transaction.
+	 *
+	 * @apiNote 强制事务执行，当前的方法必须运行在事务内部；如果没有正在运行的事务，就抛出异常。
 	 */
 	int PROPAGATION_MANDATORY = 2;
 
@@ -92,6 +99,9 @@ public interface TransactionDefinition {
 	 * transaction synchronizations. Existing synchronizations will be suspended
 	 * and resumed appropriately.
 	 * @see org.springframework.transaction.jta.JtaTransactionManager#setTransactionManager
+	 *
+	 * @apiNote 无论当前是否存在事务，都必须创建一个新事务。如果当前存在事务，将会被挂起，并在新事务结束后恢复。即使外部事务回滚，新事务也不受影响。
+	 * <p>日志记录等独立业务场景，即使主事务回滚也不影响日志写入。注意要控制好事务粒度，避免长事务。
 	 */
 	int PROPAGATION_REQUIRES_NEW = 3;
 
@@ -107,6 +117,8 @@ public interface TransactionDefinition {
 	 * {@code PROPAGATION_NOT_SUPPORTED} scope. Existing synchronizations
 	 * will be suspended and resumed appropriately.
 	 * @see org.springframework.transaction.jta.JtaTransactionManager#setTransactionManager
+	 *
+	 * @apiNote 不支持事务，以非事务的方式执行，如果有运行的事务，将它挂起。
 	 */
 	int PROPAGATION_NOT_SUPPORTED = 4;
 
@@ -115,6 +127,8 @@ public interface TransactionDefinition {
 	 * exists. Analogous to the EJB transaction attribute of the same name.
 	 * <p>Note that transaction synchronization is <i>not</i> available within a
 	 * {@code PROPAGATION_NEVER} scope.
+	 *
+	 * @apiNote 以非事务的方式执行，如果有运行的事务，就抛出异常。
 	 */
 	int PROPAGATION_NEVER = 5;
 
@@ -128,6 +142,9 @@ public interface TransactionDefinition {
 	 * when working on a JDBC 3.0 driver. Some JTA providers might support
 	 * nested transactions as well.
 	 * @see org.springframework.jdbc.datasource.DataSourceTransactionManager
+	 *
+	 * @apiNote 如果有事务在运行，当前的方法就应该在这个事务的嵌套事务内运行．否则，就启动一个新的事务，并在它自己的事务内运行。
+	 * <p>适合具有"部分回滚"需求的场景，如电商平台的多级优惠计算。通过 savepoint 机制实现子事务回滚而不影响主事务。
 	 */
 	int PROPAGATION_NESTED = 6;
 
