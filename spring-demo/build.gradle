@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.springframework'
+version = '6.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // 引用本项目依赖
+    implementation(project(":spring-core"))
+    implementation(project(":spring-beans"))
+    implementation(project(":spring-aop"))
+    implementation(project(":spring-context"))
+    implementation(project(":spring-jdbc"))
+    implementation(project(":spring-web"))
+    implementation(project(":spring-webmvc"))
+    implementation(project(":spring-jdbc"))
+    implementation(project(":spring-tx"))
+    implementation(project(":spring-test"))
+    optional("org.aspectj:aspectjweaver")
+    optional("org.assertj:assertj-core")
+
+    // mybatis
+    implementation("org.mybatis:mybatis:3.5.19")
+    implementation("org.mybatis:mybatis-spring:3.0.5")
+
+    // lombok
+    implementation("org.projectlombok:lombok:1.18.34")
+}
+
+test {
+    useJUnitPlatform()
+}
