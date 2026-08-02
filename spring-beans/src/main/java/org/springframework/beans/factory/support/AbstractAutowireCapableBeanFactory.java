@@ -582,6 +582,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
+		// 判断是否允许提前暴露早期引用，即放入三级缓存中，用于解决循环引用问题
+		// Bean 是单例的 && 允许循环引用 && 当前 Bean 正处于创建中，满足这些条件会被放入三级缓存中
+		// 什么情况下不会放入三级缓存中？
+		// 1.非单例 Bean：如 prototype、request、session 作用域的 Bean。
+		// 2.Bean 已完成创建或尚未标记为创建中：例如通过 getBean 获取已存在的 Bean 时不会重复放入。
+		// 3.某些特殊 Bean：如 Spring 内部的基础设施 Bean，可能不会经历完整的创建流程。
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
 				isSingletonCurrentlyInCreation(beanName));
 		if (earlySingletonExposure) {
@@ -589,6 +595,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
+			// 将 ObjectFactory 加入三级缓存，为什么三级缓存存放的是 ObjectFactory，而不是直接存放原始对象？
+			// 1.延迟增强：当其他 Bean 需要引用当前 Bean 的早期对象时，Spring 会调用该工厂的 getObject() 方法，进而触发 getEarlyBeanReference 回调。
+			// 这个回调允许 BeanPostProcessor（特别是 SmartInstantiationAwareBeanPostProcessor）对原始对象进行增强，例如生成 AOP 代理。
+			// 2.保证一致性：如果不存在循环依赖，代理对象会在初始化后通过 postProcessAfterInitialization 生成。但如果有循环依赖，则必须提前生成代理对象，
+			// 并确保所有依赖方得到的都是同一个增强后的对象。ObjectFactory 结合 getEarlyBeanReference 实现了这种“按需提前增强”的机制。
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
