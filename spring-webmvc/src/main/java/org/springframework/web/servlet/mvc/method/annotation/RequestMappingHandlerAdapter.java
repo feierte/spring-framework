@@ -783,8 +783,10 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
 
 		ModelAndView mav;
+		// 检查请求方法是否支持（GET/POST等）
 		checkRequest(request);
 
+		// 如果需要 Session 同步，加锁
 		// Execute invokeHandlerMethod in synchronized block if required.
 		if (this.synchronizeOnSession) {
 			HttpSession session = request.getSession(false);
@@ -796,14 +798,17 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			}
 			else {
 				// No HttpSession available -> no mutex necessary
+				// 调用 invokeHandlerMethod 真正执行 Controller 方法
 				mav = invokeHandlerMethod(request, response, handlerMethod);
 			}
 		}
 		else {
 			// No synchronization on session demanded at all...
+			// 调用 invokeHandlerMethod 真正执行 Controller 方法
 			mav = invokeHandlerMethod(request, response, handlerMethod);
 		}
 
+		// 处理 Cache-Control 头
 		if (!response.containsHeader(HEADER_CACHE_CONTROL)) {
 			if (getSessionAttributesHandler(handlerMethod).hasSessionAttributes()) {
 				applyCacheSeconds(response, this.cacheSecondsForSessionAttributeHandlers);
@@ -849,11 +854,16 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	protected ModelAndView invokeHandlerMethod(HttpServletRequest request,
 			HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
 
+		// 包装请求/响应为 ServletWebRequest
 		ServletWebRequest webRequest = new ServletWebRequest(request, response);
+		// 创建 WebDataBinderFactory（处理 @InitBinder 方法）
 		WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod);
+		// 创建 ModelFactory（处理 @ModelAttribute 方法）
 		ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
 
+		// 创建 ServletInvocableHandlerMethod（可调用的方法包装）
 		ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
+		// 关键：设置参数解析器和返回值处理器
 		if (this.argumentResolvers != null) {
 			invocableMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
 		}
@@ -865,12 +875,14 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 		ModelAndViewContainer mavContainer = new ModelAndViewContainer();
 		mavContainer.addAllAttributes(RequestContextUtils.getInputFlashMap(request));
+		// 执行 @ModelAttribute 方法
 		modelFactory.initModel(webRequest, mavContainer, invocableMethod);
 		mavContainer.setIgnoreDefaultModelOnRedirect(this.ignoreDefaultModelOnRedirect);
 
 		AsyncWebRequest asyncWebRequest = WebAsyncUtils.createAsyncWebRequest(request, response);
 		asyncWebRequest.setTimeout(this.asyncRequestTimeout);
 
+		//  处理异步请求
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 		asyncManager.setTaskExecutor(this.taskExecutor);
 		asyncManager.setAsyncWebRequest(asyncWebRequest);
@@ -888,11 +900,13 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			invocableMethod = invocableMethod.wrapConcurrentResult(result);
 		}
 
+		// ★ 核心：调用 Controller 方法
 		invocableMethod.invokeAndHandle(webRequest, mavContainer);
 		if (asyncManager.isConcurrentHandlingStarted()) {
 			return null;
 		}
 
+		// 创建 ModelAndView 返回
 		return getModelAndView(mavContainer, modelFactory, webRequest);
 	}
 

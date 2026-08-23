@@ -970,6 +970,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		try {
+			// 核心，请求分发
 			doDispatch(request, response);
 		}
 		finally {
@@ -1049,10 +1050,13 @@ public class DispatcherServlet extends FrameworkServlet {
 			Exception dispatchException = null;
 
 			try {
+				// 文件上传处理
+				// 检查是否为 multipart 请求，如果是则包装为 MultipartHttpServletRequest
 				processedRequest = checkMultipart(request);
 				multipartRequestParsed = (processedRequest != request);
 
 				// Determine handler for the current request.
+				// 遍历 handlerMappings，找到第一个能处理该请求的 HandlerExecutionChain
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) {
 					noHandlerFound(processedRequest, response);
@@ -1060,6 +1064,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 
 				// Determine handler adapter for the current request.
+				// 遍历 handlerAdapters，找到第一个 supports(handler) 的适配器
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
 				// Process last-modified header, if supported by the handler.
@@ -1072,18 +1077,24 @@ public class DispatcherServlet extends FrameworkServlet {
 					}
 				}
 
+				// 执行拦截器的 preHandle() 方法，如果任一拦截器返回 false，终止执行
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
 					return;
 				}
 
 				// Actually invoke the handler.
+				// 调用 Controller 中的方法
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
+				// 检查是否启动了异步处理，如果启用了，直接返回
 				if (asyncManager.isConcurrentHandlingStarted()) {
 					return;
 				}
 
+				// 如果 ModelAndView 没有视图名，从请求推断默认视图名
 				applyDefaultViewName(processedRequest, mv);
+
+				// 执行拦截器的 postHandle() 方法（逆序执行）
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
 			catch (Exception ex) {
@@ -1094,6 +1105,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				// making them available for @ExceptionHandler methods and other scenarios.
 				dispatchException = new ServletException("Handler dispatch failed: " + err, err);
 			}
+			// 处理 Controller 方法执行结果，如果方法执行出错抛出了异常，异常也在这个方法里面处理
 			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
 		}
 		catch (Exception ex) {
@@ -1106,11 +1118,13 @@ public class DispatcherServlet extends FrameworkServlet {
 		finally {
 			if (asyncManager.isConcurrentHandlingStarted()) {
 				// Instead of postHandle and afterCompletion
+				// 异步处理清理
 				if (mappedHandler != null) {
 					mappedHandler.applyAfterConcurrentHandlingStarted(processedRequest, response);
 				}
 			}
 			else {
+				// 清理文件上传资源
 				// Clean up any resources used by a multipart request.
 				if (multipartRequestParsed) {
 					cleanupMultipart(processedRequest);
@@ -1144,9 +1158,11 @@ public class DispatcherServlet extends FrameworkServlet {
 		if (exception != null) {
 			if (exception instanceof ModelAndViewDefiningException) {
 				logger.debug("ModelAndViewDefiningException encountered", exception);
+				// 直接使用异常中携带的 ModelAndView
 				mv = ((ModelAndViewDefiningException) exception).getModelAndView();
 			}
 			else {
+				// 尝试通过 HandlerExceptionResolver 解析异常为 ModelAndView
 				Object handler = (mappedHandler != null ? mappedHandler.getHandler() : null);
 				mv = processHandlerException(request, response, handler, exception);
 				errorView = (mv != null);
@@ -1155,6 +1171,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		// Did the handler return a view to render?
 		if (mv != null && !mv.wasCleared()) {
+			// 渲染视图
 			render(mv, request, response);
 			if (errorView) {
 				WebUtils.clearErrorRequestAttributes(request);

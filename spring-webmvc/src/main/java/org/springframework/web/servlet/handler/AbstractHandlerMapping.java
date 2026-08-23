@@ -84,23 +84,27 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 			LogDelegateFactory.getHiddenLog(HandlerMapping.class.getName() + ".Mappings");
 
 
+	// 默认处理器（无匹配时的兜底）
 	@Nullable
 	private Object defaultHandler;
 
+	// 路径模式解析器（6.0 默认启用 PathPatternParser）
 	@Nullable
 	private PathPatternParser patternParser = new PathPatternParser();
 
 	private UrlPathHelper urlPathHelper = new UrlPathHelper();
 
+	// Ant 风格路径匹配器（patternParser 为 null 时使用）
 	private PathMatcher pathMatcher = new AntPathMatcher();
 
+	// 拦截器列表
 	private final List<Object> interceptors = new ArrayList<>();
-
+	// 适配后的拦截器列表（已将 WebRequestInterceptor 适配为 HandlerInterceptor）
 	private final List<HandlerInterceptor> adaptedInterceptors = new ArrayList<>();
 
 	@Nullable
 	private CorsConfigurationSource corsConfigurationSource;
-
+	// CORS 处理器
 	private CorsProcessor corsProcessor = new DefaultCorsProcessor();
 
 	private int order = Ordered.LOWEST_PRECEDENCE;  // default: same as non-Ordered
@@ -501,12 +505,13 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	@Override
 	@Nullable
 	public final HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
+		// 调用子类的 getHandlerInternal() 查找处理器（Controller 方法）
 		Object handler = getHandlerInternal(request);
 		if (handler == null) {
-			handler = getDefaultHandler();
+			handler = getDefaultHandler(); // 兜底：没有匹配时用默认处理器
 		}
 		if (handler == null) {
-			return null;
+			return null;  // 实在找不到（defaultHandler 不存在），返回 null（DispatcherServlet 会报 404）
 		}
 		// Bean name or resolved handler?
 		if (handler instanceof String handlerName) {
