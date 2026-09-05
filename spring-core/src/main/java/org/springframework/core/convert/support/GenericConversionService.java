@@ -75,8 +75,9 @@ public class GenericConversionService implements ConfigurableConversionService {
 	private static final GenericConverter NO_MATCH = new NoOpConverter("NO_MATCH");
 
 
+	// 真正管理所有转换器的容器，负责注册和查找所有转换器。
 	private final Converters converters = new Converters();
-
+	// 查找结果缓存（高性能关键）
 	private final Map<ConverterCacheKey, GenericConverter> converterCache = new ConcurrentReferenceHashMap<>(64);
 
 
@@ -84,14 +85,17 @@ public class GenericConversionService implements ConfigurableConversionService {
 
 	@Override
 	public void addConverter(Converter<?, ?> converter) {
+		// 获取 converter 中的源和目标的类型
 		ResolvableType[] typeInfo = getRequiredTypeInfo(converter.getClass(), Converter.class);
 		if (typeInfo == null && converter instanceof DecoratingProxy decoratingProxy) {
 			typeInfo = getRequiredTypeInfo(decoratingProxy.getDecoratedClass(), Converter.class);
 		}
+		// 处理 AOP 代理导致泛型丢失的情况
 		if (typeInfo == null) {
 			throw new IllegalArgumentException("Unable to determine source type <S> and target type <T> for your " +
 					"Converter [" + converter.getClass().getName() + "]; does the class parameterize those types?");
 		}
+		// 使用 ConverterAdapter 将 Converter 适配成 GenericConverter
 		addConverter(new ConverterAdapter(converter, typeInfo[0], typeInfo[1]));
 	}
 
@@ -104,6 +108,7 @@ public class GenericConversionService implements ConfigurableConversionService {
 	@Override
 	public void addConverter(GenericConverter converter) {
 		this.converters.add(converter);
+		// 每次添加转换器都要清空缓存
 		invalidateCache();
 	}
 
@@ -189,6 +194,7 @@ public class GenericConversionService implements ConfigurableConversionService {
 		}
 		GenericConverter converter = getConverter(sourceType, targetType);
 		if (converter != null) {
+			// 执行转换（内部会捕获异常并包装）
 			Object result = ConversionUtils.invokeConverter(converter, source, sourceType, targetType);
 			return handleResult(sourceType, targetType, result);
 		}
@@ -536,14 +542,16 @@ public class GenericConversionService implements ConfigurableConversionService {
 		@Nullable
 		public GenericConverter find(TypeDescriptor sourceType, TypeDescriptor targetType) {
 			// Search the full type hierarchy
+			// 获取源类型和目标类型的完整继承体系（包括接口）
 			List<Class<?>> sourceCandidates = getClassHierarchy(sourceType.getType());
 			List<Class<?>> targetCandidates = getClassHierarchy(targetType.getType());
+			// 双重循环：从最具体的类型开始匹配
 			for (Class<?> sourceCandidate : sourceCandidates) {
 				for (Class<?> targetCandidate : targetCandidates) {
 					ConvertiblePair convertiblePair = new ConvertiblePair(sourceCandidate, targetCandidate);
 					GenericConverter converter = getRegisteredConverter(sourceType, targetType, convertiblePair);
 					if (converter != null) {
-						return converter;
+						return converter; // 找到就立即返回（优先匹配更具体的类型）
 					}
 				}
 			}
@@ -647,6 +655,8 @@ public class GenericConversionService implements ConfigurableConversionService {
 
 	/**
 	 * Manages converters registered with a specific {@link ConvertiblePair}.
+	 *
+	 * @apiNote 管理某一个源-目标类型对下的多个转换器（用 Deque，后注册的优先）。
 	 */
 	private static class ConvertersForPair {
 
