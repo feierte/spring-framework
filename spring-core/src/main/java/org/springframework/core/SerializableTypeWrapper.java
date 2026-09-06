@@ -53,6 +53,12 @@ import org.springframework.util.ReflectionUtils;
  * @author Juergen Hoeller
  * @author Sam Brannen
  * @since 4.0
+ *
+ * @apiNote {@link java.lang.reflect.Type} 的某些实现（尤其某些 JVM/语言提供的）不可序列化。
+ * {@code SerializableTypeWrapper} 把它们包装成可序列化的形式（源码里 forType 大量使用它），
+ * 让 {@code ResolvableType} 能安全地放进缓存、跨进程传输。
+ * <p></p>
+ * 阅读源码就会发现，把不可序列化的 Type 类型变成可序列化的形式是通过代理实现的。详见方法：{@link SerializableTypeWrapper#forTypeProvider}
  */
 final class SerializableTypeWrapper {
 

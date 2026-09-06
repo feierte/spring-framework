@@ -86,6 +86,11 @@ public class ResolvableType implements Serializable {
 	/**
 	 * {@code ResolvableType} returned when no value is available. {@code NONE} is used
 	 * in preference to {@code null} so that multiple method calls can be safely chained.
+	 *
+	 * @apiNote NONE 是一个永远解析不出来的特殊 ResolvableType，用在所有「没有类型」的场合（比如没有父类型、不是数组、找不到接口时）。
+	 * <p>为什么不用 null？ </p>
+	 * 因为 ResolvableType 的方法大量是链式调用：{@code type.getSuperType().getGeneric(0).resolve();}
+	 * 如果 getSuperType() 返回 null，上面的链会直接 NPE。而返回 NONE，NONE.getGeneric(0) 还会返回 NONE，NONE.resolve() 返回 null——整条链安全降级，永不崩。
 	 */
 	public static final ResolvableType NONE = new ResolvableType(EmptyType.INSTANCE, null, null, 0);
 
