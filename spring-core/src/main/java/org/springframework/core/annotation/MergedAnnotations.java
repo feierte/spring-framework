@@ -633,6 +633,8 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 		 * Find only directly declared annotations, without considering
 		 * {@link Inherited @Inherited} annotations and without searching
 		 * superclasses or implemented interfaces.
+		 *
+		 * @apiNote 只看直接声明的
 		 */
 		DIRECT,
 
@@ -643,6 +645,8 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 		 * types since the {@link Inherited @Inherited} annotation is ignored for
 		 * all other {@linkplain AnnotatedElement annotated elements}.
 		 * <p>This strategy does not search implemented interfaces.
+		 *
+		 * @apiNote DIRECT + @Inherited 父类
 		 */
 		INHERITED_ANNOTATIONS,
 
@@ -652,6 +656,8 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 		 * the annotations do not need to be meta-annotated with
 		 * {@link Inherited @Inherited}.
 		 * <p>This strategy does not search implemented interfaces.
+		 *
+		 * @apiNote DIRECT + 所有父类
 		 */
 		SUPERCLASS,
 
@@ -664,6 +670,8 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 		 * {@code true}.
 		 * <p>Superclass and enclosing class annotations do not need to be
 		 * meta-annotated with {@link Inherited @Inherited}.
+		 *
+		 * @apiNote DIRECT + 父类 + 接口，最常用，搜索整个类型层次（父类 + 接口）
 		 */
 		TYPE_HIERARCHY
 

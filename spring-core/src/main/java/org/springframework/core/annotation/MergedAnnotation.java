@@ -57,6 +57,14 @@ import org.springframework.lang.Nullable;
  * @param <A> the annotation type
  * @see MergedAnnotations
  * @see MergedAnnotationPredicates
+ *
+ * @apiNote MergedAnnotation 代表一个合并后的注解视图，属性值可能来自多个来源：
+ * 	1.注解自身声明的属性
+ * 	2.显式/隐式 @AliasFor 别名
+ * 	3.元注解上的属性值
+ * 	4.约定式属性映射（convention-based）
+ * 它与普通 Annotation 的最大区别是：属性已经“合并”完成，调用 getXxx() 时直接拿到最终生效的值。
+ * 配套的 {@link MergedAnnotations} 是一个集合接口，代表从某个 {@link AnnotatedElement}（类、方法、字段等）扫描到的所有合并注解。
  */
 public interface MergedAnnotation<A extends Annotation> {
 
@@ -107,6 +115,8 @@ public interface MergedAnnotation<A extends Annotation> {
 	 * meta-annotation has a distance of {@code 2}, etc. A {@linkplain #missing()
 	 * missing} annotation will always return a distance of {@code -1}.
 	 * @return the annotation distance or {@code -1} if the annotation is missing
+	 *
+	 * @apiNote 元注解距离（0 = 直接声明，>0 = 元注解）
 	 */
 	int getDistance();
 
